@@ -6,6 +6,8 @@ import routes from './routes';
 // import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import configureStore from './store/configureStore';
 
+import {loadCats} from './actions/catActions';
+
 const store = configureStore();
 
 store.dispatch(loadCats());

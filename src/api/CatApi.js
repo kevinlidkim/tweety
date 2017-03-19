@@ -7,16 +7,14 @@ class CatApi {
   //     return error;
   //   });
   // }
-  getAllCats() {
-    $.ajax({
-      url: '/yo',
-      type: 'POST'
+  static getAllCats() {
+    return fetch('http://localhost:3000/yo', {
+      method: 'POST'
     })
-      .done((data) => {
-        console.log(data);
-      })
-      .fail((err) => {
-        console.log(err);
+      .then(response => {
+        return response.json();
+      }).catch(err => {
+        return err;
       })
   }
 }

@@ -4,6 +4,7 @@ import * as types from './actionTypes';
 export function loadCats() {  
   return function(dispatch) {
     return CatApi.getAllCats().then(cats => {
+      // console.log(cats);
       dispatch(loadCatsSuccess(cats));
     }).catch(error => {
       throw(error);
