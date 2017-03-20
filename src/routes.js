@@ -7,13 +7,15 @@ import CatsPage from './components/cats/CatsPage';
 import CatPage from './components/cats/CatPage';
 
 import Login from './components/Login';
+import SignUp from './components/SignUp';
 
 export default (  
   <Route component={App}>
     <Route path="/" component={Home} />
-    <Route path="/cats" component={CatsPage} >
-      <Route path="/cats/:id" component={CatPage} />
+    <Route path="/cats" component={Home} >
+      <Route path="/cats/:id" component={Home} />
     </Route>
     <Route path="/login" component={Login} />
+    <Route path="/signup" component={SignUp} />
   </Route>
 );
