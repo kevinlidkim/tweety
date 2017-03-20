@@ -5,11 +5,13 @@ import { Router, browserHistory } from 'react-router';
 import routes from './routes';
 import configureStore from './store/configureStore';
 
-import {loadCats} from './actions/catActions';
+import {loadCats} from './actions/CatActions';
+import {loginUser} from './actions/LoginActions';
 
 const store = configureStore();
 
 // store.dispatch(loadCats());
+store.dispatch(loginUser('kev', 'li'));
 
 render(
   <Provider store={store}>
