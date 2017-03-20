@@ -1,12 +1,12 @@
 import * as types from './actionTypes';  
 
-export function loginUser(username, password) {  
+export function signUpUser(username, password) {  
   return function(dispatch) {
     var payload = {
       username: username,
       password: password
     }
-    return fetch('/login', {
+    return fetch('/adduser', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -17,7 +17,7 @@ export function loginUser(username, password) {
       .then(response => {
         return response.json();
       }).then(function(res) {
-        dispatch(loginSuccess(res));
+        dispatch(signUpSuccess(res));
       })
       .catch(err => {
         throw(err);
@@ -25,6 +25,8 @@ export function loginUser(username, password) {
   }
 }
 
-export function loginSuccess(login) {  
-  return ({type: types.LOGIN_SUCCESS, login})
+// we register the action with an action type. in this case, we are registering it as "auth"
+// it gets dispatched to a reducer
+export function signUpSuccess(auth) {  
+  return ({type: types.SIGN_UP_SUCCESS, auth})
 }

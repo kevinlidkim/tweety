@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';  
 import {connect} from 'react-redux';
+import * as SignUpActions from '../actions/SignUpActions';
 import configureStore from '../store/configureStore';
 
 const store = configureStore();
@@ -21,9 +22,11 @@ class SignUp extends React.Component {
 
   signUpEvent(event) {
     event.preventDefault();
-    console.log("SIGNING UP ON FRONTEND");
-    console.log(this.state);
-    // store.dispatch(LoginActions.loginUser(this.state.username, this.state.password));
+    store.dispatch(SignUpActions.signUpUser(this.state.username, this.state.password))
+      .then(function(data) {
+        var yo = store.getState();
+        console.log(yo);
+      })
   }
 
 
@@ -56,4 +59,16 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp; 
+// this means that the SignUp component will have a property called "auth"
+SignUp.propTypes = {  
+  auth: PropTypes.object.isRequired
+};
+
+// we are setting the property "auth" as object from state.auth (from store's state)
+function mapStateToProps(state, ownProps) {
+  return {
+    auth: state.auth
+  };
+};
+
+export default connect(mapStateToProps)(SignUp);

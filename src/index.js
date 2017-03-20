@@ -10,9 +10,6 @@ import {loginUser} from './actions/LoginActions';
 
 const store = configureStore();
 
-// store.dispatch(loadCats());
-store.dispatch(loginUser('kev', 'li'));
-
 render(
   <Provider store={store}>
     <Router routes={routes} history={browserHistory} />

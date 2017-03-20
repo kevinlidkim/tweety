@@ -17,6 +17,15 @@ module.exports = function(app) {
     })
   })
 
+  app.post('/adduser', function(req, res) {
+    console.log(req.body);
+    console.log("ADDUSER");
+    return res.status(200).json({
+      status: "ADDUSER",
+      user: 'kev'
+    })
+  })
+
   app.get('*', function(req, res) {
     res.sendfile('./src/index.html');
   });

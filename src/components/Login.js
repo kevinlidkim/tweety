@@ -25,7 +25,11 @@ class Login extends React.Component {
     event.preventDefault();
     console.log("LOGGING IN ON FRONTEND");
     console.log(this.state);
-    store.dispatch(LoginActions.loginUser(this.state.username, this.state.password));
+    store.dispatch(LoginActions.loginUser(this.state.username, this.state.password))
+      .then(function(data) {
+        var yo = store.getState();
+        console.log(yo);
+      })
   }
 
 
@@ -55,14 +59,12 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {  
-  login: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {  
-  console.log('this is the state');
-  console.log(state);
   return {
-    login: state.login
+    auth: state.login
   };
 };
 
