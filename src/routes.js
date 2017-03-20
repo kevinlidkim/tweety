@@ -3,9 +3,6 @@ import { Route } from 'react-router';
 import App from './components/App';  
 import Home from './components/Home';
 
-import CatsPage from './components/cats/CatsPage';  
-import CatPage from './components/cats/CatPage';
-
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 

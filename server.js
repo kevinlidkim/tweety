@@ -7,6 +7,15 @@ var cookieParser   = require('cookie-parser');
 var port = process.env.PORT || 80;
 
 var db = require('./db');
+var mongo_uri = 'mongodb://localhost:27017/tweety';
+
+db.connect(mongo_uri, function(err) {
+  if (err) {
+    console.log("Error connecting to mongo");
+  } else {
+    console.log("Connected to mongo");
+  }
+})
 
 app.use(bodyParser.json()); // parse application/json 
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json

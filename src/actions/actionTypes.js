@@ -1,3 +1,2 @@
-export const LOAD_CATS_SUCCESS = 'LOAD_CATS_SUCCESS';  
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';

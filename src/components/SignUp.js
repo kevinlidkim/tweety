@@ -11,7 +11,8 @@ class SignUp extends React.Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      email: ''
     }
     this.onChange = this.onChange.bind(this);
   }
@@ -22,8 +23,11 @@ class SignUp extends React.Component {
 
   signUpEvent(event) {
     event.preventDefault();
-    store.dispatch(SignUpActions.signUpUser(this.state.username, this.state.password))
+    console.log("signing up with following info");
+    console.log(this.state);
+    store.dispatch(SignUpActions.signUpUser(this.state.username, this.state.password, this.state.email))
       .then(function(data) {
+        console.log("after signing up");
         var yo = store.getState();
         console.log(yo);
       })
@@ -37,7 +41,14 @@ class SignUp extends React.Component {
         </div>
         <div className='col-md-4'>
           <div className="form-container">
+            <h3>Sign Up</h3>
             <form className="form">
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input type="text" placeholder="Email" id="email" className="form-control" 
+                  value={this.state.email}
+                  onChange={e => this.setState({ email:e.target.value })}/>
+              </div>
               <div className="form-group">
                 <label htmlFor="username">Username</label>
                 <input type="text" placeholder="Username" id="username" className="form-control" 
@@ -59,15 +70,18 @@ class SignUp extends React.Component {
   }
 }
 
-// this means that the SignUp component will have a property called "auth"
+// this means that the SignUp component will have a property called "server_response"
 SignUp.propTypes = {  
-  auth: PropTypes.object.isRequired
+  server_response: PropTypes.object.isRequired
 };
 
-// we are setting the property "auth" as object from state.auth (from store's state)
+// we are setting the property "server_response" as object from state.auth.register_response. 
+// auth is the reducer, register_response is the state
 function mapStateToProps(state, ownProps) {
+  console.log("THE STATE");
+  console.log(state);
   return {
-    auth: state.auth
+    server_response: state.auth.register_response
   };
 };
 

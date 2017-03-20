@@ -1,6 +1,5 @@
 export default {  
-  cats: [],
-  login: {},
-  user: {},
-  auth: {}
+  current_user: {},
+  register_response: {},
+  login_response: {}
 }

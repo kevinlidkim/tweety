@@ -1,10 +1,11 @@
 import * as types from './actionTypes';  
 
-export function signUpUser(username, password) {  
+export function signUpUser(username, password, email) {  
   return function(dispatch) {
     var payload = {
       username: username,
-      password: password
+      password: password,
+      email: email
     }
     return fetch('/adduser', {
       method: 'POST',
@@ -27,6 +28,6 @@ export function signUpUser(username, password) {
 
 // we register the action with an action type. in this case, we are registering it as "auth"
 // it gets dispatched to a reducer
-export function signUpSuccess(auth) {  
-  return ({type: types.SIGN_UP_SUCCESS, auth})
+export function signUpSuccess(server_response) {  
+  return ({type: types.SIGN_UP_SUCCESS, server_response})
 }
