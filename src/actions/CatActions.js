@@ -1,16 +1,18 @@
-import CatApi from '../api/CatApi';
 import * as types from './actionTypes';  
 
 export function loadCats() {  
   return function(dispatch) {
-    return CatApi.getAllCats().then(cats => {
-      // console.log(cats);
-      dispatch(loadCatsSuccess(cats));
-    }).catch(error => {
-      throw(error);
-    });
-  };
+    return fetch('/yo', {
+      method: 'POST'
+    })
+      .then(response => {
+        dispatch(loadCatsSuccess(response.json()));
+      }).catch(err => {
+        throw(error);
+      })
+  }
 }
+
 
 export function loadCatsSuccess(cats) {  
   return {type: types.LOAD_CATS_SUCCESS, cats};

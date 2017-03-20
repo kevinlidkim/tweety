@@ -1,30 +1,23 @@
 var express = require('express');
 var app = express();
+var bodyParser     = require('body-parser');
+var session        = require('express-session');
+var cookieParser   = require('cookie-parser');
 
-var pathToApp = __dirname;
+var port = process.env.PORT || 80;
 
-app.use('/static', express.static(__dirname + '/public'));
+var db = require('./db');
 
-app.get('/', function(req, res) {
-  res.sendFile(pathToApp + '/src/index.html');
-});
+app.use(bodyParser.json()); // parse application/json 
+app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
+app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
+app.use(cookieParser());
+app.use(session({resave: true, saveUninitialized: true, secret: 'supersecretfriedchicken', cookie: { maxAge: 60000 }}));
 
-app.post('/yo', function(req, res) {
-  console.log("YOO");
-  return res.status(200).json({
-    status: "SUP"
-  })
-})
+app.use('/static', express.static(__dirname + '/public')); // need this to read bundle.js
+require('./server/routes')(app);
 
-// app.get('/yo', function(req, res) {
-//   console.log("YOO");
-// })
-
-// app.get('*', function(req, res) {
-//   res.sendFile(pathToApp + '/src/index.html');
-// });
-
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
-});
+app.listen(port); 
+console.log('\nServer hosted on port ' + port);
+exports = module.exports = app;
 
