@@ -54,6 +54,8 @@ export default function authReducer(state = initialState, action) {
       })
 
     case types.AUTH_USER_FAIL:
+      console.log('failed to auth user?');
+      browserHistory.push('/login');
       return Object.assign({}, state, {
         current_user: action.server_response
       })

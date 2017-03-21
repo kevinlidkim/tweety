@@ -209,8 +209,6 @@ exports.login = function(req, res) {
 }
 
 exports.auth = function(req, res) {
-  console.log('auth');
-  console.log(req.session);
   if (!req.session.user) {
     return res.status(200).json({
       status: false

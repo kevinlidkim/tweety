@@ -39,7 +39,11 @@ export function authUser() {
       .then(response => {
         return response.json()
           .then(res => {
-            dispatch(authUserSuccess(res));
+            if (res.status) {
+              dispatch(authUserSuccess(res));
+            } else {
+              dispatch(authUserFail(err));
+            }
           })
       })
       .catch(err => {
