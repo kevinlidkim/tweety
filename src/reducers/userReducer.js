@@ -23,7 +23,7 @@ export default function userReducer(state = initialState.user, action) {
     case types.MAKE_POST_SUCCESS:
       return Object.assign({}, state, {
         profile: {
-          current_post: action.server_response.message,
+          current_post: action.server_response.id,
           posts: state.profile.posts
         }
       })

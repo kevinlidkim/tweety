@@ -33,6 +33,7 @@ class Profile extends React.Component {
     store.dispatch(ProfileActions.makePost(this.state.current_post))
       .then(data => {
         console.log(store.getState());
+        this.setState({current_post: ''});
       })
   }
 

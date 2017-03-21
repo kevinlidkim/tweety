@@ -8,9 +8,11 @@ module.exports = function(app) {
   app.post('/verify', users.verify);
   app.post('/login', users.login);
   app.get('/logout', users.logout);
-
   app.get('/auth', users.auth);
-  app.post('/additem', users.additem);
+
+  app.post('/additem', users.add_item);
+  app.get('/item/:id', users.get_item);
+  app.post('/search', users.search_items);
 
   app.get('*', function(req, res) {
     res.sendfile('./src/index.html');
