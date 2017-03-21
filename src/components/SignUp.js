@@ -26,8 +26,10 @@ class SignUp extends React.Component {
   signUpEvent(event) {
     event.preventDefault();
     store.dispatch(SignUpActions.signUpUser(this.state.username, this.state.password, this.state.email))
-      .then(function(data) {
-        // display sign up response?
+      .then(data => {
+        this.setState({verify_email: this.state.email});
+        this.setState({username: '', email: '', password: ''})
+        console.log(this.state);
       })
   }
 
@@ -75,11 +77,6 @@ class SignUp extends React.Component {
               <button type="submit" className="btn btn-default" onClick={this.signUpEvent.bind(this)}>Sign Up</button>
             </form>
           </div>
-        </div>
-
-        <div className='col-md-4'>
-        </div>
-        <div className='col-md-4'>
           <div className="form-container">
             <h3>Verify Account</h3>
             <form className="form">
@@ -100,6 +97,7 @@ class SignUp extends React.Component {
           </div>
         </div>
       </div>
+
     );
   }
 }
