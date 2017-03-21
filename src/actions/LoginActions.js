@@ -15,16 +15,21 @@ export function loginUser(username, password) {
       body: JSON.stringify(payload)
     })
       .then(response => {
-        return response.json();
-      }).then(function(res) {
-        dispatch(loginSuccess(res));
+        return response.json()
+          .then(res => {
+            dispatch(loginSuccess(res));
+          })
       })
       .catch(err => {
-        throw(err);
+        dispatch(loginFail(err));
       })
   }
 }
 
-export function loginSuccess(login) {  
-  return ({type: types.LOGIN_SUCCESS, login})
+export function loginSuccess(server_response) {  
+  return ({type: types.LOGIN_SUCCESS, server_response})
+}
+
+export function loginFail(server_response) {  
+  return ({type: types.LOGIN_FAIL, server_response})
 }

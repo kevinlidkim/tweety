@@ -1,6 +1,5 @@
 import React, {PropTypes} from 'react';  
 import {connect} from 'react-redux';
-import linkState from 'react-link-state';
 import * as LoginActions from '../actions/LoginActions';
 import configureStore from '../store/configureStore';
 
@@ -23,12 +22,9 @@ class Login extends React.Component {
 
   loginEvent(event) {
     event.preventDefault();
-    console.log("LOGGING IN ON FRONTEND");
-    console.log(this.state);
     store.dispatch(LoginActions.loginUser(this.state.username, this.state.password))
-      .then(function(data) {
-        var yo = store.getState();
-        console.log(yo);
+      .then(data => {
+
       })
   }
 
@@ -43,11 +39,15 @@ class Login extends React.Component {
             <form className="form">
               <div className="form-group">
                 <label htmlFor="username">Username</label>
-                <input type="text" valueLink={linkState(this, 'username')}placeholder="Username" id="username" className="form-control" />
+                <input type="text" placeholder="Username" id="username" className="form-control" 
+                  value={this.state.username}
+                  onChange={e => this.setState({ username:e.target.value })}/>
               </div>
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input type="password" valueLink={linkState(this, 'password')} placeholder="Password" id="password" className="form-control" />
+                <input type="password" placeholder="Password" id="password" className="form-control" 
+                  value={this.state.password}
+                  onChange={e => this.setState({ password:e.target.value })}/>
               </div>
               <button type="submit" className="btn btn-default" onClick={this.loginEvent.bind(this)}>Login</button>
             </form>
@@ -59,12 +59,12 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {  
-  auth: PropTypes.object.isRequired,
+  login_response: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {  
   return {
-    auth: state.login
+    login_response: state.auth.login_response
   };
 };
 

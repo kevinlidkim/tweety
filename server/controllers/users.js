@@ -157,3 +157,79 @@ exports.verify = function(req, res) {
     })
 }
 
+exports.login = function(req, res) {
+
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  }
+
+  var collection = db.get().collection('users');
+  collection.findOne({
+    username: req.body.username
+  })
+    .then(function(user) {
+      if (!user) {
+        return res.status(500).json({
+          status: 'error',
+          error: 'Invalid username'
+        })
+      } else if (user.verified == false) {
+        return res.status(401).json({
+          status: 'error',
+          error: 'User not verified yet'
+        })
+      } else {
+        if (!authenticate(req.body.password, user.salt, user.hashed_password)) {
+          return res.status(401).json({
+            status: 'error',
+            error: 'Invalid password'
+          })
+        } else {
+          req.session.user = user.username;
+          return res.status(200).json({
+            status: 'OK',
+            message: 'Logged in successfully',
+            user: user.username
+          })
+        }
+      }
+    })
+    .catch(function(err) {
+      console.log(err);
+      return res.status(500).json({
+        status: 'error',
+        message: 'Error logging in'
+      })
+    })
+}
+
+exports.auth = function(req, res) {
+  if (!req.session.user) {
+    return res.status(200).json({
+      status: false
+    });
+  } else {
+    return res.status(200).json({
+      status: true,
+      user: req.session.user
+    })
+  }
+}
+
+exports.logout = function(req, res) {
+  if (req.session.user) {
+    req.session.destroy();
+    return res.status(200).json({
+      status: 'OK',
+      message: 'Successfully logged out'
+    })
+  } else {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
+}

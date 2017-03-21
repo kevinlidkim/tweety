@@ -18,7 +18,6 @@ export function signUpUser(username, password, email) {
       .then(response => {
         return response.json()
           .then(res => {
-            console.log(res);
             dispatch(signUpSuccess(res));
           })
       })
@@ -49,7 +48,7 @@ export function verifyUser(email, code) {
         dispatch(verifySuccess(res));
       })
       .catch(err => {
-        throw(err);
+        dispatch(verifyFail(err));
       })
   }
 }
@@ -66,4 +65,8 @@ export function signUpFail(server_response) {
 
 export function verifySuccess(server_response) {  
   return ({type: types.VERIFY_SUCCESS, server_response})
+}
+
+export function verifyFail(server_response) {  
+  return ({type: types.VERIFY_FAIL, server_response})
 }

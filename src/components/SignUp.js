@@ -28,21 +28,15 @@ class SignUp extends React.Component {
     store.dispatch(SignUpActions.signUpUser(this.state.username, this.state.password, this.state.email))
       .then(data => {
         this.setState({verify_email: this.state.email});
-        this.setState({username: '', email: '', password: ''})
-        console.log(this.state);
+        this.setState({username: '', email: '', password: ''});
       })
   }
 
   verifyEvent(event) {
     event.preventDefault();
     store.dispatch(SignUpActions.verifyUser(this.state.verify_email, this.state.verify_code))
-      .then(function(data) {
-
-
-        console.log('after verify');
-        var yo = store.getState();
-        console.log(yo);
-
+      .then(data => {
+        this.setState({verify_email: '', verify_code: ''});
       })
   }
 
