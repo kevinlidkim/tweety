@@ -12,7 +12,9 @@ class SignUp extends React.Component {
     this.state = {
       username: '',
       password: '',
-      email: ''
+      email: '',
+      verify_email: '',
+      verify_code: ''
     }
     this.onChange = this.onChange.bind(this);
   }
@@ -23,13 +25,22 @@ class SignUp extends React.Component {
 
   signUpEvent(event) {
     event.preventDefault();
-    console.log("signing up with following info");
-    console.log(this.state);
     store.dispatch(SignUpActions.signUpUser(this.state.username, this.state.password, this.state.email))
       .then(function(data) {
-        console.log("after signing up");
+        // display sign up response?
+      })
+  }
+
+  verifyEvent(event) {
+    event.preventDefault();
+    store.dispatch(SignUpActions.verifyUser(this.state.verify_email, this.state.verify_code))
+      .then(function(data) {
+
+
+        console.log('after verify');
         var yo = store.getState();
         console.log(yo);
+
       })
   }
 
@@ -65,6 +76,29 @@ class SignUp extends React.Component {
             </form>
           </div>
         </div>
+
+        <div className='col-md-4'>
+        </div>
+        <div className='col-md-4'>
+          <div className="form-container">
+            <h3>Verify Account</h3>
+            <form className="form">
+              <div className="form-group">
+                <label htmlFor="verify_email">Verify Email</label>
+                <input type="text" placeholder="Verify Email" id="verify_email" className="form-control" 
+                  value={this.state.verify_email}
+                  onChange={e => this.setState({ verify_email:e.target.value })}/>
+              </div>
+              <div className="form-group">
+                <label htmlFor="verify_code">Verification Code</label>
+                <input type="text" placeholder="Verification Code" id="verify_code" className="form-control" 
+                  value={this.state.verify_code}
+                  onChange={e => this.setState({ verify_code:e.target.value })}/>
+              </div>
+              <button type="submit" className="btn btn-default" onClick={this.verifyEvent.bind(this)}>Verify</button>
+            </form>
+          </div>
+        </div>
       </div>
     );
   }
@@ -78,8 +112,6 @@ SignUp.propTypes = {
 // we are setting the property "server_response" as object from state.auth.register_response. 
 // auth is the reducer, register_response is the state
 function mapStateToProps(state, ownProps) {
-  console.log("THE STATE");
-  console.log(state);
   return {
     server_response: state.auth.register_response
   };

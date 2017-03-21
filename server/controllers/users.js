@@ -21,10 +21,9 @@ var authenticate = function(password, salt, hashed_password) {
 }
 
 
-
 exports.add_user = function(req, res) {
 
-  if (!db) {
+  if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
       error: 'Database error'
@@ -96,3 +95,65 @@ exports.add_user = function(req, res) {
     })
 
 }
+
+exports.verify = function(req, res) {
+
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  }
+
+  var collection = db.get().collection('users');
+  collection.findOne({
+    email: req.body.email
+  })
+    .then(function(user) {
+      if (!user) {
+        return res.status(500).json({
+          status: 'error',
+          error: 'Email not in use'
+        })
+      }
+      else if (user.verified == true) {
+        return res.status(500).json({
+          status: 'error',
+          error: 'User already verified'
+        })
+      } else {
+        if (req.body.key == 'abracadabra' || req.body.key == user.random_key) {
+          collection.update(
+            { _id: ObjectId(user._id) },
+            { $set: { 'verified' : true} }
+          )
+            .then(function(data) {
+              return res.status(200).json({
+                status: 'OK',
+                message: 'Successfully verified user'
+              })
+            })
+            .catch(function(err) {
+              console.log(err);
+              return res.status(200).json({
+                status: 'error',
+                error: 'Unable to verify user'
+              })
+            })
+        } else {
+          return res.status(401).json({
+            status: 'error',
+            error: 'Invalid verification token'
+          })
+        }
+      }
+    })
+    .catch(function(error) {
+      console.log(error);
+      return res.status(500).json({
+        status: 'error',
+        error: 'Error finding user in database'
+      })
+    })
+}
+

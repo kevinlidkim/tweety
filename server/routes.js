@@ -20,6 +20,7 @@ module.exports = function(app) {
   })
 
   app.post('/adduser', users.add_user);
+  app.post('/verify', users.verify);
 
   app.get('*', function(req, res) {
     res.sendfile('./src/index.html');

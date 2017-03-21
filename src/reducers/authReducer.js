@@ -15,7 +15,17 @@ export default function authReducer(state = initialState, action) {
       return Object.assign({}, state, {
         register_response: action.server_response
       });
-      
+
+    case types.SIGN_UP_FAIL:
+      return Object.assign({}, state, {
+        register_response: action.server_response
+      });
+
+    case types.VERIFY_SUCCESS:
+      return Object.assign({}, state, {
+        register_response: action.server_response
+      })
+
     default: 
       return state;
   }

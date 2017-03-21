@@ -16,9 +16,37 @@ export function signUpUser(username, password, email) {
       body: JSON.stringify(payload)
     })
       .then(response => {
+        return response.json()
+          .then(res => {
+            console.log(res);
+            dispatch(signUpSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(signUpFail(err));
+      })
+  }
+}
+
+export function verifyUser(email, code) {
+  return function(dispatch) {
+    var payload = {
+      email: email,
+      key: code
+    }
+    return fetch('/verify', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(response => {
         return response.json();
-      }).then(function(res) {
-        dispatch(signUpSuccess(res));
+      })
+      .then(res => {
+        dispatch(verifySuccess(res));
       })
       .catch(err => {
         throw(err);
@@ -29,5 +57,13 @@ export function signUpUser(username, password, email) {
 // we register the action with an action type. in this case, we are registering it as "auth"
 // it gets dispatched to a reducer
 export function signUpSuccess(server_response) {  
+  return ({type: types.SIGN_UP_FAIL, server_response})
+}
+
+export function signUpFail(server_response) {  
   return ({type: types.SIGN_UP_SUCCESS, server_response})
+}
+
+export function verifySuccess(server_response) {  
+  return ({type: types.VERIFY_SUCCESS, server_response})
 }
