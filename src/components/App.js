@@ -5,7 +5,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="container-fluid">
-        <Navbar />
+        <Navbar history={this.props.history} />
         {this.props.children}
       </div>
     );

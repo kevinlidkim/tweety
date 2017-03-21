@@ -13,7 +13,8 @@ export function signUpUser(username, password, email) {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      credentials: 'same-origin'
     })
       .then(response => {
         return response.json()
@@ -39,7 +40,8 @@ export function verifyUser(email, code) {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      credentials: 'same-origin'
     })
       .then(response => {
         return response.json();

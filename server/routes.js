@@ -8,6 +8,9 @@ module.exports = function(app) {
   app.post('/verify', users.verify);
   app.post('/login', users.login);
 
+  app.get('/auth', users.auth);
+  app.post('/additem', users.additem);
+
   app.get('*', function(req, res) {
     res.sendfile('./src/index.html');
   });

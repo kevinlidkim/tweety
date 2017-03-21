@@ -189,6 +189,8 @@ exports.login = function(req, res) {
           })
         } else {
           req.session.user = user.username;
+          console.log(req.session);
+          console.log('logged in');
           return res.status(200).json({
             status: 'OK',
             message: 'Logged in successfully',
@@ -207,6 +209,8 @@ exports.login = function(req, res) {
 }
 
 exports.auth = function(req, res) {
+  console.log('auth');
+  console.log(req.session);
   if (!req.session.user) {
     return res.status(200).json({
       status: false
@@ -232,4 +236,10 @@ exports.logout = function(req, res) {
       error: 'No logged in user'
     })
   }
+}
+
+exports.additem = function(req, res) {
+  return res.status(200).json({
+    message: 'yo'
+  })
 }

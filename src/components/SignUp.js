@@ -29,6 +29,7 @@ class SignUp extends React.Component {
       .then(data => {
         this.setState({verify_email: this.state.email});
         this.setState({username: '', email: '', password: ''});
+        console.log(store.getState());
       })
   }
 
@@ -37,6 +38,7 @@ class SignUp extends React.Component {
     store.dispatch(SignUpActions.verifyUser(this.state.verify_email, this.state.verify_code))
       .then(data => {
         this.setState({verify_email: '', verify_code: ''});
+        console.log(store.getState());
       })
   }
 
@@ -105,7 +107,7 @@ SignUp.propTypes = {
 // auth is the reducer, register_response is the state
 function mapStateToProps(state, ownProps) {
   return {
-    server_response: state.auth.register_response
+    server_response: state.rootReducer.auth.register_response
   };
 };
 

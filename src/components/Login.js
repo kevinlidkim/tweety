@@ -24,7 +24,7 @@ class Login extends React.Component {
     event.preventDefault();
     store.dispatch(LoginActions.loginUser(this.state.username, this.state.password))
       .then(data => {
-
+        console.log(store.getState());
       })
   }
 
@@ -64,7 +64,7 @@ Login.propTypes = {
 
 function mapStateToProps(state, ownProps) {  
   return {
-    login_response: state.auth.login_response
+    login_response: state.rootReducer.auth.login_response
   };
 };
 
