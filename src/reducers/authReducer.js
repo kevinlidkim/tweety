@@ -4,17 +4,13 @@ import {browserHistory} from 'react-router';
 import {LOCATION_CHANGE} from 'react-router-redux'
 
 // we are going in the auth branch of the initial state
-export default function authReducer(state = initialState, action) {
-
-  // console.log('how many times does the state change?');
-  // console.log(state);
-  // console.log(action);
+export default function authReducer(state = initialState.auth, action) {
 
   // matches the action and dispatches the information we got from server into store
   switch(action.type) {
 
     case types.LOGIN_SUCCESS:
-      // browserHistory.push('/signup');
+      browserHistory.push('/profile');
       return Object.assign({}, state, {
         login_response: action.server_response,
         current_user: action.server_response.user
@@ -36,6 +32,7 @@ export default function authReducer(state = initialState, action) {
       });
 
     case types.VERIFY_SUCCESS:
+      browserHistory.push('/login');
       return Object.assign({}, state, {
         register_response: action.server_response
       })
@@ -45,32 +42,11 @@ export default function authReducer(state = initialState, action) {
         register_response: action.server_response
       })
 
-
-
-
-    case types.AUTH_USER_SUCCESS:
-      return Object.assign({}, state, {
-        current_user: action.server_response
-      })
-
-    case types.AUTH_USER_FAIL:
-      console.log('failed to auth user?');
+    case types.LOGOUT_SUCCESS:
       browserHistory.push('/login');
-      return Object.assign({}, state, {
-        current_user: action.server_response
-      })
 
-    case types.MAKE_POST_SUCCESS:
-      console.log(action);
-      return Object.assign({}, state.profile, {
-        current_post: action.server_response
-      })
-
-    case types.MAKE_POST_FAIL:
-      return Object.assign({}, state.profile, {
-        current_post: action.server_response
-      })
-
+    case types.LOGOUT_FAIL:
+      browserHistory.push('/login');
 
     case LOCATION_CHANGE:
       // console.log("LOCATION CHANGED");

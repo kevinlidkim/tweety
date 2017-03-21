@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react';  
+import { Link } from 'react-router';
 import {connect} from 'react-redux';
 import * as SignUpActions from '../actions/SignUpActions';
 import configureStore from '../store/configureStore';
@@ -90,6 +91,9 @@ class SignUp extends React.Component {
               </div>
               <button type="submit" className="btn btn-default" onClick={this.verifyEvent.bind(this)}>Verify</button>
             </form>
+          </div>
+          <div>
+            <h5>Have an account?  </h5><Link to="/login">Login</Link>
           </div>
         </div>
       </div>

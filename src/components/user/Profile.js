@@ -23,8 +23,8 @@ class Profile extends React.Component {
   componentWillMount() {
     store.dispatch(ProfileActions.authUser())
       .then(data => {
-        console.log("authorizing user first");
-        console.log(store.getState());
+        // console.log("authorizing user first");
+        // console.log(store.getState());
       })
   }
 
@@ -47,7 +47,7 @@ class Profile extends React.Component {
             <form className="form">
               <div className="form-group">
                 <label htmlFor="current_post">Write a message</label>
-                <input type="text" placeholder="Type here" id="current_post" className="form-control" 
+                <textarea placeholder="Type here" id="current_post" className="form-control" maxLength={140}
                   value={this.state.current_post}
                   onChange={e => this.setState({ current_post:e.target.value })}/>
               </div>
@@ -65,10 +65,11 @@ Profile.propTypes = {
   current_post: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state, ownProps) {  
+function mapStateToProps(state, ownProps) {
+  console.log(state);
   return {
     auth_user: state.rootReducer.auth.current_user,
-    current_post: state.rootReducer.auth.profile.current_post
+    current_post: state.rootReducer.user.profile.current_post
   };
 };
 

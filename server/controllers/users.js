@@ -189,8 +189,6 @@ exports.login = function(req, res) {
           })
         } else {
           req.session.user = user.username;
-          console.log(req.session);
-          console.log('logged in');
           return res.status(200).json({
             status: 'OK',
             message: 'Logged in successfully',
@@ -237,6 +235,9 @@ exports.logout = function(req, res) {
 }
 
 exports.additem = function(req, res) {
+
+  console.log(req.body);
+  // content = req.body.content
   return res.status(200).json({
     message: 'yo'
   })

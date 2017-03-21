@@ -42,12 +42,34 @@ export function authUser() {
             if (res.status) {
               dispatch(authUserSuccess(res));
             } else {
-              dispatch(authUserFail(err));
+              dispatch(authUserFail(res));
             }
           })
       })
       .catch(err => {
         dispatch(authUserFail(err));
+      })
+  }
+}
+
+export function logoutUser() {  
+  return function(dispatch) {
+    return fetch('/logout', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(logoutSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(logoutFail(err));
       })
   }
 }
@@ -66,4 +88,12 @@ export function authUserSuccess(server_response) {
 
 export function authUserFail(server_response) {  
   return ({type: types.AUTH_USER_FAIL, server_response})
+}
+
+export function logoutSuccess(server_response) {  
+  return ({type: types.LOGOUT_SUCCESS, server_response})
+}
+
+export function logoutFail(server_response) {  
+  return ({type: types.LOGOUT_FAIL, server_response})
 }

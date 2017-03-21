@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 class Home extends React.Component {
   constructor(props) {
@@ -13,8 +14,15 @@ class Home extends React.Component {
       <div>
         <div className='col-md-4'>
         </div>
-        <div className='alert alert-info col-md-4 text-center'>
-          Welcome To Budgetize
+        <div>
+          <div className='col-md-4'>
+            <div className='alert alert-info text-center'>
+              <h3>Welcome to Tweety</h3>
+            </div>
+            <div className='text-center'>
+              <Link to="/login">Login</Link>
+            </div>
+          </div>
         </div>
       </div>
     );
