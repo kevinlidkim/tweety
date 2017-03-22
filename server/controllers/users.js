@@ -398,7 +398,7 @@ exports.search_items = function(req, res) {
   var collection = db.get().collection('tweet');
   collection.find({
     timestamp: { $lte: time }
-  }).limit(limit).toArray()
+  }).sort({timestamp: -1}).limit(limit).toArray()
     .then(data => {
       var items = [];
       _.forEach(data, item => {
