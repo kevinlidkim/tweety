@@ -332,6 +332,9 @@ exports.search_items = function(req, res) {
     })
   }
 
+  console.log(req.session.user);
+  console.log(req.body);
+
   var time = moment().unix();
   var limit = 25;
 
@@ -345,9 +348,6 @@ exports.search_items = function(req, res) {
       limit = req.body.limit
     }
   }
-
-  console.log(typeof(time));
-  console.log(time);
 
   var collection = db.get().collection('tweet');
   collection.find({
