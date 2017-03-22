@@ -336,7 +336,7 @@ exports.search_items = function(req, res) {
   var limit = 25;
 
   if (req.body.timestamp) {
-    time = moment(req.body.timestamp).unix();
+    time = moment.unix(req.body.timestamp);
   }
   if (req.body.limit) {
     if (req.body.limit > 100) {
