@@ -338,7 +338,8 @@ exports.search_items = function(req, res) {
   if (req.body.timestamp) {
     console.log(typeof(time));
     console.log(typeof(timestamp));
-    time = req.body.timestamp;
+    time = parseInt(req.body.timestamp);
+    console.log(typeof(time));
   }
   if (req.body.limit) {
     if (req.body.limit > 100) {
