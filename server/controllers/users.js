@@ -346,6 +346,9 @@ exports.search_items = function(req, res) {
     }
   }
 
+  console.log(limit);
+  console.log(time);
+
   var collection = db.get().collection('tweet');
   collection.find({
     timestamp: { $lte: time }
