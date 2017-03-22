@@ -332,9 +332,6 @@ exports.search_items = function(req, res) {
     })
   }
 
-  console.log(req.session.user);
-  console.log(req.body);
-
   var time = moment().unix();
   var limit = 25;
 
@@ -363,6 +360,9 @@ exports.search_items = function(req, res) {
           timestamp: item.timestamp
         }
         items.push(result);
+        console.log("ITS BEING CALLED ==================================");
+        console.log(result);
+        console.log("DONE CALL =====================================")
       })
       return res.status(200).json({
         status: 'OK',
