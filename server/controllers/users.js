@@ -336,10 +336,7 @@ exports.search_items = function(req, res) {
   var limit = 25;
 
   if (req.body.timestamp) {
-    console.log(typeof(time));
-    console.log(typeof(timestamp));
     time = parseInt(req.body.timestamp);
-    console.log(typeof(time));
   }
   if (req.body.limit) {
     if (req.body.limit > 100) {
@@ -348,9 +345,6 @@ exports.search_items = function(req, res) {
       limit = req.body.limit
     }
   }
-
-  console.log(limit);
-  console.log(time);
 
   var collection = db.get().collection('tweet');
   collection.find({
