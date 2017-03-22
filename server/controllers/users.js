@@ -375,10 +375,11 @@ exports.search_items = function(req, res) {
       error: 'Database error'
     })
   } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
+    console.log("No logged in user");
+    // return res.status(500).json({
+    //   status: 'error',
+    //   error: 'No logged in user'
+    // })
   }
 
   var time = moment().unix();
