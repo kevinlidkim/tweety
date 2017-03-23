@@ -15,3 +15,9 @@ export const MAKE_POST_FAIL = 'MAKE_POST_FAIL';
 
 export const AUTH_USER_SUCCESS = 'AUTH_USER_SUCCESS';
 export const AUTH_USER_FAIL = 'AUTH_USER_FAIL';
+
+export const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
+export const SEARCH_FAIL = 'SEARCH_FAIL';
+
+export const GET_ITEM_SUCCESS = 'GET_ITEM_SUCCESS';
+export const GET_ITEM_FAIL = 'GET_ITEM_FAIL';

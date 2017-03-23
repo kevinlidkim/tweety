@@ -74,6 +74,55 @@ export function logoutUser() {
   }
 }
 
+export function searchFor(query, limit) {  
+  return function(dispatch) {
+    var payload = {
+      timestamp: query,
+      limit: limit
+    }
+    return fetch('/search', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(searchSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(searchFail(err));
+      })
+  }
+}
+
+export function getItem(query) {  
+  return function(dispatch) {
+    return fetch('/item/' + query, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin'
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(getItemSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(getItemFail(err));
+      })
+  }
+}
+
 export function makePostSuccess(server_response) {  
   return ({type: types.MAKE_POST_SUCCESS, server_response})
 }
@@ -96,4 +145,20 @@ export function logoutSuccess(server_response) {
 
 export function logoutFail(server_response) {  
   return ({type: types.LOGOUT_FAIL, server_response})
+}
+
+export function searchSuccess(server_response) {  
+  return ({type: types.SEARCH_SUCCESS, server_response})
+}
+
+export function searchFail(server_response) {  
+  return ({type: types.SEARCH_FAIL, server_response})
+}
+
+export function getItemSuccess(server_response) {  
+  return ({type: types.GET_ITEM_SUCCESS, server_response})
+}
+
+export function getItemFail(server_response) {  
+  return ({type: types.GET_ITEM_FAIL, server_response})
 }

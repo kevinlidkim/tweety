@@ -7,7 +7,9 @@ export default {
   user: {
     profile: {
       current_post: {},
-      posts: []
+      posts: [],
+      search_results: [],
+      get_item_result: {}
     },
     logged_in: {}
   }

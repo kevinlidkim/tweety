@@ -17,11 +17,34 @@ class Navbar extends React.Component {
     event.preventDefault();
     store.dispatch(ProfileActions.logoutUser())
       .then(data => {
-        console.log(store.getState());
+        // console.log(store.getState());
+        this.setState({logged_in: store.getState().rootReducer.auth.current_user})
       })
   }
 
   render() {
+
+    // var displayLogin = null;
+    // if (this.state.logged_in) {
+    //   displayLogin = (
+    //     <ul className='nav navbar-nav'>
+    //       <li><Link to="/" activeClassName="active">Home</Link></li>
+    //       <li><Link to="/login">Login</Link></li>
+    //       <li><Link to="/signup">Sign Up</Link></li>
+    //       <li><Link to="/profile">Profile</Link></li>
+    //       <li onClick={this.logoutEvent.bind(this)}><Link to="">Logout</Link></li>
+    //     </ul>
+    //   )
+    // } else {
+    //   displayLogin = (
+    //     <ul className='nav navbar-nav'>
+    //       <li><Link to="/" activeClassName="active">Home</Link></li>
+    //       <li><Link to="/login">Login</Link></li>
+    //       <li><Link to="/signup">Sign Up</Link></li>
+    //     </ul>
+    //   )
+    // }
+
     return (
       <nav className='navbar navbar-default navbar-static-top'>
         <div className='navbar-collapse collapse'>

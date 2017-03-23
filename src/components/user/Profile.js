@@ -2,6 +2,8 @@ import React, {PropTypes} from 'react';
 import {connect} from 'react-redux';
 import * as ProfileActions from '../../actions/ProfileActions';
 import configureStore from '../../store/configureStore';
+import Search from './Search';
+import GetItem from './GetItem';
 
 const store = configureStore();
 
@@ -32,7 +34,7 @@ class Profile extends React.Component {
     event.preventDefault();
     store.dispatch(ProfileActions.makePost(this.state.current_post))
       .then(data => {
-        console.log(store.getState());
+        // console.log(store.getState());
         this.setState({current_post: ''});
       })
   }
@@ -55,6 +57,12 @@ class Profile extends React.Component {
               <button type="submit" className="btn btn-default" onClick={this.postEvent.bind(this)}>Post</button>
             </form>
           </div>
+          <br />
+          <br />
+          <Search />
+          <br />
+          <br />
+          <GetItem />
         </div>
       </div>
     );
@@ -67,7 +75,7 @@ Profile.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-  console.log(state);
+  // console.log(state);
   return {
     auth_user: state.rootReducer.auth.current_user,
     current_post: state.rootReducer.user.profile.current_post

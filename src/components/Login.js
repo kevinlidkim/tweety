@@ -25,7 +25,7 @@ class Login extends React.Component {
     event.preventDefault();
     store.dispatch(LoginActions.loginUser(this.state.username, this.state.password))
       .then(data => {
-        console.log(store.getState());
+        // console.log(store.getState());
       })
   }
 
@@ -66,7 +66,7 @@ Login.propTypes = {
   login_response: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state, ownProps) {  
+function mapStateToProps(state, ownProps) {
   return {
     login_response: state.rootReducer.auth.login_response
   };

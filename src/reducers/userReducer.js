@@ -35,6 +35,34 @@ export default function userReducer(state = initialState.user, action) {
         }
       })
 
+    case types.SEARCH_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          search_results: action.server_response.items
+        }
+      })
+
+    case types.SEARCH_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          search_results: []
+        }
+      })
+
+    case types.GET_ITEM_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          get_item_result: action.server_response.item
+        }
+      })
+
+    case types.GET_ITEM_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          get_item_result: {}
+        }
+      })
+
     default: 
       return state;
   }
