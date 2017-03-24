@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';  
 import { Link } from 'react-router';
+import {connect} from 'react-redux';
 import * as ProfileActions from '../actions/ProfileActions';
 import configureStore from '../store/configureStore';
 
@@ -11,6 +12,10 @@ class Navbar extends React.Component {
     this.state = {
       logged_in: false
     }
+    // store.subscribe(function() {
+    //   console.log('new data?');
+    //   console.log(store.getState());
+    // })
   }
 
   logoutEvent(event) {
@@ -18,7 +23,8 @@ class Navbar extends React.Component {
     store.dispatch(ProfileActions.logoutUser())
       .then(data => {
         // console.log(store.getState());
-        this.setState({logged_in: store.getState().rootReducer.auth.current_user})
+        // this.setState({logged_in: store.getState().rootReducer.auth.current_user})
+        this.setState({logged_in: false})
       })
   }
 
@@ -61,4 +67,16 @@ class Navbar extends React.Component {
   }
 };
 
-export default Navbar; 
+Navbar.propTypes = {  
+  logged_in: PropTypes.object.isRequired
+};
+
+function mapStateToProps(state, ownProps) {
+  // doesn't work because authreducer loses state the moment it reroutes to /profile. 
+  // this is why navbar will never know who's logged in?
+  return {
+    logged_in: state.rootReducer.user.logged_in
+  };
+};
+
+export default connect(mapStateToProps)(Navbar); 

@@ -4,7 +4,7 @@ module.exports = function(app) {
 
   var users = require('./controllers/users');
 
-  app.post('/adduser', users.add_user);
+  app.post('/adduser', users.add_user_email);
   app.post('/verify', users.verify);
   app.post('/login', users.login);
   app.get('/logout', users.logout);

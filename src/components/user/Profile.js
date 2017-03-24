@@ -16,6 +16,10 @@ class Profile extends React.Component {
       current_post: ''
     }
     this.onChange = this.onChange.bind(this);
+    // store.subscribe(function() {
+    //   console.log('new data?');
+    //   console.log(store.getState());
+    // })
   }
 
   onChange(state) {
