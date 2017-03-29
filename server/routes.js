@@ -11,9 +11,9 @@ module.exports = function(app) {
   app.post('/logout', users.logout);
   app.get('/auth', users.auth);
 
-  app.post('/additem', users.add_item);
-  app.get('/item/:id', users.get_item);
-  app.post('/search', users.search_items);
+  app.post('/additem', tweets.add_item);
+  app.get('/item/:id', tweets.get_item);
+  app.post('/search', tweets.search_items);
 
   app.get('*', function(req, res) {
     res.sendfile('./src/index.html');

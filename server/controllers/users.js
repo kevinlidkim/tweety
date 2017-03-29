@@ -126,7 +126,9 @@ exports.add_user = function(req, res) {
           salt: salt,
           hashed_password: hashed_password,
           verified: false,
-          random_key: random_key
+          random_key: random_key,
+          followers: [],
+          following: []
         })
           .then(function(data) {
             return res.status(200).json({
@@ -289,8 +291,7 @@ exports.logout = function(req, res) {
   }
 }
 
-exports.add_item = function(req, res) {
-
+exports.get_user = function(req, res) {
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -303,74 +304,38 @@ exports.add_item = function(req, res) {
     })
   }
 
-  var collection = db.get().collection('tweet');
-  collection.insert({
-    content: req.body.content,
-    parent: req.body.parent,
-    username: req.session.user,
-    timestamp: moment().unix()
-  })
-    .then(data => {
-      return res.status(200).json({
-        status: 'OK',
-        id: data.ops[0]._id
-      })
-    })
-    .catch(err => {
-      console.log(err);
-      return res.status(500).json({
-        status: 'error',
-        error: 'Failed to create tweet'
-      })
-    })
-}
-
-exports.get_item = function(req, res) {
-
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  } else if (req.params.id.length != 24) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Invalid ID: Must be a string 24 hex characters'
-    })
-  }
-
-  var collection = db.get().collection('tweet');
+  var collection = db.get().collection('users');
   collection.findOne({
-    _id: ObjectId(req.params.id)
+    username: req.params.username
   })
-    .then(data => {
-      var item = {
-        id: data._id,
-        username: data.username,
-        content: data.content,
-        timestamp: data.timestamp
+    .then(user => {
+      if (!user) {
+        return res.status(500).json({
+          status: 'error',
+          error: "Can't find user by username"
+        })
+      } else {
+        var data = {
+          email: user.email
+          followers: user.followers,
+          following: user.following
+        }
+        return res.status(200).json({
+          status: 'OK',
+          user: data
+        })
       }
-      return res.status(200).json({
-        item: item,
-        status: 'OK'
-      })
     })
     .catch(err => {
       console.log(err);
       return res.status(500).json({
         status: 'error',
-        error: 'Unable to find tweet'
+        error: 'Error querying database for username'
       })
     })
 }
 
-exports.search_items = function(req, res) {
-
+exports.follow = function(req, res) {
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -383,46 +348,150 @@ exports.search_items = function(req, res) {
     })
   }
 
-  var time = moment().unix();
-  var limit = 25;
+  var collection = db.get().collection('users');
+  // add current user to target's follower array
+  collection.update(
+    { username: req.body.username },
+    { $addToSet: { follower : req.session.user } }
+  )
+  // add target to current user's following array
+    .then(follow_success => {
+      collection.update(
+        { username: req.session.user },
+        { $addToSet: { following : req.body.username } }
+      )
+        .then(following_success => {
+          return res.status(200).json({
+            status: 'OK',
+            message: 'Successfully followed user'
+          })
+        })
+        // error so remove current user from target's follower array
+        .catch(following_fail => {
+          collection.update(
+            { username: req.body.username },
+            { $pull: { follower : req.session.user } }
+          )
+          // rollback successful
+            .then(rollback_success => {
+              console.log(rollback_success);
+              return res.status(500).json({
+                status: 'error',
+                error: "Failed to add target to current user's following list"
+              })
+            })
+          // rollback fail... this is very bad!
+            .catch(rollback_fail => {
+              console.log(rollback_fail);
+              return res.status(500).json({
+                status: 'error',
+                error: 'Failed to rollback after failing to follow user'
+              })
+            })
+        })
+    })
+    .catch(follow_fail => {
+      console.log(follow_fail);
+      return res.status(500).json({
+        status: 'error',
+        error: 'Failed to follow user'
+      })
+    })
+}
 
-  if (req.body.timestamp) {
-    time = parseInt(req.body.timestamp);
+exports.get_followers = function(req, res) {
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
   }
+
+  var limit = 50;
   if (req.body.limit) {
-    if (req.body.limit > 100) {
-      limit = 100;
+    if (req.body.limit > 200) {
+      limit = 200;
     } else {
       limit = req.body.limit
     }
   }
 
-  var collection = db.get().collection('tweet');
+  var collection = db.get().collection('users');
   collection.find({
-    timestamp: { $lte: time }
-  }).sort({timestamp: -1}).limit(limit).toArray()
-    .then(data => {
+    username: req.params.username
+  })
+    .then(user => {
       var items = [];
-      _.forEach(data, item => {
-        var result = {
-          id: item._id,
-          username: item.username,
-          content: item.content,
-          timestamp: item.timestamp
+      if (user.followers.length < limit) {
+        items = users.followers;
+      } else {
+        for (var i = 0; i < limit; i++) {
+          items.push(user.followers[i]);
         }
-        items.push(result);
-      })
+      }
       return res.status(200).json({
         status: 'OK',
-        items: items
+        users: items
       })
     })
-      .catch(err => {
-        console.log(err);
-        return res.status(500).json({
-          status: 'error',
-          error: 'Could not query for tweets'
-        })
+    .catch(err => {
+      return res.status(500).json({
+        status: 'error',
+        error: 'Failed to get followers'
       })
+    })
 
+}
+
+exports.get_following = function(req, res) {
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
+
+  var limit = 50;
+  if (req.body.limit) {
+    if (req.body.limit > 200) {
+      limit = 200;
+    } else {
+      limit = req.body.limit
+    }
+  }
+
+  var collection = db.get().collection('users');
+  collection.find({
+    username: req.params.username
+  })
+    .then(user => {
+      var items = [];
+      if (user.following.length < limit) {
+        items = users.following;
+      } else {
+        for (var i = 0; i < limit; i++) {
+          items.push(user.following[i]);
+        }
+      }
+      return res.status(200).json({
+        status: 'OK',
+        users: items
+      })
+    })
+    .catch(err => {
+      return res.status(500).json({
+        status: 'error',
+        error: 'Failed to get following'
+      })
+    })
 }
