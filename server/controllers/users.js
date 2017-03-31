@@ -126,9 +126,7 @@ exports.add_user = function(req, res) {
           salt: salt,
           hashed_password: hashed_password,
           verified: false,
-          random_key: random_key,
-          followers: [],
-          following: []
+          random_key: random_key
         })
           .then(function(data) {
             return res.status(200).json({
@@ -304,7 +302,14 @@ exports.get_user = function(req, res) {
     })
   }
 
+  var obj = {
+    username: "",
+    followers: [],
+    following: []
+  }
+
   var collection = db.get().collection('users');
+  var sec_collection = db.get().collection('follows');
   collection.findOne({
     username: req.params.username
   })
@@ -315,15 +320,47 @@ exports.get_user = function(req, res) {
           error: "Can't find user by username"
         })
       } else {
-        var data = {
-          email: user.email
-          followers: user.followers,
-          following: user.following
-        }
-        return res.status(200).json({
-          status: 'OK',
-          user: data
-        })
+        obj.username = user.username;
+
+        // query for other users this user is following
+        sec_collection.find({
+          follower: req.params.username
+        }).toArray()
+          .then(user_follows => {
+            _.forEach(user_follows, user_follow => {
+              obj.following.push(user_follow.following);
+            })
+
+            // query for other users following this user
+            sec_collection.find({
+              following: req.params.username
+            }).toArray()
+              .then(user_followers => {
+                _.forEach(user_followers, user_follower => {
+                  obj.follower.push(user_follower.follower);
+                })
+
+                return res.status(200).json({
+                  status: 'OK',
+                  message: 'Successfully found user information',
+                  user: obj
+                })
+              })
+              .catch(followers_err => {
+                console.log(followers_err);
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'Error querying for other users following current user'
+                })
+              })
+          })
+          .catch(follows_err => {
+            console.log(follows_err);
+            return res.status(500).json({
+              status: 'error',
+              error: 'Error querying for other users that current user is following'
+            })
+          })
       }
     })
     .catch(err => {
@@ -349,54 +386,102 @@ exports.follow = function(req, res) {
   }
 
   var collection = db.get().collection('users');
-  // add current user to target's follower array
-  collection.update(
-    { username: req.body.username },
-    { $addToSet: { follower : req.session.user } }
-  )
-  // add target to current user's following array
-    .then(follow_success => {
-      collection.update(
-        { username: req.session.user },
-        { $addToSet: { following : req.body.username } }
-      )
-        .then(following_success => {
-          return res.status(200).json({
-            status: 'OK',
-            message: 'Successfully followed user'
+  var sec_collection = db.get().collection('follows');
+  collection.findOne({
+    username: req.body.username
+  })
+    .then(user => {
+      // if user exists, then we can proceed
+      if (user) {
+        // check to see if we are following or unfollowing
+        if (req.body.follow) {
+          // check to see if relationship exists or not
+          sec_collection.findOne({
+            follower: req.session.user,
+            following: req.body.username
           })
-        })
-        // error so remove current user from target's follower array
-        .catch(following_fail => {
-          collection.update(
-            { username: req.body.username },
-            { $pull: { follower : req.session.user } }
-          )
-          // rollback successful
-            .then(rollback_success => {
-              console.log(rollback_success);
+            .then(relationship => {
+              // relationship already exists
+              if (relationship) {
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'Already following user'
+                })
+              } else {
+                sec_collection.insert({
+                  follower: req.session.user,
+                  following: req.body.username
+                })
+                  .then(follow_success => {
+                    return res.status(200).json({
+                      status: 'OK',
+                      message: 'Successfully following user'
+                    })
+                  })
+                  .catch(follow_fail => {
+                    return res.status(500).json({
+                      status: 'error',
+                      error: 'Failed to create follow relationship'
+                    })
+                  })
+              }
+            })
+            .catch(relationship_err => {
               return res.status(500).json({
                 status: 'error',
-                error: "Failed to add target to current user's following list"
+                error: "Error querying follow relationship"
               })
             })
-          // rollback fail... this is very bad!
-            .catch(rollback_fail => {
-              console.log(rollback_fail);
-              return res.status(500).json({
-                status: 'error',
-                error: 'Failed to rollback after failing to follow user'
-              })
+        } else {
+          // we are unfollowing in this case
+          sec_collection.findOne({
+            follower: req.session.user,
+            following: req.body.username
+          })
+            .then(unfollow_relationship => {
+              // relationship exists
+              if (unfollow_relationship) {
+                sec_collection.remove({
+                  follower: req.session.user,
+                  following: req.body.username
+                })
+                  .then(unfollow_success => {
+                    return res.status(200).json({
+                      status: 'OK',
+                      message: 'Successfully unfollowed user'
+                    })
+                  })
+                  .catch(unfollow_fail => {
+                    return res.status(500).json({
+                      status: 'error',
+                      error: 'Failed to delete follow relationship'
+                    })
+                  })
+              } else {
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'User is currently not following target'
+                })
+              }
             })
+        }
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          error: "Couldn't find user to follow"
         })
+      }
     })
-    .catch(follow_fail => {
-      console.log(follow_fail);
+    .catch(err => {
       return res.status(500).json({
         status: 'error',
-        error: 'Failed to follow user'
+        error: "Error finding user to follow"
       })
     })
+
+
+
+
 }
 
 exports.get_followers = function(req, res) {
@@ -421,19 +506,15 @@ exports.get_followers = function(req, res) {
     }
   }
 
-  var collection = db.get().collection('users');
+  var collection = db.get().collection('follow');
   collection.find({
-    username: req.params.username
+    following: req.params.username
   })
-    .then(user => {
+    .then(data => {
       var items = [];
-      if (user.followers.length < limit) {
-        items = users.followers;
-      } else {
-        for (var i = 0; i < limit; i++) {
-          items.push(user.followers[i]);
-        }
-      }
+      _.forEach(data, item => {
+        items.push(item.follower);
+      })
       return res.status(200).json({
         status: 'OK',
         users: items
@@ -442,7 +523,7 @@ exports.get_followers = function(req, res) {
     .catch(err => {
       return res.status(500).json({
         status: 'error',
-        error: 'Failed to get followers'
+        error: 'Failed to get user followers'
       })
     })
 
@@ -470,19 +551,15 @@ exports.get_following = function(req, res) {
     }
   }
 
-  var collection = db.get().collection('users');
+  var collection = db.get().collection('follow');
   collection.find({
-    username: req.params.username
+    follower: req.params.username
   })
-    .then(user => {
+    .then(data => {
       var items = [];
-      if (user.following.length < limit) {
-        items = users.following;
-      } else {
-        for (var i = 0; i < limit; i++) {
-          items.push(user.following[i]);
-        }
-      }
+      _.forEach(data, item => {
+        items.push(item.following);
+      })
       return res.status(200).json({
         status: 'OK',
         users: items
@@ -491,7 +568,72 @@ exports.get_following = function(req, res) {
     .catch(err => {
       return res.status(500).json({
         status: 'error',
-        error: 'Failed to get following'
+        error: 'Failed to get user following'
       })
     })
 }
+
+
+// exports.follow = function(req, res) {
+//   if (db.get() == null) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Database error'
+//     })
+//   } else if (!req.session.user) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'No logged in user'
+//     })
+//   }
+
+//   var collection = db.get().collection('users');
+//   // add current user to target's follower array
+//   collection.update(
+//     { username: req.body.username },
+//     { $addToSet: { follower : req.session.user } }
+//   )
+//   // add target to current user's following array
+//     .then(follow_success => {
+//       collection.update(
+//         { username: req.session.user },
+//         { $addToSet: { following : req.body.username } }
+//       )
+//         .then(following_success => {
+//           return res.status(200).json({
+//             status: 'OK',
+//             message: 'Successfully followed user'
+//           })
+//         })
+//         // error so remove current user from target's follower array
+//         .catch(following_fail => {
+//           collection.update(
+//             { username: req.body.username },
+//             { $pull: { follower : req.session.user } }
+//           )
+//           // rollback successful
+//             .then(rollback_success => {
+//               console.log(rollback_success);
+//               return res.status(500).json({
+//                 status: 'error',
+//                 error: "Failed to add target to current user's following list"
+//               })
+//             })
+//           // rollback fail... this is very bad!
+//             .catch(rollback_fail => {
+//               console.log(rollback_fail);
+//               return res.status(500).json({
+//                 status: 'error',
+//                 error: 'Failed to rollback after failing to follow user'
+//               })
+//             })
+//         })
+//     })
+//     .catch(follow_fail => {
+//       console.log(follow_fail);
+//       return res.status(500).json({
+//         status: 'error',
+//         error: 'Failed to follow user'
+//       })
+//     })
+// }
