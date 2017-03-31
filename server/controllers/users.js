@@ -479,9 +479,6 @@ exports.follow = function(req, res) {
       })
     })
 
-
-
-
 }
 
 exports.get_followers = function(req, res) {
@@ -572,68 +569,3 @@ exports.get_following = function(req, res) {
       })
     })
 }
-
-
-// exports.follow = function(req, res) {
-//   if (db.get() == null) {
-//     return res.status(500).json({
-//       status: 'error',
-//       error: 'Database error'
-//     })
-//   } else if (!req.session.user) {
-//     return res.status(500).json({
-//       status: 'error',
-//       error: 'No logged in user'
-//     })
-//   }
-
-//   var collection = db.get().collection('users');
-//   // add current user to target's follower array
-//   collection.update(
-//     { username: req.body.username },
-//     { $addToSet: { follower : req.session.user } }
-//   )
-//   // add target to current user's following array
-//     .then(follow_success => {
-//       collection.update(
-//         { username: req.session.user },
-//         { $addToSet: { following : req.body.username } }
-//       )
-//         .then(following_success => {
-//           return res.status(200).json({
-//             status: 'OK',
-//             message: 'Successfully followed user'
-//           })
-//         })
-//         // error so remove current user from target's follower array
-//         .catch(following_fail => {
-//           collection.update(
-//             { username: req.body.username },
-//             { $pull: { follower : req.session.user } }
-//           )
-//           // rollback successful
-//             .then(rollback_success => {
-//               console.log(rollback_success);
-//               return res.status(500).json({
-//                 status: 'error',
-//                 error: "Failed to add target to current user's following list"
-//               })
-//             })
-//           // rollback fail... this is very bad!
-//             .catch(rollback_fail => {
-//               console.log(rollback_fail);
-//               return res.status(500).json({
-//                 status: 'error',
-//                 error: 'Failed to rollback after failing to follow user'
-//               })
-//             })
-//         })
-//     })
-//     .catch(follow_fail => {
-//       console.log(follow_fail);
-//       return res.status(500).json({
-//         status: 'error',
-//         error: 'Failed to follow user'
-//       })
-//     })
-// }

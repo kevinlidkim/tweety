@@ -3,6 +3,7 @@ var db = require('../db');
 module.exports = function(app) {
 
   var users = require('./controllers/users');
+  var tweets = require('./controllers/tweets')
 
   app.post('/adduser', users.add_user_email);
   app.post('/verify', users.verify);
