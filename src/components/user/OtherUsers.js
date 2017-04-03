@@ -20,7 +20,7 @@ class OtherUsers extends React.Component {
         following: 0,
         username: ''
       },
-      follower_result: [],
+      followers_result: [],
       following_result: []
     }
     this.onChange = this.onChange.bind(this);
@@ -60,8 +60,8 @@ class OtherUsers extends React.Component {
     event.preventDefault();
     store.dispatch(ProfileActions.getFollowers(this.state.username))
       .then(data => {
-        console.log(store.getState());
-        this.setState({follower_result: store.getState().rootReducer.user.profile.search_user_followers});
+        // console.log(store.getState());
+        this.setState({followers_result: store.getState().rootReducer.user.profile.search_user_followers});
       })
   }
 
@@ -69,7 +69,7 @@ class OtherUsers extends React.Component {
     event.preventDefault();
     store.dispatch(ProfileActions.getFollowing(this.state.username))
       .then(data => {
-        console.log(store.getState());
+        // console.log(store.getState());
         this.setState({following_result: store.getState().rootReducer.user.profile.search_user_following});
       })
   }
@@ -89,6 +89,18 @@ class OtherUsers extends React.Component {
         </div>
       )
     }
+
+    var displayFollowersResult = this.state.followers_result.map(function(item) {
+      return (
+        <li key={item}>{item}</li>
+        );
+    });
+
+    var displayFollowingResult = this.state.following_result.map(function(item) {
+      return (
+        <li key={item}>{item}</li>
+        );
+    });
 
     return (
       <div>
@@ -115,6 +127,18 @@ class OtherUsers extends React.Component {
             </form>
           </div>
           <div>{displayResult}</div>
+          <br />
+          <br />
+          <div>
+            <h3>Follower Results</h3>
+            <ul>{displayFollowersResult}</ul>
+          </div>
+          <br />
+          <br />
+          <div>
+            <h3>Following Results</h3>
+            <ul>{displayFollowingResult}</ul>
+          </div>
         </div>
       </div>
     );
