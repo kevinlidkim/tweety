@@ -502,12 +502,20 @@ exports.delete_item = function(req, res) {
 
   var collection = db.get().collection('tweets');
   collection.remove({
-    _id: ObjectId(req.params.id)
+    _id: ObjectId(req.params.id),
+    username: req.session.user
   })
     .then(data => {
-      return res.status(200).json({
-        status: 'OK'
-      })
+      if (data.result.n == 0) {
+        return res.status(500).json({
+          status: 'error',
+          error: 'tweet not found in database'
+        })
+      } else {
+        return res.status(200).json({
+          status: 'OK'
+        })
+      }
     })
     .catch(err => {
       console.log(err);

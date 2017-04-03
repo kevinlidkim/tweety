@@ -34,17 +34,29 @@ class GetItem extends React.Component {
       })
   }
 
+  deleteItemEvent(event) {
+    event.preventDefault();
+    store.dispatch(ProfileActions.deleteItem(this.state.result.id))
+      .then(data => {
+        // console.log(store.getState());
+        this.setState({result: {} });
+      })
+  }
+
   render() {
 
     var displayResult = null;
     if (this.state.result.id) {
       displayResult = (
-        <ul>
-          <li>ID: {this.state.result.id}</li>
-          <li>Content: {this.state.result.content}</li>
-          <li>Timestamp: {this.state.result.timestamp}</li>
-          <li>Username: {this.state.result.username}</li>
-        </ul>
+        <div>
+          <ul>
+            <li>ID: {this.state.result.id}</li>
+            <li>Content: {this.state.result.content}</li>
+            <li>Timestamp: {this.state.result.timestamp}</li>
+            <li>Username: {this.state.result.username}</li>
+          </ul>
+          <button type="submit" className="btn btn-default" onClick={this.deleteItemEvent.bind(this)}>Delete</button>
+        </div>
       )
     }
 

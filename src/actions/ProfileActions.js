@@ -123,6 +123,28 @@ export function getItem(query) {
   }
 }
 
+export function deleteItem(query) {
+  return function(dispatch) {
+    return fetch('/item/' + query, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin'
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(deleteItemSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(deleteItemFail(err));
+      })
+  }
+}
+
 export function makePostSuccess(server_response) {  
   return ({type: types.MAKE_POST_SUCCESS, server_response})
 }
@@ -161,4 +183,12 @@ export function getItemSuccess(server_response) {
 
 export function getItemFail(server_response) {  
   return ({type: types.GET_ITEM_FAIL, server_response})
+}
+
+export function deleteItemSuccess(server_response) {  
+  return ({type: types.DELETE_ITEM_SUCCESS, server_response})
+}
+
+export function deleteItemFail(server_response) {  
+  return ({type: types.DELETE_ITEM_FAIL, server_response})
 }

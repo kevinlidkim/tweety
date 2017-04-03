@@ -9,7 +9,8 @@ export default {
       current_post: {},
       posts: [],
       search_results: [],
-      get_item_result: {}
+      get_item_result: {},
+      delete_item_response: {}
     },
     logged_in: {}
   }

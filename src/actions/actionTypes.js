@@ -21,3 +21,6 @@ export const SEARCH_FAIL = 'SEARCH_FAIL';
 
 export const GET_ITEM_SUCCESS = 'GET_ITEM_SUCCESS';
 export const GET_ITEM_FAIL = 'GET_ITEM_FAIL';
+
+export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS';
+export const DELETE_ITEM_FAIL = 'DELETE_ITEM_FAIL';

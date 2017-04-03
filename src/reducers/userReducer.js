@@ -63,6 +63,20 @@ export default function userReducer(state = initialState.user, action) {
         }
       })
 
+    case types.DELETE_ITEM_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          delete_item_response: action.server_response
+        }
+      })
+
+    case types.DELETE_ITEM_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          delete_item_response: action.server_response
+        }
+      })
+
     default: 
       return state;
   }
