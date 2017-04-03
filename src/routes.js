@@ -7,6 +7,7 @@ import Login from './components/Login';
 import SignUp from './components/SignUp';
 
 import Profile from './components/user/Profile';
+import OtherUsers from './components/user/OtherUsers';
 
 export default (  
   <Route component={App}>
@@ -17,5 +18,6 @@ export default (
     <Route path="/login" component={Login} />
     <Route path="/signup" component={SignUp} />
     <Route path="/profile" component={Profile} />
+    <Route path="/user" component={OtherUsers} />
   </Route>
 );

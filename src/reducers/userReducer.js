@@ -35,6 +35,62 @@ export default function userReducer(state = initialState.user, action) {
         }
       })
 
+    case types.SEARCH_USER_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          search_user: action.server_response.user
+        }
+      })
+
+    case types.SEARCH_USER_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          search_user: {}
+        }
+      })
+
+    case types.FOLLOW_USER_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          follow_user_response: action.server_response
+        }
+      })
+
+    case types.FOLLOW_USER_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          follow_user_response: {}
+        }
+      })
+
+    case types.GET_FOLLOWERS_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          search_user_followers: action.server_response.users
+        }
+      })
+
+    case types.GET_FOLLOWERS_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          search_user_followers: []
+        }
+      })
+
+    case types.GET_FOLLOWING_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          search_user_following: action.server_response.users
+        }
+      })
+
+    case types.GET_FOLLOWING_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          search_user_following: []
+        }
+      })
+
     case types.SEARCH_SUCCESS:
       return Object.assign({}, state, {
         profile: {

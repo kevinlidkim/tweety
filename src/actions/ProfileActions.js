@@ -74,6 +74,100 @@ export function logoutUser() {
   }
 }
 
+
+export function searchUser(query) {  
+  return function(dispatch) {
+    return fetch('/user/' + query, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin'
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(searchUserSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(searchUserFail(err));
+      })
+  }
+}
+
+export function getFollowers(query) {  
+  return function(dispatch) {
+    return fetch('/user/' + query + '/followers', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin'
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(getFollowersSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(getFollowersFail(err));
+      })
+  }
+}
+
+export function getFollowering(query) {  
+  return function(dispatch) {
+    return fetch('/user/' + query + '/following', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin'
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(getFollowingSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(getFollowingFail(err));
+      })
+  }
+}
+
+export function followUser(username, follow) {  
+  return function(dispatch) {
+    var payload = {
+      username: username,
+      follow: follow
+    }
+    return fetch('/follow', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(followUserSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(followUserFail(err));
+      })
+  }
+}
+
 export function searchFor(timestamp, limit, query, username, following) {  
   return function(dispatch) {
     var payload = {
@@ -170,6 +264,38 @@ export function logoutSuccess(server_response) {
 
 export function logoutFail(server_response) {  
   return ({type: types.LOGOUT_FAIL, server_response})
+}
+
+export function searchUserSuccess(server_response) {  
+  return ({type: types.SEARCH_USER_SUCCESS, server_response})
+}
+
+export function searchUserFail(server_response) {  
+  return ({type: types.SEARCH_USER_FAIL, server_response})
+}
+
+export function getFollowersSuccess(server_response) {  
+  return ({type: types.GET_FOLLOWERS_SUCCESS, server_response})
+}
+
+export function getFollowersFail(server_response) {  
+  return ({type: types.GET_FOLLOWERS_FAIL, server_response})
+}
+
+export function getFollowingSuccess(server_response) {  
+  return ({type: types.GET_FOLLOWING_SUCCESS, server_response})
+}
+
+export function getFollowingFail(server_response) {  
+  return ({type: types.GET_FOLLOWING_FAIL, server_response})
+}
+
+export function followUserSuccess(server_response) {  
+  return ({type: types.FOLLOW_USER_SUCCESS, server_response})
+}
+
+export function followUserFail(server_response) {  
+  return ({type: types.FOLLOW_USER_FAIL, server_response})
 }
 
 export function searchSuccess(server_response) {  

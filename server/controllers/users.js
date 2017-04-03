@@ -290,6 +290,7 @@ exports.logout = function(req, res) {
 }
 
 exports.get_user = function(req, res) {
+
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -303,7 +304,7 @@ exports.get_user = function(req, res) {
   }
 
   var obj = {
-    username: "",
+    email: "",
     followers: [],
     following: []
   }
@@ -320,7 +321,7 @@ exports.get_user = function(req, res) {
           error: "Can't find user by username"
         })
       } else {
-        obj.username = user.username;
+        obj.email = user.email;
 
         // query for other users this user is following
         sec_collection.find({
@@ -337,13 +338,18 @@ exports.get_user = function(req, res) {
             }).toArray()
               .then(user_followers => {
                 _.forEach(user_followers, user_follower => {
-                  obj.follower.push(user_follower.follower);
+                  obj.followers.push(user_follower.follower);
                 })
 
                 return res.status(200).json({
                   status: 'OK',
                   message: 'Successfully found user information',
-                  user: obj
+                  user: {
+                    email: obj.email,
+                    followers: obj.followers.length,
+                    following: obj.following.length,
+                    username: req.params.username
+                  }
                 })
               })
               .catch(followers_err => {
@@ -503,10 +509,10 @@ exports.get_followers = function(req, res) {
     }
   }
 
-  var collection = db.get().collection('follow');
+  var collection = db.get().collection('follows');
   collection.find({
     following: req.params.username
-  })
+  }).toArray()
     .then(data => {
       var items = [];
       _.forEach(data, item => {
@@ -548,10 +554,10 @@ exports.get_following = function(req, res) {
     }
   }
 
-  var collection = db.get().collection('follow');
+  var collection = db.get().collection('follows');
   collection.find({
     follower: req.params.username
-  })
+  }).toArray()
     .then(data => {
       var items = [];
       _.forEach(data, item => {

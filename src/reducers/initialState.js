@@ -10,7 +10,11 @@ export default {
       posts: [],
       search_results: [],
       get_item_result: {},
-      delete_item_response: {}
+      delete_item_response: {},
+      search_user: {},
+      search_user_followers: [],
+      search_user_following: [],
+      follow_user_response: {}
     },
     logged_in: {}
   }
