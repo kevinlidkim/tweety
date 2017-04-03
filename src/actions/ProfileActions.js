@@ -74,11 +74,14 @@ export function logoutUser() {
   }
 }
 
-export function searchFor(query, limit) {  
+export function searchFor(timestamp, limit, query, username, following) {  
   return function(dispatch) {
     var payload = {
-      timestamp: query,
-      limit: limit
+      timestamp: timestamp,
+      limit: limit,
+      q: query,
+      username: username,
+      following:following
     }
     return fetch('/search', {
       method: 'POST',

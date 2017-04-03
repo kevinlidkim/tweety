@@ -72,8 +72,8 @@ class GetItem extends React.Component {
             </div>
             <button type="submit" className="btn btn-default" onClick={this.getItemEvent.bind(this)}>Search</button>
           </form>
-            <h4>Get Item Result</h4>
-            <div>{displayResult}</div>
+          <h4>Get Item Result</h4>
+          <div>{displayResult}</div>
         </div>
       </div>
     );
