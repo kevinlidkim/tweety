@@ -1,0 +1,63 @@
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash
+
+
+
+
+babel-cli babel-core babel-loader babel-preset-es2015 babel-preset-react css-loader file-loader style-loader url-loader webpack webpack-dev-middleware webpack-hot-middleware
+
+
+upstream backend  {
+  ip_hash;
+  server 192.168.1.14 max_fails=1  fail_timeout=3s;
+  server 192.168.1.15 max_fails=1  fail_timeout=3s;
+  server 192.168.1.16 max_fails=1  fail_timeout=3s;
+  server 192.168.1.17 max_fails=1  fail_timeout=3s;
+}
+
+server {
+  listen  80;
+  server_name kevinli4.cse356.compas.cs.stonybrook.edu;
+  location / {
+    proxy_pass  http://backend;
+  }
+}
+
+
+
+
+
+db.tweety.ensureIndex({email: 1, username: 1}, {unique: true});
+
+
+
+
+webpack.config.js
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    path: './public',
+    filename: 'bundle.js'
+  },
+  module: {
+    loaders: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react']
+        }
+      },
+      {test: /(\.css)$/, loaders: ['style', 'css']},
+      {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
+      {test: /\.(woff|woff2)$/, loader: 'url?prefix=font/&limit=5000'},
+      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
+      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'}
+    ]
+  }
+};
+
+
+
+var mongo_uri = 'mongodb://localhost:27017/tweety';
