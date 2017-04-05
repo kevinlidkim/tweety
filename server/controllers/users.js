@@ -155,6 +155,7 @@ exports.add_user = function(req, res) {
     })
   }
 
+  var collection = db.get().collection('users');
   var salt = make_salt();
   var hashed_password = encrypt_password(req.body.password, salt);
   var random_key = encrypt_password(make_salt(), make_salt());
