@@ -97,6 +97,55 @@ exports.add_user_email = function(req, res) {
 
 }
 
+// exports.add_user = function(req, res) {
+
+//   if (db.get() == null) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Database error'
+//     })
+//   }
+
+//   var collection = db.get().collection('users');
+//   collection.findOne({
+//     $or: [{ email: req.body.email }, { username: req.body.username }]
+//   })
+//     .then(function(user) {
+//       if (user) {
+//         return res.status(500).json({
+//           status: 'error',
+//           error: 'Email or username already in use'
+//         })
+//       } else {
+//         var salt = make_salt();
+//         var hashed_password = encrypt_password(req.body.password, salt);
+//         var random_key = encrypt_password(make_salt(), make_salt());
+//         collection.insert({
+//           username: req.body.username,
+//           email: req.body.email,
+//           salt: salt,
+//           hashed_password: hashed_password,
+//           verified: false,
+//           random_key: random_key
+//         })
+//           .then(function(data) {
+//             return res.status(200).json({
+//               status: 'OK',
+//               message: 'Successfully created user'
+//             })
+//           })
+//           .catch(function(err) {
+//             console.log(err);
+//             return res.status(500).json({
+//               status: 'error',
+//               error: 'Error creating user'
+//             })
+//           })
+//       }
+//     })
+
+// }
+
 exports.add_user = function(req, res) {
 
   if (db.get() == null) {
@@ -106,42 +155,29 @@ exports.add_user = function(req, res) {
     })
   }
 
-  var collection = db.get().collection('users');
-  collection.findOne({
-    $or: [{ email: req.body.email }, { username: req.body.username }]
+  var salt = make_salt();
+  var hashed_password = encrypt_password(req.body.password, salt);
+  var random_key = encrypt_password(make_salt(), make_salt());
+  collection.insert({
+    username: req.body.username,
+    email: req.body.email,
+    salt: salt,
+    hashed_password: hashed_password,
+    verified: false,
+    random_key: random_key
   })
-    .then(function(user) {
-      if (user) {
-        return res.status(500).json({
-          status: 'error',
-          error: 'Email or username already in use'
-        })
-      } else {
-        var salt = make_salt();
-        var hashed_password = encrypt_password(req.body.password, salt);
-        var random_key = encrypt_password(make_salt(), make_salt());
-        collection.insert({
-          username: req.body.username,
-          email: req.body.email,
-          salt: salt,
-          hashed_password: hashed_password,
-          verified: false,
-          random_key: random_key
-        })
-          .then(function(data) {
-            return res.status(200).json({
-              status: 'OK',
-              message: 'Successfully created user'
-            })
-          })
-          .catch(function(err) {
-            console.log(err);
-            return res.status(500).json({
-              status: 'error',
-              error: 'Error creating user'
-            })
-          })
-      }
+    .then(function(data) {
+      return res.status(200).json({
+        status: 'OK',
+        message: 'Successfully created user'
+      })
+    })
+    .catch(function(err) {
+      console.log(err);
+      return res.status(500).json({
+        status: 'error',
+        error: 'Error creating user'
+      })
     })
 
 }

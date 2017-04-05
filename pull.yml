@@ -1,0 +1,29 @@
+- hosts: proj
+  sudo: yes
+
+  vars:
+    - homeDir: /home/ubuntu
+    - appDir : tweety
+    - account: kevinlidkim
+
+  tasks:
+
+  - name: Git Pull Repo
+    git: repo=https://github.com/{{account}}/{{appDir}} dest={{homeDir}}/{{appDir}} update=yes force=yes
+    register: git_finished
+
+  - name: Running NPM install
+    npm: path={{homeDir}}/{{appDir}}
+    register: npm_finished
+    when: git_finished
+
+  - name: Building dependencies
+    shell: npm run build
+    register: npm_build_finished
+    when: npm_finished
+
+  - name: Restart APP
+    sudo_user: root
+    command: sudo pm2 restart server.js
+    ignore_errors: yes
+    when: npm_build_finished

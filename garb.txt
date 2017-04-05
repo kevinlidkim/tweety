@@ -61,3 +61,6 @@ module.exports = {
 
 
 var mongo_uri = 'mongodb://localhost:27017/tweety';
+
+
+sudo nano /etc/nginx/sites-available/default

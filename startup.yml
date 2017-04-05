@@ -1,0 +1,50 @@
+- hosts: proj
+  sudo: yes
+
+  vars:
+    - homeDir: /home/ubuntu
+    - appDir : tweety
+    - account: kevinlidkim
+
+  tasks:
+
+  - name: Update Nodejs
+    sudo_user: root
+    shell: curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash
+
+  - name: Install Nodejs
+    sudo_user: root
+    apt: name=nodejs update_cache=yes state=latest
+
+  - name: Install pm2
+    npm: name=pm2 global=yes production=yes
+
+  - name: Create APP Directory
+    file: path={{homeDir}}/{{appDir}} state=directory
+
+  - name: Git Clone Repo
+    git: repo=https://github.com/{{account}}/{{appDir}} dest={{homeDir}}/{{appDir}} update=yes force=yes
+    register: git_finished
+
+  - name: Running NPM install
+    npm: path={{homeDir}}/{{appDir}}
+    register: npm_finished
+    when: git_finished
+
+  - name: Building dependencies
+    shell: npm run build
+    register: npm_build_finished
+    when: npm_finished
+
+  - name: Stop APP
+    sudo_user: root
+    command: pm2 stop app chdir={{homeDir}}/{{appDir}}
+    ignore_errors: yes
+    register: stop_app
+    when: npm_build_finished
+
+  - name: Start APP
+    sudo_user: root
+    command: pm2 start server.js --name app chdir={{homeDir}}/{{appDir}}
+    ignore_errors: yes
+    when: stop_app
