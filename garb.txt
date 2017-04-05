@@ -28,7 +28,7 @@ server {
 
 
 db.user.createIndex({email: 1, username: 1}, {unique: true});
-db.tweets.createIndex({email: 1, username: 1});
+db.tweets.createIndex({content: 1});
 
 =============================================================
 

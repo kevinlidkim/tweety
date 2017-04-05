@@ -210,7 +210,7 @@ exports.search_items = function(req, res) {
               collection.find({
                 timestamp: { $lte: time },
                 username: req.body.username,
-                content: { $regex: ".*" + req.body.q + ".*" }
+                $text: { $search: req.body.q }
               }).sort({timestamp: -1}).limit(limit).toArray()
                 .then(query_success => {
                   var items = [];
@@ -277,7 +277,7 @@ exports.search_items = function(req, res) {
               collection.find({
                 timestamp: { $lte: time },
                 username: { $in: follows },
-                content: { $regex: ".*" + req.body.q + ".*" }
+                $text: { $search: req.body.q }
               }).sort({timestamp: -1}).limit(limit).toArray()
                 .then(query_success => {
                   var items = [];
@@ -354,7 +354,7 @@ exports.search_items = function(req, res) {
         collection.find({
           timestamp: { $lte: time },
           username: req.body.username,
-          content: { $regex: ".*" + req.body.q + ".*" }
+          $text: { $search: req.body.q }
         }).sort({timestamp: -1}).limit(limit).toArray()
           .then(query_success => {
             var items = [];
@@ -419,7 +419,7 @@ exports.search_items = function(req, res) {
         // query string is present
         collection.find({
           timestamp: { $lte: time },
-          content: { $regex: ".*" + req.body.q + ".*" }
+          $text: { $search: req.body.q }
         }).sort({timestamp: -1}).limit(limit).toArray()
           .then(query_success => {
             var items = [];
