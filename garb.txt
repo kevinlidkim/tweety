@@ -2,12 +2,13 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash
 
 
 
+====================================================
 
 babel-cli babel-core babel-loader babel-preset-es2015 babel-preset-react css-loader file-loader style-loader url-loader webpack webpack-dev-middleware webpack-hot-middleware
 
+================================================
 
 upstream backend  {
-  ip_hash;
   server 192.168.1.14 max_fails=1  fail_timeout=3s;
   server 192.168.1.15 max_fails=1  fail_timeout=3s;
   server 192.168.1.16 max_fails=1  fail_timeout=3s;
@@ -22,13 +23,14 @@ server {
   }
 }
 
+===============================================
 
 
 
+db.user.createIndex({email: 1, username: 1}, {unique: true});
+db.tweets.createIndex({email: 1, username: 1});
 
-db.tweety.ensureIndex({email: 1, username: 1}, {unique: true});
-
-
+=============================================================
 
 
 webpack.config.js
@@ -58,9 +60,52 @@ module.exports = {
   }
 };
 
-
+=====================================================
 
 var mongo_uri = 'mongodb://localhost:27017/tweety';
-
+================================================================
 
 sudo nano /etc/nginx/sites-available/default
+
+============================================
+
+127.0.0.1 localhost
+192.168.1.14 tweety-1
+192.168.1.18 tweety-2
+192.168.1.16 tweety-3
+192.168.1.17 tweety-4
+192.168.1.21 database-config
+192.168.1.13 database-1
+192.168.1.19 database-2
+192.168.1.20 database-3
+
+======================================
+
+rs.initiate(
+  {
+    _id: "configReplSet",
+    configsvr: true,
+    members: [
+      { _id : 0, host : "database-config:27019" }
+    ]
+  }
+)
+
+rs.initiate(
+  {
+    _id: "rs1",
+    members: [
+      { _id : 0, host : "database-1:27018" }
+    ]
+  }
+)
+
+configReplSet/database-config:27019
+
+sh.addShard( "rs1/database-1:27018")
+sh.addShard( "rs2/database-2:27018")
+sh.addShard( "rs3/database-3:27018")
+
+sh.enableSharding("tweety")
+
+==========================================

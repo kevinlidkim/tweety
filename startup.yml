@@ -31,6 +31,21 @@
     register: npm_finished
     when: git_finished
 
+  - name: Add Mongo Repo
+    sudo_user: root
+    command: sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+    register: add_mongo_repo
+    when: npm_finished
+
+  - name: Update package
+    sudo_user: root
+    command: sudo apt-get update
+    when: add_mongo_repo
+
+  - name: Install Mongo
+    sudo_user: root
+    apt: name=mongodb-org update_cache=yes state=latest
+
   - name: Building dependencies
     shell: npm run build
     register: npm_build_finished
@@ -48,3 +63,4 @@
     command: pm2 start server.js --name app chdir={{homeDir}}/{{appDir}}
     ignore_errors: yes
     when: stop_app
+
