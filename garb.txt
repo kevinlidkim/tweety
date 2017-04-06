@@ -77,6 +77,7 @@ sudo nano /etc/nginx/sites-available/default
 192.168.1.18 tweety-2
 192.168.1.16 tweety-3
 192.168.1.17 tweety-4
+192.168.1.22 tweety-5
 192.168.1.21 database-config
 192.168.1.13 database-1
 192.168.1.19 database-2

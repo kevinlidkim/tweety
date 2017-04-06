@@ -85,7 +85,6 @@ exports.get_item = function(req, res) {
 
 
 exports.search_items = function(req, res) {
-
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -120,53 +119,30 @@ exports.search_items = function(req, res) {
     following = req.body.following;
   }
 
-  // get list of users that current user is following
   if (following) {
-    sec_collection.find({
-      follower: req.session.user
-    }).toArray()
-      .then(follow_success => {
-        _.forEach(follow_success, follow_user => {
-          follows.push(follow_user.following);
-        })
-
-        // check if username is present in the request
-        if (req.body.username) {
-          // if username is present, check to see if it's inside the follow array.
-          if (_indexOf(follows, req.body.username) == -1) {
-            // username is not present in follow array so we should return 0 tweets;
-            return res.status(200).json({
-              status: 'OK',
-              message: 'username not present in list of users being followed',
-              items: []
-            })
-          }
-
-          // user is present inside follow array. we only search for tweets associated with that user
-          // check to see if query string exists
-
+    // following
+    if (req.body.username) {
+      // following + username
+      sec_collection.findOne({
+        follower: req.session.user,
+        following: req.body.username
+      })
+        .then(relationship => {
           if (req.body.q) {
-            // query string exists
-              collection.find({
+            // following + username + query string
+            collection.find({
                 timestamp: { $lte: time },
                 username: req.body.username,
                 $text: { $search: req.body.q }
               }).sort({timestamp: -1}).limit(limit).toArray()
                 .then(query_success => {
-                  var items = [];
                   _.forEach(query_success, item => {
-                    var result = {
-                      id: item._id,
-                      username: item.username,
-                      content: item.content,
-                      timestamp: item.timestamp
-                    }
-                    items.push(result);
+                    item.id = item._id
                   })
                   return res.status(200).json({
                     status: 'OK',
                     message: 'Query success. Present fields: username, query, following',
-                    items: items
+                    items: query_success
                   })
                 })
                 .catch(query_fail => {
@@ -175,28 +151,20 @@ exports.search_items = function(req, res) {
                     error: 'Query failed. Present fields: username, query, following'
                   })
                 })
-
           } else {
-            // no need to search for query string
+            // following + username + no query string
             collection.find({
               timestamp: { $lte: time },
               username: req.body.username
             }).sort({timestamp: -1}).limit(limit).toArray()
               .then(no_query_success => {
-                var items = [];
                 _.forEach(no_query_success, item => {
-                  var result = {
-                    id: item._id,
-                    username: item.username,
-                    content: item.content,
-                    timestamp: item.timestamp
-                  }
-                  items.push(result);
-                })
+                    item.id = item._id
+                  })
                 return res.status(200).json({
                   status: 'OK',
                   message: 'Query success. Present fields: username, following',
-                  items: items
+                  items: no_query_success
                 })
               })
               .catch(no_query_fail => {
@@ -206,34 +174,39 @@ exports.search_items = function(req, res) {
                 })
               })
           }
-
-
-        } else {
-          // no username is present. we can now search for all tweets by users in follows array
-          // check to see if query string exists
+        })
+        .catch(relationship_fail => {
+          return res.status(200).json({
+            status: 'OK',
+            message: 'username not being followed',
+            items: []
+          })
+        })
+    } else {
+      // following + no username
+      sec_collection.find({
+        follower: req.session.user
+      }).toArray()
+        .then(follow_success => {
+          _.forEach(follow_success, follow_user => {
+            follows.push(follow_user.following);
+          })
 
           if (req.body.q) {
-            // query string exists
-              collection.find({
+            // following + no username + query string
+            collection.find({
                 timestamp: { $lte: time },
                 username: { $in: follows },
                 $text: { $search: req.body.q }
               }).sort({timestamp: -1}).limit(limit).toArray()
                 .then(query_success => {
-                  var items = [];
                   _.forEach(query_success, item => {
-                    var result = {
-                      id: item._id,
-                      username: item.username,
-                      content: item.content,
-                      timestamp: item.timestamp
-                    }
-                    items.push(result);
+                    item.id = item._id
                   })
                   return res.status(200).json({
                     status: 'OK',
                     message: 'Query success. Present fields: query, following',
-                    items: items
+                    items: query_success
                   })
                 })
                 .catch(query_fail => {
@@ -242,28 +215,20 @@ exports.search_items = function(req, res) {
                     error: 'Query failed. Present fields: query, following'
                   })
                 })
-
           } else {
-            // no need to search for query string
+            // following + no username + no query string
             collection.find({
               timestamp: { $lte: time },
               username: { $in: follows }
             }).sort({timestamp: -1}).limit(limit).toArray()
               .then(no_query_success => {
-                var items = [];
                 _.forEach(no_query_success, item => {
-                  var result = {
-                    id: item._id,
-                    username: item.username,
-                    content: item.content,
-                    timestamp: item.timestamp
-                  }
-                  items.push(result);
+                  item.id = item._id
                 })
                 return res.status(200).json({
                   status: 'OK',
                   message: 'Query success. Present fields: following',
-                  items: items
+                  items: no_query_success
                 })
               })
               .catch(no_query_fail => {
@@ -274,43 +239,33 @@ exports.search_items = function(req, res) {
               })
           }
 
-        }
-
-      })
-      .catch(follow_fail => {
-        return res.status(500).json({
-          status: 'error',
-          error: 'Could not find users this user is following for tweet search'
         })
-      })
-
+        .catch(follow_fail => {
+          return res.status(500).json({
+            status: 'error',
+            error: 'Could not find users that this user is following for tweet search'
+          })
+        })
+    }
   } else {
-    // following is false so check if username is present in the request
+    // not following
     if (req.body.username) {
-      // username is present in request. now we only query for tweets by user
-      // check if query string is present
+      // not following + username
       if (req.body.q) {
-        // query string is present
+        // not following + username + query string
         collection.find({
           timestamp: { $lte: time },
           username: req.body.username,
           $text: { $search: req.body.q }
         }).sort({timestamp: -1}).limit(limit).toArray()
           .then(query_success => {
-            var items = [];
             _.forEach(query_success, item => {
-              var result = {
-                id: item._id,
-                username: item.username,
-                content: item.content,
-                timestamp: item.timestamp
-              }
-              items.push(result);
+              item.id = item._id
             })
             return res.status(200).json({
               status: 'OK',
               message: 'Query success. Present fields: username, query',
-              items: items
+              items: query_success
             })
           })
           .catch(query_fail => {
@@ -319,28 +274,20 @@ exports.search_items = function(req, res) {
               error: 'Query failed. Present fields: username, query'
             })
           })
-
       } else {
-        // query string is not present
+        // not following + username + no query string
         collection.find({
           timestamp: { $lte: time },
           username: req.body.username
         }).sort({timestamp: -1}).limit(limit).toArray()
           .then(query_success => {
-            var items = [];
             _.forEach(query_success, item => {
-              var result = {
-                id: item._id,
-                username: item.username,
-                content: item.content,
-                timestamp: item.timestamp
-              }
-              items.push(result);
+              item.id = item._id
             })
             return res.status(200).json({
               status: 'OK',
               message: 'Query success. Present fields: username',
-              items: items
+              items: query_success
             })
           })
           .catch(query_fail => {
@@ -350,32 +297,22 @@ exports.search_items = function(req, res) {
             })
           })
       }
-
-
     } else {
-      // username is not present in request. now we query for all tweets by any user
-      // check if query string is present
+      // not following + no username
       if (req.body.q) {
-        // query string is present
+        // not following + no username + query string
         collection.find({
           timestamp: { $lte: time },
           $text: { $search: req.body.q }
         }).sort({timestamp: -1}).limit(limit).toArray()
           .then(query_success => {
-            var items = [];
             _.forEach(query_success, item => {
-              var result = {
-                id: item._id,
-                username: item.username,
-                content: item.content,
-                timestamp: item.timestamp
-              }
-              items.push(result);
+              item.id = item._id
             })
             return res.status(200).json({
               status: 'OK',
               message: 'Query success. Present fields: query',
-              items: items
+              items: query_success
             })
           })
           .catch(query_fail => {
@@ -384,27 +321,19 @@ exports.search_items = function(req, res) {
               error: 'Query failed. Present fields: query'
             })
           })
-
       } else {
-        // query string is not present
+        // not following + no username + no query string
         collection.find({
           timestamp: { $lte: time }
         }).sort({timestamp: -1}).limit(limit).toArray()
           .then(query_success => {
-            var items = [];
             _.forEach(query_success, item => {
-              var result = {
-                id: item._id,
-                username: item.username,
-                content: item.content,
-                timestamp: item.timestamp
-              }
-              items.push(result);
+              item.id = item._id
             })
             return res.status(200).json({
               status: 'OK',
               message: 'Query success. Present fields: N/A',
-              items: items
+              items: query_success
             })
           })
           .catch(query_fail => {
@@ -414,9 +343,7 @@ exports.search_items = function(req, res) {
             })
           })
       }
-
     }
-
   }
 
 }
