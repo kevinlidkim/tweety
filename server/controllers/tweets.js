@@ -63,22 +63,29 @@ exports.get_item = function(req, res) {
     _id: ObjectId(req.params.id)
   })
     .then(data => {
-      var item = {
-        id: data._id,
-        username: data.username,
-        content: data.content,
-        timestamp: data.timestamp
+      if (data) {
+        var item = {
+          id: data._id,
+          username: data.username,
+          content: data.content,
+          timestamp: data.timestamp
+        }
+        return res.status(200).json({
+          item: item,
+          status: 'OK'
+        })
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          error: 'Unable to find tweet by id'
+        })
       }
-      return res.status(200).json({
-        item: item,
-        status: 'OK'
-      })
     })
     .catch(err => {
       console.log(err);
       return res.status(500).json({
         status: 'error',
-        error: 'Unable to find tweet'
+        error: 'Error trying to find tweet'
       })
     })
 }
