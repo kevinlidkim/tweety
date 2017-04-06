@@ -85,6 +85,9 @@ exports.get_item = function(req, res) {
 
 
 exports.search_items = function(req, res) {
+
+  var start = moment();
+
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -139,7 +142,16 @@ exports.search_items = function(req, res) {
                   _.forEach(query_success, item => {
                     item.id = item._id
                   })
+                  var end = moment();
+                  var diff = moment.utc(start).diff(end).format(x);
+                  var time_diff = {
+                    start: start,
+                    end: end,
+                    diff: diff
+                  }
+                  console.log(diff);
                   return res.status(200).json({
+                    time_diff: time_diff,
                     status: 'OK',
                     message: 'Query success. Present fields: username, query, following',
                     items: query_success
@@ -159,9 +171,18 @@ exports.search_items = function(req, res) {
             }).sort({timestamp: -1}).limit(limit).toArray()
               .then(no_query_success => {
                 _.forEach(no_query_success, item => {
-                    item.id = item._id
-                  })
+                  item.id = item._id
+                })
+                var end = moment();
+                var diff = moment.utc(start).diff(end).format(x);
+                var time_diff = {
+                  start: start,
+                  end: end,
+                  diff: diff
+                }
+                console.log(diff);
                 return res.status(200).json({
+                  time_diff: time_diff,
                   status: 'OK',
                   message: 'Query success. Present fields: username, following',
                   items: no_query_success
@@ -203,7 +224,16 @@ exports.search_items = function(req, res) {
                   _.forEach(query_success, item => {
                     item.id = item._id
                   })
+                  var end = moment();
+                  var diff = moment.utc(start).diff(end).format(x);
+                  var time_diff = {
+                    start: start,
+                    end: end,
+                    diff: diff
+                  }
+                  console.log(diff);
                   return res.status(200).json({
+                    time_diff: time_diff,
                     status: 'OK',
                     message: 'Query success. Present fields: query, following',
                     items: query_success
@@ -225,7 +255,16 @@ exports.search_items = function(req, res) {
                 _.forEach(no_query_success, item => {
                   item.id = item._id
                 })
+                var end = moment();
+                var diff = moment.utc(start).diff(end).format(x);
+                var time_diff = {
+                  start: start,
+                  end: end,
+                  diff: diff
+                }
+                console.log(diff);
                 return res.status(200).json({
+                  time_diff: time_diff,
                   status: 'OK',
                   message: 'Query success. Present fields: following',
                   items: no_query_success
@@ -262,7 +301,16 @@ exports.search_items = function(req, res) {
             _.forEach(query_success, item => {
               item.id = item._id
             })
+            var end = moment();
+            var diff = moment.utc(start).diff(end).format(x);
+            var time_diff = {
+              start: start,
+              end: end,
+              diff: diff
+            }
+            console.log(diff);
             return res.status(200).json({
+              time_diff: time_diff,
               status: 'OK',
               message: 'Query success. Present fields: username, query',
               items: query_success
@@ -284,7 +332,16 @@ exports.search_items = function(req, res) {
             _.forEach(query_success, item => {
               item.id = item._id
             })
+            var end = moment();
+            var diff = moment.utc(start).diff(end).format(x);
+            var time_diff = {
+              start: start,
+              end: end,
+              diff: diff
+            }
+            console.log(diff);
             return res.status(200).json({
+              time_diff: time_diff,
               status: 'OK',
               message: 'Query success. Present fields: username',
               items: query_success
@@ -309,7 +366,16 @@ exports.search_items = function(req, res) {
             _.forEach(query_success, item => {
               item.id = item._id
             })
+            var end = moment();
+            var diff = moment.utc(start).diff(end).format(x);
+            var time_diff = {
+              start: start,
+              end: end,
+              diff: diff
+            }
+            console.log(diff);
             return res.status(200).json({
+              time_diff: time_diff,
               status: 'OK',
               message: 'Query success. Present fields: query',
               items: query_success
@@ -330,7 +396,16 @@ exports.search_items = function(req, res) {
             _.forEach(query_success, item => {
               item.id = item._id
             })
+            var end = moment();
+            var diff = moment.utc(start).diff(end).format(x);
+            var time_diff = {
+              start: start,
+              end: end,
+              diff: diff
+            }
+            console.log(diff);
             return res.status(200).json({
+              time_diff: time_diff,
               status: 'OK',
               message: 'Query success. Present fields: N/A',
               items: query_success
