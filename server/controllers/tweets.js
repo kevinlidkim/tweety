@@ -158,6 +158,7 @@ exports.search_items = function(req, res) {
                   })
                 })
                 .catch(query_fail => {
+                  console.log(query_fail);
                   return res.status(500).json({
                     status: 'error',
                     error: 'Query failed. Present fields: username, query, following'
@@ -189,6 +190,7 @@ exports.search_items = function(req, res) {
                 })
               })
               .catch(no_query_fail => {
+                console.log(no_query_fail);
                 return res.status(500).json({
                   status: 'error',
                   error: 'Query failed. Present fields: username, following'
@@ -240,6 +242,7 @@ exports.search_items = function(req, res) {
                   })
                 })
                 .catch(query_fail => {
+                  console.log(query_fail);
                   return res.status(500).json({
                     status: 'error',
                     error: 'Query failed. Present fields: query, following'
@@ -271,6 +274,7 @@ exports.search_items = function(req, res) {
                 })
               })
               .catch(no_query_fail => {
+                console.log(no_query_fail);
                 return res.status(500).json({
                   status: 'error',
                   error: 'Query failed. Present fields: following'
@@ -280,6 +284,7 @@ exports.search_items = function(req, res) {
 
         })
         .catch(follow_fail => {
+          console.log(follow_fail);
           return res.status(500).json({
             status: 'error',
             error: 'Could not find users that this user is following for tweet search'
@@ -317,6 +322,7 @@ exports.search_items = function(req, res) {
             })
           })
           .catch(query_fail => {
+            console.log(query_fail);
             return res.status(500).json({
               status: 'error',
               error: 'Query failed. Present fields: username, query'
@@ -348,6 +354,7 @@ exports.search_items = function(req, res) {
             })
           })
           .catch(query_fail => {
+            console.log(query_fail);
             return res.status(500).json({
               status: 'error',
               error: 'Query failed. Present fields: username'
@@ -382,6 +389,7 @@ exports.search_items = function(req, res) {
             })
           })
           .catch(query_fail => {
+            console.log(query_fail);
             return res.status(500).json({
               status: 'error',
               error: 'Query failed. Present fields: query'
@@ -412,6 +420,7 @@ exports.search_items = function(req, res) {
             })
           })
           .catch(query_fail => {
+            console.log(query_fail);
             return res.status(500).json({
               status: 'error',
               error: 'Query failed. Present fields: N/A'
