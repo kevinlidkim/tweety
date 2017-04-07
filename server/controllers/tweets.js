@@ -403,21 +403,11 @@ exports.search_items_new = function(req, res) {
           })
       } else {
         // not following + no username + no query string
-        collection.aggregate([
-          { $match: { 
-              timestamp: { $lte: time }
-            }
-          },
-          { $project: { id: "$_id" } },
-          { $sort: { timestamp: -1 } }
-        ], function(err, query_success) {
-          if (err) {
-            return res.status(500).json({
-              status: 'error',
-              error: 'unknown aggregation error'
-            })
-          }
-          _.forEach(query_success, item => {
+        collection.find({
+          timestamp: { $lte: time }
+        }).limit(limit).toArray()
+          .then(query_success => {
+            _.forEach(query_success, item => {
               item.id = item._id
             })
             var end = moment();
@@ -434,8 +424,14 @@ exports.search_items_new = function(req, res) {
               message: 'Query success. Present fields: N/A',
               items: query_success
             })
-        })
-
+          })
+          .catch(query_fail => {
+            console.log(query_fail);
+            return res.status(500).json({
+              status: 'error',
+              error: 'Query failed. Present fields: N/A'
+            })
+          })
       }
     }
   }
