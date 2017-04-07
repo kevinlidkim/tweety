@@ -27,12 +27,15 @@ server {
 
 
 
-db.user.createIndex({email: 1}, {unique: true});
-db.user.createIndex({username: 1}, {unique: true});
+db.user.createIndex({email: 1, username: 1}, {unique: true});
 db.tweets.createIndex({content: "text", username: 1, timestamp: -1});
 db.follows.createIndex({follower: 1, following: 1});
 
-db.tweets.createIndex({content: 1});
+db.user.createIndex({email: 1}, {unique: true});
+db.user.createIndex({username: 1}, {unique: true});
+db.tweets.createIndex({timestamp: -1});
+db.tweets.createIndex({content: "text"});
+db.tweets.createIndex({username: 1});
 
 =============================================================
 
