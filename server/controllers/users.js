@@ -159,13 +159,17 @@ exports.add_user = function(req, res) {
   var salt = make_salt();
   var hashed_password = encrypt_password(req.body.password, salt);
   var random_key = encrypt_password(make_salt(), make_salt());
-  collection.insert({
+  collection.update(
+  {
     username: req.body.username,
-    email: req.body.email,
+    email: req.body.email 
+  }, {
     salt: salt,
     hashed_password: hashed_password,
     verified: false,
-    random_key: random_key
+    random_key: random_key 
+  }, {
+    upsert: true
   })
     .then(function(data) {
       return res.status(200).json({
