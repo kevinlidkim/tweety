@@ -150,7 +150,7 @@ exports.search_items = function(req, res) {
                     item.id = item._id
                   })
                   var end = moment();
-                  var diff = moment.utc(start).diff(end).format('x');
+                  var diff = start.diff(end);
                   var time_diff = {
                     start: start,
                     end: end,
@@ -182,7 +182,7 @@ exports.search_items = function(req, res) {
                   item.id = item._id
                 })
                 var end = moment();
-                var diff = moment.utc(start).diff(end).format('x');
+                var diff = start.diff(end);
                 var time_diff = {
                   start: start,
                   end: end,
@@ -234,7 +234,7 @@ exports.search_items = function(req, res) {
                     item.id = item._id
                   })
                   var end = moment();
-                  var diff = moment.utc(start).diff(end).format('x');
+                  var diff = start.diff(end);
                   var time_diff = {
                     start: start,
                     end: end,
@@ -266,7 +266,7 @@ exports.search_items = function(req, res) {
                   item.id = item._id
                 })
                 var end = moment();
-                var diff = moment.utc(start).diff(end).format('x');
+                var diff = start.diff(end);
                 var time_diff = {
                   start: start,
                   end: end,
@@ -314,7 +314,7 @@ exports.search_items = function(req, res) {
               item.id = item._id
             })
             var end = moment();
-            var diff = moment.utc(start).diff(end).format('x');
+            var diff = start.diff(end);
             var time_diff = {
               start: start,
               end: end,
@@ -346,7 +346,7 @@ exports.search_items = function(req, res) {
               item.id = item._id
             })
             var end = moment();
-            var diff = moment.utc(start).diff(end).format('x');
+            var diff = start.diff(end);
             var time_diff = {
               start: start,
               end: end,
@@ -381,7 +381,7 @@ exports.search_items = function(req, res) {
               item.id = item._id
             })
             var end = moment();
-            var diff = moment.utc(start).diff(end).format('x');
+            var diff = start.diff(end);
             var time_diff = {
               start: start,
               end: end,
@@ -412,7 +412,7 @@ exports.search_items = function(req, res) {
               item.id = item._id
             })
             var end = moment();
-            var diff = moment.utc(start).diff(end).format('x');
+            var diff = start.diff(end);
             var time_diff = {
               start: start,
               end: end,
