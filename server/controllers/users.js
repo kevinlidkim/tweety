@@ -168,7 +168,6 @@ exports.add_user = function(req, res) {
     random_key: random_key
   })
     .then(data => {
-      console.log(data);
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully created user'
