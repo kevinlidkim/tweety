@@ -20,7 +20,7 @@ module.exports = function(app) {
   app.post('/additem', tweets.add_item);
   app.get('/item/:id', tweets.get_item);
   app.delete('/item/:id',tweets.delete_item);
-  app.post('/search', tweets.search_items);
+  app.post('/search', tweets.search_items_aggregate);
 
   app.get('*', function(req, res) {
     res.sendfile('./src/index.html');

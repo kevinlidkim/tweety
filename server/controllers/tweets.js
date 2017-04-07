@@ -225,36 +225,36 @@ exports.search_items = function(req, res) {
           if (req.body.q) {
             // following + no username + query string
             collection.find({
-                timestamp: { $lte: time },
-                username: { $in: follows },
-                $text: { $search: req.body.q }
-              }).sort({timestamp: -1}).limit(limit).toArray()
-                .then(query_success => {
-                  _.forEach(query_success, item => {
-                    item.id = item._id
-                  })
-                  var end = moment();
-                  var diff = end.diff(start);
-                  var time_diff = {
-                    start: start,
-                    end: end,
-                    diff: diff
-                  }
-                  console.log(diff);
-                  return res.status(200).json({
-                    time_diff: time_diff,
-                    status: 'OK',
-                    message: 'Query success. Present fields: query, following',
-                    items: query_success
-                  })
+              timestamp: { $lte: time },
+              username: { $in: follows },
+              $text: { $search: req.body.q }
+            }).sort({timestamp: -1}).limit(limit).toArray()
+              .then(query_success => {
+                _.forEach(query_success, item => {
+                  item.id = item._id
                 })
-                .catch(query_fail => {
-                  console.log(query_fail);
-                  return res.status(500).json({
-                    status: 'error',
-                    error: 'Query failed. Present fields: query, following'
-                  })
+                var end = moment();
+                var diff = end.diff(start);
+                var time_diff = {
+                  start: start,
+                  end: end,
+                  diff: diff
+                }
+                console.log(diff);
+                return res.status(200).json({
+                  time_diff: time_diff,
+                  status: 'OK',
+                  message: 'Query success. Present fields: query, following',
+                  items: query_success
                 })
+              })
+              .catch(query_fail => {
+                console.log(query_fail);
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'Query failed. Present fields: query, following'
+                })
+              })
           } else {
             // following + no username + no query string
             collection.find({
@@ -440,7 +440,10 @@ exports.search_items = function(req, res) {
 }
 
 
-exports.search_items_improved = function(req, res) {
+exports.search_items_aggregate = function(req, res) {
+
+  var start = moment();
+
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -486,58 +489,68 @@ exports.search_items_improved = function(req, res) {
         .then(relationship => {
           if (req.body.q) {
             // following + username + query string
-            collection.find({
-                timestamp: { $lte: time },
-                username: req.body.username,
-                $text: { $search: req.body.q }
-              }).sort({timestamp: -1}).limit(limit).toArray()
-                .then(query_success => {
-                  var items = [];
-                  _.forEach(query_success, item => {
-                    var result = {
-                      id: item._id,
-                      username: item.username,
-                      content: item.content,
-                      timestamp: item.timestamp
-                    }
-                    items.push(result);
-                  })
-                  return res.status(200).json({
-                    status: 'OK',
-                    message: 'Query success. Present fields: username, query, following',
-                    items: items
-                  })
+            collection.aggregate([
+              { $match: { 
+                  timestamp: { $lte: time }, 
+                  username: req.body.username, 
+                  $text: { $search: req.body.q }
+                }
+              },
+              { $project: { id: "$_id" } },
+              { $sort: { timestamp: -1 } }
+            ])
+              .then(query_success => {
+                var end = moment();
+                var diff = end.diff(start);
+                var time_diff = {
+                  start: start,
+                  end: end,
+                  diff: diff
+                }
+                console.log(diff + "              Present fields: username, query, following");
+                return res.status(200).json({
+                  time_diff: time_diff,
+                  status: 'OK',
+                  message: 'Query success. Present fields: username, query, following',
+                  items: query_success
                 })
-                .catch(query_fail => {
-                  return res.status(500).json({
-                    status: 'error',
-                    error: 'Query failed. Present fields: username, query, following'
-                  })
+              })
+              .catch(query_fail => {
+                console.log(query_fail);
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'Query failed. Present fields: username, query, following'
                 })
+              })
           } else {
             // following + username + no query string
-            collection.find({
-              timestamp: { $lte: time },
-              username: req.body.username
-            }).sort({timestamp: -1}).limit(limit).toArray()
+            collection.aggregate([
+              { $match: { 
+                  timestamp: { $lte: time }, 
+                  username: req.body.username
+                }
+              },
+              { $project: { id: "$_id" } },
+              { $sort: { timestamp: -1 } }
+            ])
               .then(no_query_success => {
-                var items = [];
-                _.forEach(no_query_success, item => {
-                  var result = {
-                    id: item._id,
-                    username: item.username,
-                    content: item.content,
-                    timestamp: item.timestamp
-                  }
-                  items.push(result);
-                })
+                var end = moment();
+                var diff = end.diff(start);
+                var time_diff = {
+                  start: start,
+                  end: end,
+                  diff: diff
+                }
+                console.log(diff + "              Present fields: username, following");
                 return res.status(200).json({
+                  time_diff: time_diff,
                   status: 'OK',
                   message: 'Query success. Present fields: username, following',
-                  items: items
+                  items: no_query_success
                 })
               })
               .catch(no_query_fail => {
+                console.log(no_query_fail);
                 return res.status(500).json({
                   status: 'error',
                   error: 'Query failed. Present fields: username, following'
@@ -564,58 +577,68 @@ exports.search_items_improved = function(req, res) {
 
           if (req.body.q) {
             // following + no username + query string
-            collection.find({
-                timestamp: { $lte: time },
-                username: { $in: follows },
-                $text: { $search: req.body.q }
-              }).sort({timestamp: -1}).limit(limit).toArray()
-                .then(query_success => {
-                  var items = [];
-                  _.forEach(query_success, item => {
-                    var result = {
-                      id: item._id,
-                      username: item.username,
-                      content: item.content,
-                      timestamp: item.timestamp
-                    }
-                    items.push(result);
-                  })
-                  return res.status(200).json({
-                    status: 'OK',
-                    message: 'Query success. Present fields: query, following',
-                    items: items
-                  })
+            collection.aggregate([
+              { $match: { 
+                  timestamp: { $lte: time }, 
+                  username: { $in: follows }, 
+                  $text: { $search: req.body.q }
+                }
+              },
+              { $project: { id: "$_id" } },
+              { $sort: { timestamp: -1 } }
+            ])
+              .then(query_success => {
+                var end = moment();
+                var diff = end.diff(start);
+                var time_diff = {
+                  start: start,
+                  end: end,
+                  diff: diff
+                }
+                console.log(diff + "              Present fields: query, following");
+                return res.status(200).json({
+                  time_diff: time_diff,
+                  status: 'OK',
+                  message: 'Query success. Present fields: query, following',
+                  items: query_success
                 })
-                .catch(query_fail => {
-                  return res.status(500).json({
-                    status: 'error',
-                    error: 'Query failed. Present fields: query, following'
-                  })
+              })
+              .catch(query_fail => {
+                console.log(query_fail);
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'Query failed. Present fields: query, following'
                 })
+              })
           } else {
             // following + no username + no query string
-            collection.find({
-              timestamp: { $lte: time },
-              username: { $in: follows }
-            }).sort({timestamp: -1}).limit(limit).toArray()
+            collection.aggregate([
+              { $match: { 
+                  timestamp: { $lte: time }, 
+                  username: { $in: follows }
+                }
+              },
+              { $project: { id: "$_id" } },
+              { $sort: { timestamp: -1 } }
+            ])
               .then(no_query_success => {
-                var items = [];
-                _.forEach(no_query_success, item => {
-                  var result = {
-                    id: item._id,
-                    username: item.username,
-                    content: item.content,
-                    timestamp: item.timestamp
-                  }
-                  items.push(result);
-                })
+                var end = moment();
+                var diff = end.diff(start);
+                var time_diff = {
+                  start: start,
+                  end: end,
+                  diff: diff
+                }
+                console.log(diff + "              Present fields: following");
                 return res.status(200).json({
+                  time_diff: time_diff,
                   status: 'OK',
                   message: 'Query success. Present fields: following',
-                  items: items
+                  items: no_query_success
                 })
               })
               .catch(no_query_fail => {
+                console.log(no_query_fail);
                 return res.status(500).json({
                   status: 'error',
                   error: 'Query failed. Present fields: following'
@@ -625,6 +648,7 @@ exports.search_items_improved = function(req, res) {
 
         })
         .catch(follow_fail => {
+          console.log(follow_fail);
           return res.status(500).json({
             status: 'error',
             error: 'Could not find users that this user is following for tweet search'
@@ -637,29 +661,34 @@ exports.search_items_improved = function(req, res) {
       // not following + username
       if (req.body.q) {
         // not following + username + query string
-        collection.find({
-          timestamp: { $lte: time },
-          username: req.body.username,
-          $text: { $search: req.body.q }
-        }).sort({timestamp: -1}).limit(limit).toArray()
+        collection.aggregate([
+          { $match: { 
+              timestamp: { $lte: time },  
+              username: req.body.username, 
+              $text: { $search: req.body.q },
+            }
+          },
+          { $project: { id: "$_id" } },
+          { $sort: { timestamp: -1 } }
+        ])
           .then(query_success => {
-            var items = [];
-            _.forEach(query_success, item => {
-              var result = {
-                id: item._id,
-                username: item.username,
-                content: item.content,
-                timestamp: item.timestamp
-              }
-              items.push(result);
-            })
+            var end = moment();
+            var diff = end.diff(start);
+            var time_diff = {
+              start: start,
+              end: end,
+              diff: diff
+            }
+            console.log(diff + "              Present fields: username, query");
             return res.status(200).json({
+              time_diff: time_diff,
               status: 'OK',
               message: 'Query success. Present fields: username, query',
-              items: items
+              items: query_success
             })
           })
           .catch(query_fail => {
+            console.log(query_fail);
             return res.status(500).json({
               status: 'error',
               error: 'Query failed. Present fields: username, query'
@@ -667,28 +696,33 @@ exports.search_items_improved = function(req, res) {
           })
       } else {
         // not following + username + no query string
-        collection.find({
-          timestamp: { $lte: time },
-          username: req.body.username
-        }).sort({timestamp: -1}).limit(limit).toArray()
+        collection.aggregate([
+          { $match: { 
+              timestamp: { $lte: time }, 
+              username: req.body.username
+            }
+          },
+          { $project: { id: "$_id" } },
+          { $sort: { timestamp: -1 } }
+        ])
           .then(query_success => {
-            var items = [];
-            _.forEach(query_success, item => {
-              var result = {
-                id: item._id,
-                username: item.username,
-                content: item.content,
-                timestamp: item.timestamp
-              }
-              items.push(result);
-            })
+            var end = moment();
+            var diff = end.diff(start);
+            var time_diff = {
+              start: start,
+              end: end,
+              diff: diff
+            }
+            console.log(diff + "              Present fields: username");
             return res.status(200).json({
+              time_diff: time_diff,
               status: 'OK',
               message: 'Query success. Present fields: username',
-              items: items
+              items: query_success
             })
           })
           .catch(query_fail => {
+            console.log(query_fail);
             return res.status(500).json({
               status: 'error',
               error: 'Query failed. Present fields: username'
@@ -699,28 +733,33 @@ exports.search_items_improved = function(req, res) {
       // not following + no username
       if (req.body.q) {
         // not following + no username + query string
-        collection.find({
-          timestamp: { $lte: time },
-          $text: { $search: req.body.q }
-        }).sort({timestamp: -1}).limit(limit).toArray()
+        collection.aggregate([
+          { $match: { 
+              timestamp: { $lte: time }, 
+              $text: { $search: req.body.q }
+            }
+          },
+          { $project: { id: "$_id" } },
+          { $sort: { timestamp: -1 } }
+        ])
           .then(query_success => {
-            var items = [];
-            _.forEach(query_success, item => {
-              var result = {
-                id: item._id,
-                username: item.username,
-                content: item.content,
-                timestamp: item.timestamp
-              }
-              items.push(result);
-            })
+            var end = moment();
+            var diff = end.diff(start);
+            var time_diff = {
+              start: start,
+              end: end,
+              diff: diff
+            }
+            console.log(diff + "              Present fields: query");
             return res.status(200).json({
+              time_diff: time_diff,
               status: 'OK',
               message: 'Query success. Present fields: query',
-              items: items
+              items: query_success
             })
           })
           .catch(query_fail => {
+            console.log(query_fail);
             return res.status(500).json({
               status: 'error',
               error: 'Query failed. Present fields: query'
@@ -728,27 +767,32 @@ exports.search_items_improved = function(req, res) {
           })
       } else {
         // not following + no username + no query string
-        collection.find({
-          timestamp: { $lte: time }
-        }).sort({timestamp: -1}).limit(limit).toArray()
+        collection.aggregate([
+          { $match: { 
+              timestamp: { $lte: time }
+            }
+          },
+          { $project: { id: "$_id" } },
+          { $sort: { timestamp: -1 } }
+        ])
           .then(query_success => {
-            var items = [];
-            _.forEach(query_success, item => {
-              var result = {
-                id: item._id,
-                username: item.username,
-                content: item.content,
-                timestamp: item.timestamp
-              }
-              items.push(result);
-            })
+            var end = moment();
+            var diff = end.diff(start);
+            var time_diff = {
+              start: start,
+              end: end,
+              diff: diff
+            }
+            console.log(diff + "              Present fields: N/A");
             return res.status(200).json({
+              time_diff: time_diff,
               status: 'OK',
               message: 'Query success. Present fields: N/A',
-              items: items
+              items: query_success
             })
           })
           .catch(query_fail => {
+            console.log(query_fail);
             return res.status(500).json({
               status: 'error',
               error: 'Query failed. Present fields: N/A'
