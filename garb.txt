@@ -31,6 +31,9 @@ db.user.createIndex({email: 1, username: 1}, {unique: true});
 db.tweets.createIndex({content: "text", username: 1, timestamp: -1});
 db.follows.createIndex({follower: 1, following: 1});
 
+db.users.createIndex({email: 1});
+db.users.createIndex({username: 1});
+
 db.users.createIndex({email: 1}, {unique: true});
 db.users.createIndex({username: 1}, {unique: true});
 db.tweets.createIndex({timestamp: -1});
@@ -93,7 +96,7 @@ sudo nano /etc/nginx/sites-available/default
 
 rs.initiate(
   {
-    _id: "configReplSet",
+    _id: "config1",
     configsvr: true,
     members: [
       { _id : 0, host : "database-config:27019" }
@@ -101,21 +104,16 @@ rs.initiate(
   }
 )
 
-rs.initiate(
-  {
-    _id: "rs1",
-    members: [
-      { _id : 0, host : "database-1:27018" }
-    ]
-  }
-)
 
-configReplSet/database-config:27019
+config1/database-config:27019
 
-sh.addShard( "rs1/database-1:27018")
-sh.addShard( "rs2/database-2:27018")
-sh.addShard( "rs3/database-3:27018")
+sh.addShard( "database-1:27018")
+sh.addShard( "database-2:27018")
+sh.addShard( "database-3:27018")
 
 sh.enableSharding("tweety")
+sh.shardCollection("test_db.test_collection", { "_id": "hashed" } )
+
+
 
 ==========================================
