@@ -164,6 +164,8 @@ exports.add_user = function(req, res) {
     username: req.body.username,
     email: req.body.email 
   }, {
+    username: req.body.username,
+    email: req.body.email,
     salt: salt,
     hashed_password: hashed_password,
     verified: false,
