@@ -156,7 +156,7 @@ exports.search_items = function(req, res) {
                     end: end,
                     diff: diff
                   }
-                  console.log(diff);
+                  console.log(diff + "              Present fields: username, query, following");
                   return res.status(200).json({
                     time_diff: time_diff,
                     status: 'OK',
@@ -188,7 +188,7 @@ exports.search_items = function(req, res) {
                   end: end,
                   diff: diff
                 }
-                console.log(diff);
+                console.log(diff + "              Present fields: username, following");
                 return res.status(200).json({
                   time_diff: time_diff,
                   status: 'OK',
@@ -240,7 +240,7 @@ exports.search_items = function(req, res) {
                   end: end,
                   diff: diff
                 }
-                console.log(diff);
+                console.log(diff + "              Present fields: query, following");
                 return res.status(200).json({
                   time_diff: time_diff,
                   status: 'OK',
@@ -272,7 +272,7 @@ exports.search_items = function(req, res) {
                   end: end,
                   diff: diff
                 }
-                console.log(diff);
+                console.log(diff + "              Present fields: following");
                 return res.status(200).json({
                   time_diff: time_diff,
                   status: 'OK',
@@ -320,7 +320,7 @@ exports.search_items = function(req, res) {
               end: end,
               diff: diff
             }
-            console.log(diff);
+            console.log(diff + "              Present fields: username, query");
             return res.status(200).json({
               time_diff: time_diff,
               status: 'OK',
@@ -352,7 +352,7 @@ exports.search_items = function(req, res) {
               end: end,
               diff: diff
             }
-            console.log(diff);
+            console.log(diff + "              Present fields: username");
             return res.status(200).json({
               time_diff: time_diff,
               status: 'OK',
@@ -387,7 +387,7 @@ exports.search_items = function(req, res) {
               end: end,
               diff: diff
             }
-            console.log(diff);
+            console.log(diff + "              Present fields: query");
             return res.status(200).json({
               time_diff: time_diff,
               status: 'OK',
@@ -418,7 +418,7 @@ exports.search_items = function(req, res) {
               end: end,
               diff: diff
             }
-            console.log(diff);
+            console.log(diff + "              Present fields: N/A");
             return res.status(200).json({
               time_diff: time_diff,
               status: 'OK',
