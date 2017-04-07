@@ -125,7 +125,7 @@ exports.search_items = function(req, res) {
       limit = req.body.limit
     }
   }
-  if (typeof req.body.following != undefined) {
+  if (req.body.following != undefined) {
     following = req.body.following;
   }
 
