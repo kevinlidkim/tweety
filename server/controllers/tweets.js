@@ -498,7 +498,7 @@ exports.search_items_aggregate = function(req, res) {
               },
               { $project: { id: "$_id" } },
               { $sort: { timestamp: -1 } }
-            ])
+            ]).exec()
               .then(query_success => {
                 var end = moment();
                 var diff = end.diff(start);
@@ -532,7 +532,7 @@ exports.search_items_aggregate = function(req, res) {
               },
               { $project: { id: "$_id" } },
               { $sort: { timestamp: -1 } }
-            ])
+            ]).exec()
               .then(no_query_success => {
                 var end = moment();
                 var diff = end.diff(start);
@@ -586,7 +586,7 @@ exports.search_items_aggregate = function(req, res) {
               },
               { $project: { id: "$_id" } },
               { $sort: { timestamp: -1 } }
-            ])
+            ]).exec()
               .then(query_success => {
                 var end = moment();
                 var diff = end.diff(start);
@@ -620,7 +620,7 @@ exports.search_items_aggregate = function(req, res) {
               },
               { $project: { id: "$_id" } },
               { $sort: { timestamp: -1 } }
-            ])
+            ]).exec()
               .then(no_query_success => {
                 var end = moment();
                 var diff = end.diff(start);
@@ -670,7 +670,7 @@ exports.search_items_aggregate = function(req, res) {
           },
           { $project: { id: "$_id" } },
           { $sort: { timestamp: -1 } }
-        ])
+        ]).exec()
           .then(query_success => {
             var end = moment();
             var diff = end.diff(start);
@@ -704,7 +704,7 @@ exports.search_items_aggregate = function(req, res) {
           },
           { $project: { id: "$_id" } },
           { $sort: { timestamp: -1 } }
-        ])
+        ]).exec()
           .then(query_success => {
             var end = moment();
             var diff = end.diff(start);
@@ -741,7 +741,7 @@ exports.search_items_aggregate = function(req, res) {
           },
           { $project: { id: "$_id" } },
           { $sort: { timestamp: -1 } }
-        ])
+        ]).exec()
           .then(query_success => {
             var end = moment();
             var diff = end.diff(start);
@@ -774,7 +774,7 @@ exports.search_items_aggregate = function(req, res) {
           },
           { $project: { id: "$_id" } },
           { $sort: { timestamp: -1 } }
-        ])
+        ]).exec()
           .then(query_success => {
             var end = moment();
             var diff = end.diff(start);
