@@ -7,7 +7,7 @@ var cassandra = require('cassandra-driver');
 var client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'tweety' });
 
 var multer = require('multer');
-var upload = multer().single('contents');
+var upload = multer().single('content');
 var fs = require('fs');
 
 var shortid = require('shortid');
