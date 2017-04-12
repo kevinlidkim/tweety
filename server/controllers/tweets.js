@@ -697,7 +697,7 @@ exports.get_media = function(req, res) {
         status: "Couldn't retrieve file"
       })
     } else {
-      var data = result.rows[0].contents;
+      var data = result.rows[0].content;
 
       // need to edit this
       var mimetype;
