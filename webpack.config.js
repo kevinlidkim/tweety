@@ -1,7 +1,7 @@
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: './public',
+    path: '/home/ubuntu/tweety/public',
     filename: 'bundle.js'
   },
   module: {
