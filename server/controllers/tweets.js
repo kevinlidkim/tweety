@@ -609,6 +609,9 @@ exports.likes = function(req, res) {
 }
 
 exports.add_media = function(req, res) {
+
+  console.log(req.file);
+
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',

@@ -5,6 +5,9 @@ module.exports = function(app) {
   var users = require('./controllers/users');
   var tweets = require('./controllers/tweets')
 
+  var multer = require('multer');
+  var upload = multer();
+
   app.post('/adduser', users.add_user);
   app.post('/verify', users.verify);
   app.post('/login', users.login);

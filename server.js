@@ -3,6 +3,7 @@ var app = express();
 var bodyParser     = require('body-parser');
 var session        = require('express-session');
 var cookieParser   = require('cookie-parser');
+var methodOverride = require('method-override');
 var MongoStore = require('connect-mongo')(session);
 
 var port = process.env.PORT || 80;
@@ -30,6 +31,7 @@ app.use(session({resave: true,
                  store: new MongoStore({ url: mongo_uri })
                }));
 
+app.use(methodOverride('X-HTTP-Method-Override'));
 app.use('/static', express.static(__dirname + '/public')); // need this to read bundle.js
 require('./server/routes')(app);
 
