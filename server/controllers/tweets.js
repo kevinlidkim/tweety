@@ -688,7 +688,7 @@ exports.get_media = function(req, res) {
   }
 
   var file_id = req.params.id;
-  var query = 'SELECT contents FROM media WHERE file_id = ?';
+  var query = 'SELECT content FROM media WHERE file_id = ?';
 
   client.execute(query, [file_id], function(err, result) {
     if (err) {

@@ -122,6 +122,6 @@ CREATE KEYSPACE Tweety
 WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
 
 CREATE TABLE media (
-  file_id text PRIMARYKEY
+  file_id text PRIMARY KEY,
   content blob
-)
+);
