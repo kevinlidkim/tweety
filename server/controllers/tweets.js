@@ -636,7 +636,7 @@ exports.add_media = function(req, res) {
     } else {
       var file_id = shortid.generate();
 
-      console.log('DEPOSITING FILE ' + file_id);
+      // console.log('DEPOSITING FILE ' + file_id);
       // console.log('================');
       // console.log('');
       // console.log(req.file);
@@ -654,7 +654,8 @@ exports.add_media = function(req, res) {
         } else {
           return res.status(200).json({
             status: 'OK',
-            message: 'Successfully deposited file'
+            message: 'Successfully deposited file',
+            id: file_id
           })
         }
       })
@@ -699,7 +700,7 @@ exports.get_media = function(req, res) {
       var data = result.rows[0].content;
       var mimetype = result.rows[0].mimetype;
 
-      console.log('RETRIEVING FILE ' + file_id);
+      // console.log('RETRIEVING FILE ' + file_id);
       // console.log('================');
       // console.log('');
       // console.log(data);
