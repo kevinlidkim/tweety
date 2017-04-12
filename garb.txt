@@ -117,3 +117,11 @@ sh.shardCollection("test_db.test_collection", { "_id": "hashed" } )
 
 
 ==========================================
+
+CREATE KEYSPACE Tweety
+WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
+
+CREATE TABLE media (
+  file_id text PRIMARYKEY
+  content blob
+)

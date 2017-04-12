@@ -643,7 +643,7 @@ exports.add_media = function(req, res) {
       console.log(req.file);
       console.log('');
 
-      var query = 'INSERT INTO media (file_id, contents) VALUES (?, ?)';
+      var query = 'INSERT INTO media (file_id, content) VALUES (?, ?)';
 
       client.execute(query, [file_id, cont], function(err, result) {
         if (err) {
