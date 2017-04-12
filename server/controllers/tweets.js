@@ -11,6 +11,7 @@ var upload = multer().single('contents');
 var fs = require('fs');
 
 var shortid = require('shortid');
+var fileType = require('file-type');
 
 exports.add_item = function(req, res) {
 

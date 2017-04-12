@@ -19,6 +19,7 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.13.3",
     "express-session": "^1.15.1",
+    "file-type": "^4.1.0",
     "lodash": "^4.17.4",
     "method-override": "^2.3.7",
     "moment": "^2.18.0",
