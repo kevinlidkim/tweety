@@ -680,7 +680,7 @@ exports.get_media = function(req, res) {
       error: 'Cassandra error'
     })
   } else if (!req.params.id) {
-    return res.status.(500).json({
+    return res.status(500).json({
       status: 'error',
       error: 'Invalid media id'
     })
