@@ -700,19 +700,23 @@ exports.get_media = function(req, res) {
 
       // need to edit this
       var mimetype;
-      if (file.includes('.png')) {
-        res.set('Content-Type', 'image/png');
-        res.header('Content-Type', 'image/png');
-        mimetype = 'image/png';
-      } else if (file.includes('.jpg')) {
-        res.set('Content-Type', 'image/jpg');
-        res.header('Content-Type', 'image/jpg');
-        mimetype = 'image/jpg';
-      } else {
-        res.set('Content-Type', 'image/jpg');
-        res.header('Content-Type', 'image/jpg');
-        mimetype = 'image/jpg';
-      }
+      // if (file.includes('.png')) {
+      //   res.set('Content-Type', 'image/png');
+      //   res.header('Content-Type', 'image/png');
+      //   mimetype = 'image/png';
+      // } else if (file.includes('.jpg')) {
+      //   res.set('Content-Type', 'image/jpg');
+      //   res.header('Content-Type', 'image/jpg');
+      //   mimetype = 'image/jpg';
+      // } else {
+      //   res.set('Content-Type', 'image/jpg');
+      //   res.header('Content-Type', 'image/jpg');
+      //   mimetype = 'image/jpg';
+      // }
+
+      res.set('Content-Type', 'image/jpg');
+      res.header('Content-Type', 'image/jpg');
+      mimetype = 'image/jpg';
 
       console.log('RETRIEVING FILE ' + file);
       console.log('================');
@@ -722,7 +726,7 @@ exports.get_media = function(req, res) {
 
       res.writeHead(200, {
         'Content-Type': mimetype,
-        'Content-disposition': 'attachment;filename=' + file,
+        'Content-disposition': 'attachment;filename=' + file_id,
         'Content-Length': data.length
       });
       res.end(new Buffer(data, 'binary'));
