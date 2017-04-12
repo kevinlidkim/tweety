@@ -719,7 +719,7 @@ exports.get_media = function(req, res) {
       res.header('Content-Type', 'image/jpg');
       mimetype = 'image/jpg';
 
-      console.log('RETRIEVING FILE ' + file);
+      console.log('RETRIEVING FILE ' + file_id);
       console.log('================');
       console.log('');
       console.log(data);
