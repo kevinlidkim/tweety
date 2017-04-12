@@ -22,6 +22,9 @@ module.exports = function(app) {
   app.delete('/item/:id',tweets.delete_item);
   app.post('/search', tweets.search_items);
 
+  app.post('/addmedia', tweets.add_media);
+  app.get('/media/:id', tweets.get_media);
+
   app.get('*', function(req, res) {
     res.sendfile('./src/index.html');
   });
