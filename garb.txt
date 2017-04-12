@@ -123,5 +123,8 @@ WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
 
 CREATE TABLE media (
   file_id text PRIMARY KEY,
-  content blob
+  content blob,
+  mimetype text
 );
+
+DROP TABLE media;

@@ -635,7 +635,6 @@ exports.add_media = function(req, res) {
       })
     } else {
       var file_id = shortid.generate();
-      var cont = req.file.buffer;
 
       console.log('DEPOSITING FILE ' + file_id);
       console.log('================');
@@ -643,9 +642,9 @@ exports.add_media = function(req, res) {
       console.log(req.file);
       console.log('');
 
-      var query = 'INSERT INTO media (file_id, content) VALUES (?, ?)';
+      var query = 'INSERT INTO media (file_id, content, mime_type) VALUES (?, ?, ?)';
 
-      client.execute(query, [file_id, cont], function(err, result) {
+      client.execute(query, [file_id, req.file.buffer, req.file.mimetype], function(err, result) {
         if (err) {
           console.log(err);
           return res.status(404).json({
@@ -688,7 +687,7 @@ exports.get_media = function(req, res) {
   }
 
   var file_id = req.params.id;
-  var query = 'SELECT content FROM media WHERE file_id = ?';
+  var query = 'SELECT content, mimetype FROM media WHERE file_id = ?';
 
   client.execute(query, [file_id], function(err, result) {
     if (err) {
@@ -698,6 +697,7 @@ exports.get_media = function(req, res) {
       })
     } else {
       var data = result.rows[0].content;
+      console.log(result.rows[0].mimetype);
 
       // need to edit this
       var mimetype;
