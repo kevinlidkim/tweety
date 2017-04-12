@@ -610,8 +610,6 @@ exports.likes = function(req, res) {
 
 exports.add_media = function(req, res) {
 
-  console.log(req.file);
-
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -639,7 +637,7 @@ exports.add_media = function(req, res) {
       var file_id = shortid.generate();
       var cont = req.file.buffer;
 
-      console.log('DEPOSITING FILE ' + file);
+      console.log('DEPOSITING FILE ' + file_id);
       console.log('================');
       console.log('');
       console.log(req.file);
