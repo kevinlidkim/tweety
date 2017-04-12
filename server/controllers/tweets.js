@@ -642,7 +642,7 @@ exports.add_media = function(req, res) {
       console.log(req.file);
       console.log('');
 
-      var query = 'INSERT INTO media (file_id, content, mime_type) VALUES (?, ?, ?)';
+      var query = 'INSERT INTO media (file_id, content, mimetype) VALUES (?, ?, ?)';
 
       client.execute(query, [file_id, req.file.buffer, req.file.mimetype], function(err, result) {
         if (err) {
