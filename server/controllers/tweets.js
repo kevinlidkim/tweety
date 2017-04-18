@@ -27,6 +27,8 @@ exports.add_item = function(req, res) {
     })
   }
 
+  var id = "";
+
   var collection = db.get().collection('tweets');
   collection.insert({
     content: req.body.content,
@@ -38,10 +40,37 @@ exports.add_item = function(req, res) {
     retweets: 0
   })
     .then(data => {
-      return res.status(200).json({
-        status: 'OK',
-        id: data.ops[0]._id
-      })
+      id = data.ops[0]._id;
+      // deal with retweets
+      if (req.body.content.charAt(0).toUpperCase() == 'R' && req.body.content.charAt(1).toUpperCase() == 'T') {
+        var retweet_body = req.body.content.substring(2, req.body.content.length);
+
+        collection.update(
+          { content: retweet_body.trim() },
+          { $inc: { retweets: 1 } }
+        )
+          .then(retweet_success => {
+            return res.status(200).json({
+              status: 'OK',
+              message: 'Successfully created a retweet',
+              id: id
+            })
+          })
+          .catch(retweet_fail => {
+            return res.status(500).json({
+              status: 'error',
+              error: 'Failed to update retweets'
+            })
+          })
+
+
+      } else {
+        return res.status(200).json({
+          status: 'OK',
+          message: 'Successfully created tweet (not a retweet)'
+          id: id
+        })
+      }
     })
     .catch(err => {
       console.log(err);
