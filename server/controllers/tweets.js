@@ -191,7 +191,7 @@ exports.new_search_items = function(req, res) {
               } else {
                 return res.status(200).json({
                   status: 'OK',
-                  message: 'Successfully aggregated for tweets sorted by interest (Username + Following)'
+                  message: 'Successfully aggregated for tweets sorted by interest (Username + Following)',
                   items: docs
                 })
               }
@@ -218,7 +218,8 @@ exports.new_search_items = function(req, res) {
               } else {
                 return res.status(200).json({
                   status: 'OK',
-                  message: 'Successfully aggregated for tweets sorted by time (Username + Following)'
+                  message: 'Successfully aggregated for tweets sorted by time (Username + Following)',
+                  items: docs
                 })
               }
             })
@@ -271,7 +272,7 @@ exports.new_search_items = function(req, res) {
         } else {
           return res.status(200).json({
             status: 'OK',
-            message: 'Successfully aggregated for tweets sorted by interest (Username + No Following)'
+            message: 'Successfully aggregated for tweets sorted by interest (Username + No Following)',
             items: docs
           })
         }
@@ -298,7 +299,8 @@ exports.new_search_items = function(req, res) {
         } else {
           return res.status(200).json({
             status: 'OK',
-            message: 'Successfully aggregated for tweets sorted by time (Username + No Following)'
+            message: 'Successfully aggregated for tweets sorted by time (Username + No Following)',
+            items: docs
           })
         }
       })
@@ -344,7 +346,7 @@ exports.new_search_items = function(req, res) {
             } else {
               return res.status(200).json({
                 status: 'OK',
-                message: 'Successfully aggregated for tweets sorted by interest (No Username + Following)'
+                message: 'Successfully aggregated for tweets sorted by interest (No Username + Following)',
                 items: docs
               })
             }
@@ -371,7 +373,8 @@ exports.new_search_items = function(req, res) {
             } else {
               return res.status(200).json({
                 status: 'OK',
-                message: 'Successfully aggregated for tweets sorted by time (No Username + Following)'
+                message: 'Successfully aggregated for tweets sorted by time (No Username + Following)',
+                items: docs
               })
             }
           })
@@ -416,7 +419,7 @@ exports.new_search_items = function(req, res) {
         } else {
           return res.status(200).json({
             status: 'OK',
-            message: 'Successfully aggregated for tweets sorted by interest (No Username + No Following)'
+            message: 'Successfully aggregated for tweets sorted by interest (No Username + No Following)',
             items: docs
           })
         }
@@ -443,7 +446,8 @@ exports.new_search_items = function(req, res) {
         } else {
           return res.status(200).json({
             status: 'OK',
-            message: 'Successfully aggregated for tweets sorted by time (No Username + No Following)'
+            message: 'Successfully aggregated for tweets sorted by time (No Username + No Following)',
+            items: docs
           })
         }
       })
