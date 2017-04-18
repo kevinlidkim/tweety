@@ -33,7 +33,9 @@ exports.add_item = function(req, res) {
     parent: req.body.parent,
     username: req.session.user,
     timestamp: moment().unix(),
-    media: req.body.media
+    media: req.body.media,
+    likes: 0,
+    retweets: 0
   })
     .then(data => {
       return res.status(200).json({
@@ -94,6 +96,188 @@ exports.get_item = function(req, res) {
         error: 'Error trying to find tweet'
       })
     })
+}
+
+exports.new_search_items = function(req, res) {
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
+
+  var collection = db.get().collection('tweets');
+  var sec_collection = db.get().collection('follows');
+
+  var time = moment().unix();
+  var limit = 25;
+  var following = true;
+  var follows = [];
+  var rank = "interest";
+  var replies = true;
+
+  if (req.body.timestamp) {
+    time = parseInt(req.body.timestamp);
+  }
+  if (req.body.limit) {
+    if (req.body.limit > 100) {
+      limit = 100;
+    } else {
+      limit = req.body.limit
+    }
+  }
+  if (req.body.following != undefined) {
+    following = req.body.following;
+  }
+  if (req.body.replies != undefined) {
+    replies = req.body.replies;
+  }
+  if (req.body.rank == "time") {
+    rank = req.body.rank;
+  }
+
+  var query = {};
+  query["timestamp"] = { $lte: time };
+  if (req.body.q) {
+    query["$text"] = { $search: req.body.q };
+  }
+
+  if (req.body.parent && replies) {
+    query["parent"] = req.body.parent;
+  } else if (req.body.parent && !replies) {
+    return res.status(200).json({
+      status: 'OK',
+      message: 'Filtering out replies with parent ID specified',
+      items: []
+    })
+  } else if (req.body.parent == null && replies) {
+    query["parent"] = { $ne: null };
+  }
+
+  if (req.body.username && following) {
+    sec_collection.findOne({
+      follower: req.session.user,
+      following: req.body.username
+    })
+      .then(relationship => {
+        if (relationship) {
+          query["username"] = req.body.username;
+
+          // DO AGGREGATION HERE...
+          if (rank == "interest") {
+            collection.aggregate([
+              { $match: query },
+              { $project: { id: "$_id",
+                            content: "$content", 
+                            parent: "$parent",
+                            username: "$username",
+                            timestamp: "$timestamp",
+                            media: "$media",
+                            interest: { $add: ["$likes", "$retweets"] } } },
+              { $sort: { interest: 1 } },
+              { $limit: limit }
+            ]).toArray(function(err, docs) {
+              if (err) {
+                console.log(err);
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'Failed to aggregate for tweets sorted by interest (Username + Following)'
+                })
+              } else {
+                return res.status(200).json({
+                  status: 'OK',
+                  message: 'Successfully aggregated for tweets sorted by interest (Username + Following)'
+                  items: docs
+                })
+              }
+            })
+
+          } else if (rank == "time") {
+            collection.aggregate([
+              { $match: query },
+              { $project: { id: "$_id",
+                            content: "$content",
+                            parent: "$parent",
+                            username: "$username",
+                            timestamp: "$timestamp",
+                            media: "$media" } },
+              { $sort: { timestamp: -1 } },
+              { $limit: limit }
+            ]).toArray(function(err, docs) {
+              if (err) {
+                console.log(err);
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'Failed to aggregate for tweets sorted by time (Username + Following)'
+                })
+              } else {
+                return res.status(200).json({
+                  status: 'OK',
+                  message: 'Successfully aggregated for tweets sorted by time (Username + Following)'
+                })
+              }
+            })
+
+          } else {
+            return res.status(500).json({
+              status: 'error',
+              error: 'Unknown ranking input (Username + Following)'
+            })
+          }
+
+        } else {
+          return res.status(200).json({
+            status: 'OK',
+            message: 'Username not being followed by logged in user',
+            items: []
+          })
+        }
+      })
+      .catch(relationship_err => {
+        return res.status(500).json({
+          status: 'error',
+          error: 'Failed to check if username is being followed for tweet search'
+        })
+      })
+
+  } else if (req.body.username && !following) {
+    query["username"] = req.body.username;
+
+    // DO AGGREGATION HERE...
+
+
+  } else if (req.body.username == null && following) {
+    sec_collection.find({
+      follower: req.session.user
+    }).toArray()
+      .then(follow_success => {
+        _.forEach(follow_success, follow_user => {
+          follows.push(follow_user.following);
+        })
+        query["username"] = { $in: follows };
+
+        // DO AGGREGATION HERE...
+
+      })
+      .catch(follow_fail => {
+        return res.status(500).json({
+          status: 'error',
+          error: 'Failed to find followers for tweet search'
+        })
+      })
+
+  } else {
+
+    // DO AGGREGATION HERE...
+
+  }
+
+
 }
 
 
@@ -445,83 +629,6 @@ exports.search_items = function(req, res) {
 
 }
 
-// exports.delete_item = function(req, res) {
-
-//   if (db.get() == null) {
-//     return res.status(500).json({
-//       status: 'error',
-//       error: 'Database error'
-//     })
-//   } else if (!req.session.user) {
-//     return res.status(500).json({
-//       status: 'error',
-//       error: 'No logged in user'
-//     })
-//   } else if (req.params.id.length != 24) {
-//     return res.status(500).json({
-//       status: 'error',
-//       error: 'Invalid ID: Must be a string 24 hex characters'
-//     })
-//   }
-
-//   var collection = db.get().collection('tweets');
-
-//   collection.findOne({
-//     _id: ObjectId(req.params.id)
-//   })
-//     .then(tweet => {
-//       if (tweet) {
-//         var query = 'DELETE FROM media WHERE file_id = ?';
-//         client.execute(query, [tweet.media[0]], function(err, result) {
-//           if (err) {
-//             console.log(err);
-//             return res.status(500).json({
-//               status: 'error',
-//               error: "Couldn't delete associated media file"
-//             })
-//           } else {
-//             collection.remove({
-//               _id: ObjectId(req.params.id)
-//             })
-//               .then(tweet_removed => {
-//                 if (tweet_removed.result.n == 0) {
-//                   return res.status(500).json({
-//                     status: 'error',
-//                     message: 'Tweet already does not exist in database'
-//                   })
-//                 } else {
-//                   return res.status(200).json({
-//                     status: 'OK',
-//                     message: 'Successfully deleted tweet and associated media files'
-//                   })
-//                 }
-//               })
-//               .catch(tweet_removed_fail => {
-//                 console.log(tweet_removed_fail);
-//                 return res.status(500).json({
-//                   status: 'error',
-//                   error: 'Failed to delete tweet'
-//                 })
-//               })
-//           }
-//         })
-//       } else {
-//         return res.status(500).json({
-//           status: 'error',
-//           error: 'tweet not found in database'
-//         })
-//       }
-//     })
-//     .catch(err => {
-//       console.log(err);
-//       return res.status(500).json({
-//         status: 'error',
-//         error: 'Unable to find tweet to delete'
-//       })
-//     })
-
-// }
-
 exports.delete_item = function(req, res) {
 
   if (db.get() == null) {
@@ -633,10 +740,22 @@ exports.likes = function(req, res) {
                   tweet: ObjectId(req.params.id)
                 })
                   .then(like_success => {
-                    return res.status(200).json({
-                      status: 'OK',
-                      message: 'Successfully liked tweet'
-                    })
+                    collection.update(
+                      { _id: ObjectId(req.params.id) },
+                      { $inc: { likes: 1 } }
+                    )
+                      .then(update_success => {
+                        return res.status(200).json({
+                          status: 'OK',
+                          message: 'Successfully liked tweet'
+                        })
+                      })
+                      .catch(update_fail => {
+                        return res.status(500).json({
+                          status: 'error',
+                          error: 'Failed to increment likes in tweet'
+                        })
+                      })
                   })
                   .catch(like_fail => {
                     return res.status(500).json({
@@ -666,10 +785,22 @@ exports.likes = function(req, res) {
                   tweet: ObjectId(req.params.id)
                 })
                   .then(unlike_success => {
-                    return res.status(200).json({
-                      status: 'OK',
-                      message: 'Successfully unliked tweet'
-                    })
+                    collection.update(
+                      { _id: ObjectId(req.params.id) },
+                      { $inc: { likes: -1 } }
+                    )
+                      .then(update_success => {
+                        return res.status(200).json({
+                          status: 'OK',
+                          message: 'Successfully unliked tweet'
+                        })
+                      })
+                      .catch(update_fail => {
+                        return res.status(500).json({
+                          status: 'error',
+                          error: 'Failed to decrement likes in tweet'
+                        })
+                      })
                   })
                   .catch(unlike_fail => {
                     return res.status(500).json({
