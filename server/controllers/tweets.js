@@ -465,16 +465,11 @@ exports.delete_item = function(req, res) {
   }
 
   collection.findOne({
-    id_: ObjectId(req.params.id)
+    _id: ObjectId(req.params.id)
   })
     .then(tweet => {
-      if (tweet.result.n == 0) {
-        return res.status(500).json({
-          status: 'error',
-          error: 'tweet not found in database'
-        })
-      } else {
-        var query = 'DELETE FROM media WHERE field_id = ?';
+      if (tweet) {
+        var query = 'DELETE FROM media WHERE file_id = ?';
         client.execute(query, [tweet.media[0]], function(err, result) {
           if (err) {
             console.log(err);
@@ -483,11 +478,35 @@ exports.delete_item = function(req, res) {
               error: "Couldn't delete associated media file"
             })
           } else {
-            return res.status(200).json({
-              status: 'OK',
-              message: 'Successfully deleted tweet and associated media files'
+            collection.remove({
+              _id: ObjectId(req.params.id)
             })
+              .then(tweet_removed => {
+                if (tweet_removed.result.n == 0) {
+                  return res.status(500).json({
+                    status: 'error',
+                    message: 'Tweet already does not exist in database'
+                  })
+                } else {
+                  return res.status(200).json({
+                    status: 'OK',
+                    message: 'Successfully deleted tweet and associated media files'
+                  })
+                }
+              })
+              .catch(tweet_removed_fail => {
+                console.log(tweet_removed_fail);
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'Failed to delete tweet'
+                })
+              })
           }
+        })
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          error: 'tweet not found in database'
         })
       }
     })
@@ -495,7 +514,7 @@ exports.delete_item = function(req, res) {
       console.log(err);
       return res.status(500).json({
         status: 'error',
-        error: 'Unable to delete tweet'
+        error: 'Unable to find tweet to delete'
       })
     })
 
