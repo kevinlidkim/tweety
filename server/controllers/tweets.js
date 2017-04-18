@@ -249,6 +249,66 @@ exports.new_search_items = function(req, res) {
     query["username"] = req.body.username;
 
     // DO AGGREGATION HERE...
+    if (rank == "interest") {
+      collection.aggregate([
+        { $match: query },
+        { $project: { id: "$_id",
+                      content: "$content", 
+                      parent: "$parent",
+                      username: "$username",
+                      timestamp: "$timestamp",
+                      media: "$media",
+                      interest: { $add: ["$likes", "$retweets"] } } },
+        { $sort: { interest: 1 } },
+        { $limit: limit }
+      ]).toArray(function(err, docs) {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            status: 'error',
+            error: 'Failed to aggregate for tweets sorted by interest (Username + No Following)'
+          })
+        } else {
+          return res.status(200).json({
+            status: 'OK',
+            message: 'Successfully aggregated for tweets sorted by interest (Username + No Following)'
+            items: docs
+          })
+        }
+      })
+
+    } else if (rank == "time") {
+      collection.aggregate([
+        { $match: query },
+        { $project: { id: "$_id",
+                      content: "$content",
+                      parent: "$parent",
+                      username: "$username",
+                      timestamp: "$timestamp",
+                      media: "$media" } },
+        { $sort: { timestamp: -1 } },
+        { $limit: limit }
+      ]).toArray(function(err, docs) {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            status: 'error',
+            error: 'Failed to aggregate for tweets sorted by time (Username + No Following)'
+          })
+        } else {
+          return res.status(200).json({
+            status: 'OK',
+            message: 'Successfully aggregated for tweets sorted by time (Username + No Following)'
+          })
+        }
+      })
+
+    } else {
+      return res.status(500).json({
+        status: 'error',
+        error: 'Unknown ranking input (Username + No Following)'
+      })
+    }
 
 
   } else if (req.body.username == null && following) {
@@ -262,6 +322,66 @@ exports.new_search_items = function(req, res) {
         query["username"] = { $in: follows };
 
         // DO AGGREGATION HERE...
+        if (rank == "interest") {
+          collection.aggregate([
+            { $match: query },
+            { $project: { id: "$_id",
+                          content: "$content", 
+                          parent: "$parent",
+                          username: "$username",
+                          timestamp: "$timestamp",
+                          media: "$media",
+                          interest: { $add: ["$likes", "$retweets"] } } },
+            { $sort: { interest: 1 } },
+            { $limit: limit }
+          ]).toArray(function(err, docs) {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                status: 'error',
+                error: 'Failed to aggregate for tweets sorted by interest (No Username + Following)'
+              })
+            } else {
+              return res.status(200).json({
+                status: 'OK',
+                message: 'Successfully aggregated for tweets sorted by interest (No Username + Following)'
+                items: docs
+              })
+            }
+          })
+
+        } else if (rank == "time") {
+          collection.aggregate([
+            { $match: query },
+            { $project: { id: "$_id",
+                          content: "$content",
+                          parent: "$parent",
+                          username: "$username",
+                          timestamp: "$timestamp",
+                          media: "$media" } },
+            { $sort: { timestamp: -1 } },
+            { $limit: limit }
+          ]).toArray(function(err, docs) {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                status: 'error',
+                error: 'Failed to aggregate for tweets sorted by time (No Username + Following)'
+              })
+            } else {
+              return res.status(200).json({
+                status: 'OK',
+                message: 'Successfully aggregated for tweets sorted by time (No Username + Following)'
+              })
+            }
+          })
+
+        } else {
+          return res.status(500).json({
+            status: 'error',
+            error: 'Unknown ranking input (No Username + Following)'
+          })
+        }
 
       })
       .catch(follow_fail => {
@@ -274,6 +394,66 @@ exports.new_search_items = function(req, res) {
   } else {
 
     // DO AGGREGATION HERE...
+    if (rank == "interest") {
+      collection.aggregate([
+        { $match: query },
+        { $project: { id: "$_id",
+                      content: "$content", 
+                      parent: "$parent",
+                      username: "$username",
+                      timestamp: "$timestamp",
+                      media: "$media",
+                      interest: { $add: ["$likes", "$retweets"] } } },
+        { $sort: { interest: 1 } },
+        { $limit: limit }
+      ]).toArray(function(err, docs) {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            status: 'error',
+            error: 'Failed to aggregate for tweets sorted by interest (No Username + No Following)'
+          })
+        } else {
+          return res.status(200).json({
+            status: 'OK',
+            message: 'Successfully aggregated for tweets sorted by interest (No Username + No Following)'
+            items: docs
+          })
+        }
+      })
+
+    } else if (rank == "time") {
+      collection.aggregate([
+        { $match: query },
+        { $project: { id: "$_id",
+                      content: "$content",
+                      parent: "$parent",
+                      username: "$username",
+                      timestamp: "$timestamp",
+                      media: "$media" } },
+        { $sort: { timestamp: -1 } },
+        { $limit: limit }
+      ]).toArray(function(err, docs) {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            status: 'error',
+            error: 'Failed to aggregate for tweets sorted by time (No Username + No Following)'
+          })
+        } else {
+          return res.status(200).json({
+            status: 'OK',
+            message: 'Successfully aggregated for tweets sorted by time (No Username + No Following)'
+          })
+        }
+      })
+
+    } else {
+      return res.status(500).json({
+        status: 'error',
+        error: 'Unknown ranking input (No Username + No Following)'
+      })
+    }
 
   }
 
