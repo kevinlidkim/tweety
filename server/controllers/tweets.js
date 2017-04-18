@@ -32,7 +32,8 @@ exports.add_item = function(req, res) {
     content: req.body.content,
     parent: req.body.parent,
     username: req.session.user,
-    timestamp: moment().unix()
+    timestamp: moment().unix(),
+    media: req.body.media
   })
     .then(data => {
       return res.status(200).json({
@@ -74,14 +75,9 @@ exports.get_item = function(req, res) {
   })
     .then(data => {
       if (data) {
-        var item = {
-          id: data._id,
-          username: data.username,
-          content: data.content,
-          timestamp: data.timestamp
-        }
+        data.id = data._id;
         return res.status(200).json({
-          item: item,
+          item: data,
           status: 'OK'
         })
       } else {
@@ -468,20 +464,30 @@ exports.delete_item = function(req, res) {
     })
   }
 
-  var collection = db.get().collection('tweets');
-  collection.remove({
-    _id: ObjectId(req.params.id),
-    username: req.session.user
+  collection.findOne({
+    id_: ObjectId(req.params.id)
   })
-    .then(data => {
-      if (data.result.n == 0) {
+    .then(tweet => {
+      if (tweet.result.n == 0) {
         return res.status(500).json({
           status: 'error',
           error: 'tweet not found in database'
         })
       } else {
-        return res.status(200).json({
-          status: 'OK'
+        var query = 'DELETE FROM media WHERE field_id = ?';
+        client.execute(query, [tweet.media[0]], function(err, result) {
+          if (err) {
+            console.log(err);
+            return res.status(500).json({
+              status: 'error',
+              error: "Couldn't delete associated media file"
+            })
+          } else {
+            return res.status(200).json({
+              status: 'OK',
+              message: 'Successfully deleted tweet and associated media files'
+            })
+          }
         })
       }
     })
@@ -492,6 +498,7 @@ exports.delete_item = function(req, res) {
         error: 'Unable to delete tweet'
       })
     })
+
 }
 
 exports.likes = function(req, res) {
