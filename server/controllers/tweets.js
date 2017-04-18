@@ -67,7 +67,7 @@ exports.add_item = function(req, res) {
       } else {
         return res.status(200).json({
           status: 'OK',
-          message: 'Successfully created tweet (not a retweet)'
+          message: 'Successfully created tweet (not a retweet)',
           id: id
         })
       }
