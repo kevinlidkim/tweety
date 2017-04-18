@@ -157,6 +157,8 @@ exports.new_search_items = function(req, res) {
     })
   } else if (req.body.parent == null && replies) {
     query["parent"] = { $ne: null };
+  } else if (req.body.parent == null && !replies) {
+    query["parent"] = null;
   }
 
   if (req.body.username && following) {
@@ -168,6 +170,7 @@ exports.new_search_items = function(req, res) {
         if (relationship) {
           query["username"] = req.body.username;
 
+          console.log(query);
           // DO AGGREGATION HERE...
           if (rank == "interest") {
             collection.aggregate([
@@ -249,6 +252,7 @@ exports.new_search_items = function(req, res) {
   } else if (req.body.username && !following) {
     query["username"] = req.body.username;
 
+    console.log(query);
     // DO AGGREGATION HERE...
     if (rank == "interest") {
       collection.aggregate([
@@ -323,6 +327,7 @@ exports.new_search_items = function(req, res) {
         })
         query["username"] = { $in: follows };
 
+        console.log(query);
         // DO AGGREGATION HERE...
         if (rank == "interest") {
           collection.aggregate([
@@ -396,6 +401,7 @@ exports.new_search_items = function(req, res) {
 
   } else {
 
+    console.log(query);
     // DO AGGREGATION HERE...
     if (rank == "interest") {
       collection.aggregate([
