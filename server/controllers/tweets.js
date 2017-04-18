@@ -445,6 +445,83 @@ exports.search_items = function(req, res) {
 
 }
 
+// exports.delete_item = function(req, res) {
+
+//   if (db.get() == null) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Database error'
+//     })
+//   } else if (!req.session.user) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'No logged in user'
+//     })
+//   } else if (req.params.id.length != 24) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Invalid ID: Must be a string 24 hex characters'
+//     })
+//   }
+
+//   var collection = db.get().collection('tweets');
+
+//   collection.findOne({
+//     _id: ObjectId(req.params.id)
+//   })
+//     .then(tweet => {
+//       if (tweet) {
+//         var query = 'DELETE FROM media WHERE file_id = ?';
+//         client.execute(query, [tweet.media[0]], function(err, result) {
+//           if (err) {
+//             console.log(err);
+//             return res.status(500).json({
+//               status: 'error',
+//               error: "Couldn't delete associated media file"
+//             })
+//           } else {
+//             collection.remove({
+//               _id: ObjectId(req.params.id)
+//             })
+//               .then(tweet_removed => {
+//                 if (tweet_removed.result.n == 0) {
+//                   return res.status(500).json({
+//                     status: 'error',
+//                     message: 'Tweet already does not exist in database'
+//                   })
+//                 } else {
+//                   return res.status(200).json({
+//                     status: 'OK',
+//                     message: 'Successfully deleted tweet and associated media files'
+//                   })
+//                 }
+//               })
+//               .catch(tweet_removed_fail => {
+//                 console.log(tweet_removed_fail);
+//                 return res.status(500).json({
+//                   status: 'error',
+//                   error: 'Failed to delete tweet'
+//                 })
+//               })
+//           }
+//         })
+//       } else {
+//         return res.status(500).json({
+//           status: 'error',
+//           error: 'tweet not found in database'
+//         })
+//       }
+//     })
+//     .catch(err => {
+//       console.log(err);
+//       return res.status(500).json({
+//         status: 'error',
+//         error: 'Unable to find tweet to delete'
+//       })
+//     })
+
+// }
+
 exports.delete_item = function(req, res) {
 
   if (db.get() == null) {
@@ -464,49 +541,39 @@ exports.delete_item = function(req, res) {
     })
   }
 
-  collection.findOne({
+  var collection = db.get().collection('tweets');
+
+  collection.findOneAndDelete({
     _id: ObjectId(req.params.id)
   })
     .then(tweet => {
-      if (tweet) {
-        var query = 'DELETE FROM media WHERE file_id = ?';
-        client.execute(query, [tweet.media[0]], function(err, result) {
-          if (err) {
-            console.log(err);
-            return res.status(500).json({
-              status: 'error',
-              error: "Couldn't delete associated media file"
-            })
-          } else {
-            collection.remove({
-              _id: ObjectId(req.params.id)
-            })
-              .then(tweet_removed => {
-                if (tweet_removed.result.n == 0) {
-                  return res.status(500).json({
-                    status: 'error',
-                    message: 'Tweet already does not exist in database'
-                  })
-                } else {
-                  return res.status(200).json({
-                    status: 'OK',
-                    message: 'Successfully deleted tweet and associated media files'
-                  })
-                }
+      if (tweet.lastErrorObject.n > 0) {
+        if (tweet.value.media && tweet.value.media.length > 0) {
+          var query = 'DELETE FROM media WHERE file_id = ?';
+          client.execute(query, [tweet.media[0]], function(err, result) {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                status: 'error',
+                error: 'Unable to delete associated media file'
               })
-              .catch(tweet_removed_fail => {
-                console.log(tweet_removed_fail);
-                return res.status(500).json({
-                  status: 'error',
-                  error: 'Failed to delete tweet'
-                })
+            } else {
+              return res.status(200).json({
+                status: 'OK',
+                message: 'Successfully deleted tweet and associated media file'
               })
-          }
-        })
+            }
+          })
+        } else {
+          return res.status(200).json({
+            status: 'OK',
+            message: 'Successfully deleted tweet'
+          })
+        }
       } else {
         return res.status(500).json({
           status: 'error',
-          error: 'tweet not found in database'
+          error: "Tweet doesn't exist"
         })
       }
     })
