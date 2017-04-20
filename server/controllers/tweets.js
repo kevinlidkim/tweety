@@ -1133,7 +1133,7 @@ exports.get_media = function(req, res) {
     if (err) {
       console.log(err);
       return res.status(404).json({
-        status: 'error'
+        status: 'error',
         error: "Couldn't retrieve file"
       })
     } else {
