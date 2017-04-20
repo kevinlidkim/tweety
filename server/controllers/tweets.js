@@ -4,7 +4,7 @@ var _ = require('lodash');
 var moment = require('moment');
 
 var cassandra = require('cassandra-driver');
-var client = new cassandra.Client({ contactPoints: ['192.168.1.21'], keyspace: 'tweety' });
+var client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'tweety' });
 
 var multer = require('multer');
 var upload = multer().single('content');
@@ -870,6 +870,10 @@ exports.delete_item = function(req, res) {
   })
     .then(tweet => {
       if (tweet.lastErrorObject.n > 0) {
+        console.log("==========================================");
+        console.log("DELETING MEDIA");
+        console.log(tweet);
+        console.log("==========================================");
         if (tweet.value.media && tweet.value.media.length > 0) {
           var query = 'DELETE FROM media WHERE file_id = ?';
           client.execute(query, [tweet.media[0]], function(err, result) {

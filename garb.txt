@@ -9,10 +9,11 @@ babel-cli babel-core babel-loader babel-preset-es2015 babel-preset-react css-loa
 ================================================
 
 upstream backend  {
-  server 192.168.1.14 max_fails=1  fail_timeout=3s;
-  server 192.168.1.15 max_fails=1  fail_timeout=3s;
-  server 192.168.1.16 max_fails=1  fail_timeout=3s;
-  server 192.168.1.17 max_fails=1  fail_timeout=3s;
+  server 192.168.1.14 max_fails=1  fail_timeout=2s;
+  server 192.168.1.18 max_fails=1  fail_timeout=2s;
+  server 192.168.1.16 max_fails=1  fail_timeout=2s;
+  server 192.168.1.17 max_fails=1  fail_timeout=2s;
+  server 192.168.1.22 max_fails=1  fail_timeout=2s;
 }
 
 server {
