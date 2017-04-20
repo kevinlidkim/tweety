@@ -212,7 +212,7 @@ exports.new_search_items = function(req, res) {
                             timestamp: "$timestamp",
                             media: "$media",
                             interest: { $add: ["$likes", "$retweets"] } } },
-              { $sort: { interest: 1 } },
+              { $sort: { interest: -1 } },
               { $limit: limit }
             ]).toArray(function(err, docs) {
               if (err) {
@@ -293,7 +293,7 @@ exports.new_search_items = function(req, res) {
                       timestamp: "$timestamp",
                       media: "$media",
                       interest: { $add: ["$likes", "$retweets"] } } },
-        { $sort: { interest: 1 } },
+        { $sort: { interest: -1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
         if (err) {
@@ -367,7 +367,7 @@ exports.new_search_items = function(req, res) {
                           timestamp: "$timestamp",
                           media: "$media",
                           interest: { $add: ["$likes", "$retweets"] } } },
-            { $sort: { interest: 1 } },
+            { $sort: { interest: -1 } },
             { $limit: limit }
           ]).toArray(function(err, docs) {
             if (err) {
@@ -440,7 +440,7 @@ exports.new_search_items = function(req, res) {
                       timestamp: "$timestamp",
                       media: "$media",
                       interest: { $add: ["$likes", "$retweets"] } } },
-        { $sort: { interest: 1 } },
+        { $sort: { interest: -1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
         if (err) {
