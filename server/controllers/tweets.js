@@ -37,7 +37,8 @@ exports.add_item = function(req, res) {
     timestamp: moment().unix(),
     media: req.body.media,
     likes: 0,
-    retweets: 0
+    retweets: 0,
+    interest: 0
   })
     .then(data => {
       id = data.ops[0]._id;
@@ -47,7 +48,7 @@ exports.add_item = function(req, res) {
 
         collection.update(
           { content: retweet_body.trim() },
-          { $inc: { retweets: 1 } }
+          { $inc: { retweets: 1, interest: 1 } }
         )
           .then(retweet_success => {
             return res.status(200).json({
@@ -205,13 +206,6 @@ exports.new_search_items = function(req, res) {
           if (rank == "interest") {
             collection.aggregate([
               { $match: query },
-              { $project: { id: "$_id",
-                            content: "$content", 
-                            parent: "$parent",
-                            username: "$username",
-                            timestamp: "$timestamp",
-                            media: "$media",
-                            interest: { $add: ["$likes", "$retweets"] } } },
               { $sort: { interest: 1 } },
               { $limit: limit }
             ]).toArray(function(err, docs) {
@@ -222,6 +216,9 @@ exports.new_search_items = function(req, res) {
                   error: 'Failed to aggregate for tweets sorted by interest (Username + Following)'
                 })
               } else {
+                _.forEach(docs, item => {
+                  item.id = item._id
+                })
                 var end = moment();
                 var diff = end.diff(start);
                 console.log(diff + "              Present fields: Interest, Username, Following");
@@ -237,12 +234,6 @@ exports.new_search_items = function(req, res) {
           } else if (rank == "time") {
             collection.aggregate([
               { $match: query },
-              { $project: { id: "$_id",
-                            content: "$content",
-                            parent: "$parent",
-                            username: "$username",
-                            timestamp: "$timestamp",
-                            media: "$media" } },
               { $sort: { timestamp: -1 } },
               { $limit: limit }
             ]).toArray(function(err, docs) {
@@ -253,6 +244,9 @@ exports.new_search_items = function(req, res) {
                   error: 'Failed to aggregate for tweets sorted by time (Username + Following)'
                 })
               } else {
+                _.forEach(docs, item => {
+                  item.id = item._id
+                })
                 var end = moment();
                 var diff = end.diff(start);
                 console.log(diff + "              Present fields: Time, Username, Following");
@@ -294,13 +288,6 @@ exports.new_search_items = function(req, res) {
     if (rank == "interest") {
       collection.aggregate([
         { $match: query },
-        { $project: { id: "$_id",
-                      content: "$content", 
-                      parent: "$parent",
-                      username: "$username",
-                      timestamp: "$timestamp",
-                      media: "$media",
-                      interest: { $add: ["$likes", "$retweets"] } } },
         { $sort: { interest: 1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
@@ -311,6 +298,9 @@ exports.new_search_items = function(req, res) {
             error: 'Failed to aggregate for tweets sorted by interest (Username + No Following)'
           })
         } else {
+          _.forEach(docs, item => {
+            item.id = item._id
+          })
           var end = moment();
           var diff = end.diff(start);
           console.log(diff + "              Present fields: Interest, Username");
@@ -326,12 +316,6 @@ exports.new_search_items = function(req, res) {
     } else if (rank == "time") {
       collection.aggregate([
         { $match: query },
-        { $project: { id: "$_id",
-                      content: "$content",
-                      parent: "$parent",
-                      username: "$username",
-                      timestamp: "$timestamp",
-                      media: "$media" } },
         { $sort: { timestamp: -1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
@@ -342,6 +326,9 @@ exports.new_search_items = function(req, res) {
             error: 'Failed to aggregate for tweets sorted by time (Username + No Following)'
           })
         } else {
+          _.forEach(docs, item => {
+            item.id = item._id
+          })
           var end = moment();
           var diff = end.diff(start);
           console.log(diff + "              Present fields: Time, Username");
@@ -376,13 +363,6 @@ exports.new_search_items = function(req, res) {
         if (rank == "interest") {
           collection.aggregate([
             { $match: query },
-            { $project: { id: "$_id",
-                          content: "$content", 
-                          parent: "$parent",
-                          username: "$username",
-                          timestamp: "$timestamp",
-                          media: "$media",
-                          interest: { $add: ["$likes", "$retweets"] } } },
             { $sort: { interest: 1 } },
             { $limit: limit }
           ]).toArray(function(err, docs) {
@@ -393,6 +373,9 @@ exports.new_search_items = function(req, res) {
                 error: 'Failed to aggregate for tweets sorted by interest (No Username + Following)'
               })
             } else {
+              _.forEach(docs, item => {
+                item.id = item._id
+              })
               var end = moment();
               var diff = end.diff(start);
               console.log(diff + "              Present fields: Interest, Following");
@@ -408,12 +391,6 @@ exports.new_search_items = function(req, res) {
         } else if (rank == "time") {
           collection.aggregate([
             { $match: query },
-            { $project: { id: "$_id",
-                          content: "$content",
-                          parent: "$parent",
-                          username: "$username",
-                          timestamp: "$timestamp",
-                          media: "$media" } },
             { $sort: { timestamp: -1 } },
             { $limit: limit }
           ]).toArray(function(err, docs) {
@@ -424,6 +401,9 @@ exports.new_search_items = function(req, res) {
                 error: 'Failed to aggregate for tweets sorted by time (No Username + Following)'
               })
             } else {
+              _.forEach(docs, item => {
+                item.id = item._id
+              })
               var end = moment();
               var diff = end.diff(start);
               console.log(diff + "              Present fields: Time, Following");
@@ -457,13 +437,6 @@ exports.new_search_items = function(req, res) {
     if (rank == "interest") {
       collection.aggregate([
         { $match: query },
-        { $project: { id: "$_id",
-                      content: "$content", 
-                      parent: "$parent",
-                      username: "$username",
-                      timestamp: "$timestamp",
-                      media: "$media",
-                      interest: { $add: ["$likes", "$retweets"] } } },
         { $sort: { interest: 1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
@@ -474,6 +447,9 @@ exports.new_search_items = function(req, res) {
             error: 'Failed to aggregate for tweets sorted by interest (No Username + No Following)'
           })
         } else {
+          _.forEach(docs, item => {
+            item.id = item._id
+          })
           var end = moment();
           var diff = end.diff(start);
           console.log(diff + "              Present fields: Interest");
@@ -489,12 +465,6 @@ exports.new_search_items = function(req, res) {
     } else if (rank == "time") {
       collection.aggregate([
         { $match: query },
-        { $project: { id: "$_id",
-                      content: "$content",
-                      parent: "$parent",
-                      username: "$username",
-                      timestamp: "$timestamp",
-                      media: "$media" } },
         { $sort: { timestamp: -1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
@@ -505,6 +475,9 @@ exports.new_search_items = function(req, res) {
             error: 'Failed to aggregate for tweets sorted by time (No Username + No Following)'
           })
         } else {
+          _.forEach(docs, item => {
+            item.id = item._id
+          })
           var end = moment();
           var diff = end.diff(start);
           console.log(diff + "              Present fields: Time");
@@ -994,7 +967,7 @@ exports.likes = function(req, res) {
                   .then(like_success => {
                     collection.update(
                       { _id: ObjectId(req.params.id) },
-                      { $inc: { likes: 1 } }
+                      { $inc: { likes: 1, interest: 1 }, }
                     )
                       .then(update_success => {
                         return res.status(200).json({
