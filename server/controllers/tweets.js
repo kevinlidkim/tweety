@@ -869,22 +869,11 @@ exports.delete_item = function(req, res) {
     _id: ObjectId(req.params.id)
   })
     .then(tweet => {
-
-      console.log("tweet deleted");
-
       if (tweet.lastErrorObject.n > 0) {
-
-        console.log("DID IT GET IN HERE?");
-
         if (tweet.value.media && tweet.value.media.length > 0) {
-
-          console.log('DELETED TWEET');
-          console.log(tweet);
-
-          console.log("MEDIA ID " + tweet.value.media);
-
+          console.log('Deleting media with file_id = ' + tweet.value.media);
           var query = 'DELETE FROM media WHERE file_id = ?';
-          client.execute(query, [tweet.value.media[0]], function(err, result) {
+          client.execute(query, [tweet.value.media, function(err, result) {
             if (err) {
               console.log(err);
               return res.status(500).json({
