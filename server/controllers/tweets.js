@@ -15,18 +15,19 @@ var fileType = require('file-type');
 
 exports.add_item = function(req, res) {
 
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  }
+  // if (db.get() == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Database error'
+  //   })
+  // } else if (!req.session.user) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
+  // }
 
+  var start = moment();
   var id = "";
 
   var collection = db.get().collection('tweets');
@@ -52,6 +53,9 @@ exports.add_item = function(req, res) {
           { multi: true }
         )
           .then(retweet_success => {
+            var end = moment();
+            var diff = end.diff(start);
+            console.log(diff + "              Created Tweet (RT)");
             return res.status(200).json({
               status: 'OK',
               message: 'Successfully created a retweet',
@@ -67,6 +71,9 @@ exports.add_item = function(req, res) {
 
 
       } else {
+        var end = moment();
+        var diff = end.diff(start);
+        console.log(diff + "              Created Tweet (Not RT)");
         return res.status(200).json({
           status: 'OK',
           message: 'Successfully created tweet (not a retweet)',
@@ -1093,6 +1100,8 @@ exports.add_media = function(req, res) {
   //   })
   // }
 
+  var start = moment();
+
   upload(req, res, function(err) {
     if (err) {
       console.log(err);
@@ -1118,6 +1127,9 @@ exports.add_media = function(req, res) {
             error: "Couldn't deposit file"
           })
         } else {
+          var end = moment();
+          var diff = end.diff(start);
+          console.log(diff + "              Adding media");
           return res.status(200).json({
             status: 'OK',
             message: 'Successfully deposited file',
