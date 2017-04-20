@@ -48,7 +48,8 @@ exports.add_item = function(req, res) {
 
         collection.update(
           { content: retweet_body.trim() },
-          { $inc: { retweets: 1, interest: 1 } }
+          { $inc: { retweets: 1, interest: 1 } },
+          { multi: true }
         )
           .then(retweet_success => {
             return res.status(200).json({
@@ -1075,22 +1076,22 @@ exports.likes = function(req, res) {
 
 exports.add_media = function(req, res) {
 
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  } else if (client == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Cassandra error'
-    })
-  }
+  // if (db.get() == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Database error'
+  //   })
+  // } else if (!req.session.user) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
+  // } else if (client == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Cassandra error'
+  //   })
+  // }
 
   upload(req, res, function(err) {
     if (err) {
