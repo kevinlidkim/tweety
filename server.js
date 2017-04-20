@@ -9,7 +9,8 @@ var MongoStore = require('connect-mongo')(session);
 var port = process.env.PORT || 80;
 
 var db = require('./db');
-var mongo_uri = 'mongodb://localhost:27017/tweety';
+// var mongo_uri = 'mongodb://localhost:27017/tweety';
+var mongo_uri = 'mongodb://192.168.1.21:27019/tweety';
 
 db.connect(mongo_uri, function(err) {
   if (err) {

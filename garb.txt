@@ -121,6 +121,11 @@ sh.enableSharding("tweety")
 sh.shardCollection("test_db.test_collection", { "_id": "hashed" } )
 
 
+sudo mongod --configsvr --replSet config1 --dbpath /data/db --fork --logpath /var/log/mongodb/mongo
+sudo mongod --shardsvr --fork --logpath /var/log/mongodb/mongo
+
+
+sudo mongod --port 27019 --dbpath /db --replSet rs0
 
 ==========================================
 
