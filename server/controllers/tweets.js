@@ -190,8 +190,6 @@ exports.new_search_items = function(req, res) {
     query["parent"] = null;
   }
 
-  console.log(query);
-
   if (req.body.username && following) {
     sec_collection.findOne({
       follower: req.session.user,
@@ -212,7 +210,7 @@ exports.new_search_items = function(req, res) {
                             timestamp: "$timestamp",
                             media: "$media",
                             interest: { $add: ["$likes", "$retweets"] } } },
-              { $sort: { interest: -1 } },
+              { $sort: { interest: 1 } },
               { $limit: limit }
             ]).toArray(function(err, docs) {
               if (err) {
@@ -293,7 +291,7 @@ exports.new_search_items = function(req, res) {
                       timestamp: "$timestamp",
                       media: "$media",
                       interest: { $add: ["$likes", "$retweets"] } } },
-        { $sort: { interest: -1 } },
+        { $sort: { interest: 1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
         if (err) {
@@ -367,7 +365,7 @@ exports.new_search_items = function(req, res) {
                           timestamp: "$timestamp",
                           media: "$media",
                           interest: { $add: ["$likes", "$retweets"] } } },
-            { $sort: { interest: -1 } },
+            { $sort: { interest: 1 } },
             { $limit: limit }
           ]).toArray(function(err, docs) {
             if (err) {
@@ -440,7 +438,7 @@ exports.new_search_items = function(req, res) {
                       timestamp: "$timestamp",
                       media: "$media",
                       interest: { $add: ["$likes", "$retweets"] } } },
-        { $sort: { interest: -1 } },
+        { $sort: { interest: 1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
         if (err) {
@@ -874,7 +872,7 @@ exports.delete_item = function(req, res) {
       if (tweet.lastErrorObject.n > 0) {
         if (tweet.value.media && tweet.value.media.length > 0) {
 
-          console.log("MEDIA ID " + tweet.value.media[0]);
+          console.log("Deleting Media with ID " + tweet.value.media[0]);
 
           var query = 'DELETE FROM media WHERE file_id = ?';
           client.execute(query, [tweet.value.media[0]], function(err, result) {
