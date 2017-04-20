@@ -23,7 +23,11 @@ exports.add_item = function(req, res) {
       error: 'Database error'
     })
   } else if (!req.session.user) {
+    console.log('=================================');
+    console.log('');
     console.log("No logged in user?");
+    console.log('');
+    console.log('=================================');
     return res.status(500).json({
       status: 'error',
       error: 'No logged in user'
