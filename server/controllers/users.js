@@ -218,8 +218,8 @@ exports.login = function(req, res) {
     username: req.body.username
   })
     .then(user => {
-      console.log('user doesnt exist ' + req.body.username);
       if (!user) {
+        console.log('user doesnt exist ' + req.body.username);
         return res.status(500).json({
           status: 'error',
           error: 'Invalid username'
@@ -238,8 +238,8 @@ exports.login = function(req, res) {
             error: 'Invalid password'
           })
         } else {
-          console.log('login success ' + req.session.user);
           req.session.user = user.username;
+          console.log('login success ' + req.session.user);
           return res.status(200).json({
             status: 'OK',
             message: 'Logged in successfully',
