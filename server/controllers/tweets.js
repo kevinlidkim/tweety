@@ -15,17 +15,17 @@ var fileType = require('file-type');
 
 exports.add_item = function(req, res) {
 
-  // if (db.get() == null) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'Database error'
-  //   })
-  // } else if (!req.session.user) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'No logged in user'
-  //   })
-  // }
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
 
   var start = moment();
   var id = "";
@@ -1083,22 +1083,22 @@ exports.likes = function(req, res) {
 
 exports.add_media = function(req, res) {
 
-  // if (db.get() == null) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'Database error'
-  //   })
-  // } else if (!req.session.user) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'No logged in user'
-  //   })
-  // } else if (client == null) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'Cassandra error'
-  //   })
-  // }
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  } else if (client == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Cassandra error'
+    })
+  }
 
   var start = moment();
 
