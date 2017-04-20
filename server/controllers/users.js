@@ -218,18 +218,21 @@ exports.login = function(req, res) {
     username: req.body.username
   })
     .then(user => {
+      console.log('user doesnt exist ' + req.body.username);
       if (!user) {
         return res.status(500).json({
           status: 'error',
           error: 'Invalid username'
         })
       } else if (user.verified == false) {
+        console.log('user not verified ' + req.body.username);
         return res.status(401).json({
           status: 'error',
           error: 'User not verified yet'
         })
       } else {
         if (!authenticate(req.body.password, user.salt, user.hashed_password)) {
+          console.log('bad password' + req.body.username);
           return res.status(401).json({
             status: 'error',
             error: 'Invalid password'
@@ -268,6 +271,7 @@ exports.auth = function(req, res) {
 }
 
 exports.logout = function(req, res) {
+  console.log('logging out ' + req.session.user);
   if (req.session.user) {
     req.session.destroy();
     return res.status(200).json({
