@@ -21,7 +21,8 @@ var db = require('./db');
 //   "rs0",
 //   "secondaryPreferred");
 
-var mongo_uri = 'mongodb://192.168.1.19:27019/tweety';
+// var mongo_uri = 'mongodb://192.168.1.19:27019/tweety';
+var mongo_uri = 'mongodb://192.168.1.21:27019, 192.168.1.13:27019, 192.168.1.19:27019, 192.168.1.20:27019/tweety?replicaSet=rs0&readPreference=secondaryPreferred'
 
 
 db.connect(mongo_uri, function(err) {
