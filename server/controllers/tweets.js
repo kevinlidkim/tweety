@@ -162,6 +162,9 @@ exports.new_search_items = function(req, res) {
   }
   if (req.body.following != undefined) {
     following = req.body.following;
+    console.log('WHATS WRONG???');
+    console.log(req.body.following);
+    console.log(following);
   }
   if (req.body.replies != undefined) {
     replies = req.body.replies;
