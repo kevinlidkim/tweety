@@ -878,6 +878,9 @@ exports.delete_item = function(req, res) {
 
         if (tweet.value.media && tweet.value.media.length > 0) {
 
+          console.log('DELETED TWEET');
+          console.log(tweet);
+
           console.log("MEDIA ID " + tweet.value.media);
 
           var query = 'DELETE FROM media WHERE file_id = ?';
