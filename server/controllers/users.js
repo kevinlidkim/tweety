@@ -198,6 +198,8 @@ exports.verify = function(req, res) {
 
 exports.login = function(req, res) {
 
+  console.log('trying to login');
+
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -233,6 +235,7 @@ exports.login = function(req, res) {
             error: 'Invalid password'
           })
         } else {
+          console.log('login success ' + req.session.user);
           req.session.user = user.username;
           return res.status(200).json({
             status: 'OK',
