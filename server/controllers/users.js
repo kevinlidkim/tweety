@@ -198,7 +198,7 @@ exports.verify = function(req, res) {
 
 exports.login = function(req, res) {
 
-  console.log('trying to login');
+  // console.log('trying to login');
 
   if (db.get() == null) {
     return res.status(500).json({
@@ -206,12 +206,12 @@ exports.login = function(req, res) {
       error: 'Database error'
     })
   } 
-  // else if (req.session.user) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'Another user already logged in current session'
-  //   })
-  // }
+  else if (req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Another user already logged in current session'
+    })
+  }
 
   var collection = db.get().collection('users');
   collection.findOne({
@@ -219,27 +219,27 @@ exports.login = function(req, res) {
   })
     .then(user => {
       if (!user) {
-        console.log('user doesnt exist ' + req.body.username);
+        // console.log('user doesnt exist ' + req.body.username);
         return res.status(500).json({
           status: 'error',
           error: 'Invalid username'
         })
       } else if (user.verified == false) {
-        console.log('user not verified ' + req.body.username);
+        // console.log('user not verified ' + req.body.username);
         return res.status(401).json({
           status: 'error',
           error: 'User not verified yet'
         })
       } else {
         if (!authenticate(req.body.password, user.salt, user.hashed_password)) {
-          console.log('bad password' + req.body.username);
+          // console.log('bad password' + req.body.username);
           return res.status(401).json({
             status: 'error',
             error: 'Invalid password'
           })
         } else {
           req.session.user = user.username;
-          console.log('login success ' + req.session.user);
+          // console.log('login success ' + req.session.user);
           return res.status(200).json({
             status: 'OK',
             message: 'Logged in successfully',

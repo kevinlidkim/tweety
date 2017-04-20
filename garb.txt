@@ -83,6 +83,8 @@ module.exports = {
 =====================================================
 
 var mongo_uri = 'mongodb://localhost:27017/tweety';
+
+var connection_string = "mongodb://KURONO:27018, KURONO:27019, KURONO:27020/demo_replica_set?readPreference=secondary";
 ================================================================
 
 sudo nano /etc/nginx/sites-available/default

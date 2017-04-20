@@ -958,7 +958,7 @@ exports.delete_item = function(req, res) {
       if (tweet.lastErrorObject.n > 0) {
         if (tweet.value.media && tweet.value.media.length > 0) {
 
-          console.log("Deleting Media with ID " + tweet.value.media[0]);
+          // console.log("Deleting Media with ID " + tweet.value.media[0]);
 
           var query = 'DELETE FROM media WHERE file_id = ?';
           client.execute(query, [tweet.value.media[0]], function(err, result) {
@@ -1184,7 +1184,7 @@ exports.add_media = function(req, res) {
         } else {
           var end = moment();
           var diff = end.diff(start);
-          console.log(diff + "              Adding media");
+          // console.log(diff + "              Adding media");
           return res.status(200).json({
             status: 'OK',
             message: 'Successfully deposited file',
