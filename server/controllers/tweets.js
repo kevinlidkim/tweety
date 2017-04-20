@@ -140,6 +140,8 @@ exports.new_search_items = function(req, res) {
     })
   }
 
+  var start = moment();
+
   var collection = db.get().collection('tweets');
   var sec_collection = db.get().collection('follows');
 
@@ -162,9 +164,6 @@ exports.new_search_items = function(req, res) {
   }
   if (req.body.following != undefined) {
     following = req.body.following;
-    console.log('WHATS WRONG???');
-    console.log(req.body.following);
-    console.log(following);
   }
   if (req.body.replies != undefined) {
     replies = req.body.replies;
@@ -223,7 +222,11 @@ exports.new_search_items = function(req, res) {
                   error: 'Failed to aggregate for tweets sorted by interest (Username + Following)'
                 })
               } else {
+                var end = moment();
+                var diff = end.diff(start);
+                console.log(diff + "              Present fields: Interest, Username, Following");
                 return res.status(200).json({
+                  time_diff: diff,
                   status: 'OK',
                   message: 'Successfully aggregated for tweets sorted by interest (Username + Following)',
                   items: docs
@@ -250,7 +253,11 @@ exports.new_search_items = function(req, res) {
                   error: 'Failed to aggregate for tweets sorted by time (Username + Following)'
                 })
               } else {
+                var end = moment();
+                var diff = end.diff(start);
+                console.log(diff + "              Present fields: Time, Username, Following");
                 return res.status(200).json({
+                  time_diff: diff,
                   status: 'OK',
                   message: 'Successfully aggregated for tweets sorted by time (Username + Following)',
                   items: docs
@@ -304,7 +311,11 @@ exports.new_search_items = function(req, res) {
             error: 'Failed to aggregate for tweets sorted by interest (Username + No Following)'
           })
         } else {
+          var end = moment();
+          var diff = end.diff(start);
+          console.log(diff + "              Present fields: Interest, Username");
           return res.status(200).json({
+            time_diff: diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by interest (Username + No Following)',
             items: docs
@@ -331,7 +342,11 @@ exports.new_search_items = function(req, res) {
             error: 'Failed to aggregate for tweets sorted by time (Username + No Following)'
           })
         } else {
+          var end = moment();
+          var diff = end.diff(start);
+          console.log(diff + "              Present fields: Time, Username");
           return res.status(200).json({
+            time_diff: diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by time (Username + No Following)',
             items: docs
@@ -378,7 +393,11 @@ exports.new_search_items = function(req, res) {
                 error: 'Failed to aggregate for tweets sorted by interest (No Username + Following)'
               })
             } else {
+              var end = moment();
+              var diff = end.diff(start);
+              console.log(diff + "              Present fields: Interest, Following");
               return res.status(200).json({
+                time_diff: diff,
                 status: 'OK',
                 message: 'Successfully aggregated for tweets sorted by interest (No Username + Following)',
                 items: docs
@@ -405,7 +424,11 @@ exports.new_search_items = function(req, res) {
                 error: 'Failed to aggregate for tweets sorted by time (No Username + Following)'
               })
             } else {
+              var end = moment();
+              var diff = end.diff(start);
+              console.log(diff + "              Present fields: Time, Following");
               return res.status(200).json({
+                time_diff: diff,
                 status: 'OK',
                 message: 'Successfully aggregated for tweets sorted by time (No Username + Following)',
                 items: docs
@@ -451,7 +474,11 @@ exports.new_search_items = function(req, res) {
             error: 'Failed to aggregate for tweets sorted by interest (No Username + No Following)'
           })
         } else {
+          var end = moment();
+          var diff = end.diff(start);
+          console.log(diff + "              Present fields: Interest");
           return res.status(200).json({
+            time_diff: diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by interest (No Username + No Following)',
             items: docs
@@ -478,7 +505,11 @@ exports.new_search_items = function(req, res) {
             error: 'Failed to aggregate for tweets sorted by time (No Username + No Following)'
           })
         } else {
+          var end = moment();
+          var diff = end.diff(start);
+          console.log(diff + "              Present fields: Time");
           return res.status(200).json({
+            time_diff: diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by time (No Username + No Following)',
             items: docs
