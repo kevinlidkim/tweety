@@ -871,11 +871,11 @@ exports.delete_item = function(req, res) {
     .then(tweet => {
       if (tweet.lastErrorObject.n > 0) {
         if (tweet.value.media && tweet.value.media.length > 0) {
-          
+
           console.log("MEDIA ID " + tweet.value.media);
 
           var query = 'DELETE FROM media WHERE file_id = ?';
-          client.execute(query, [tweet.value.media, function(err, result) {
+          client.execute(query, [tweet.value.media], function(err, result) {
             if (err) {
               console.log(err);
               return res.status(500).json({
