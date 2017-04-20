@@ -17,22 +17,22 @@ exports.add_item = function(req, res) {
 
   console.log("logged in user adding tweets is " + req.session.user);
 
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    console.log('=================================');
-    console.log('');
-    console.log("No logged in user?");
-    console.log('');
-    console.log('=================================');
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  }
+  // if (db.get() == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Database error'
+  //   })
+  // } else if (!req.session.user) {
+  //   console.log('=================================');
+  //   console.log(' ');
+  //   console.log("No logged in user?");
+  //   console.log(' ');
+  //   console.log('=================================');
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
+  // }
 
   var start = moment();
   var id = "";
@@ -1090,22 +1090,22 @@ exports.likes = function(req, res) {
 
 exports.add_media = function(req, res) {
 
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  } else if (client == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Cassandra error'
-    })
-  }
+  // if (db.get() == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Database error'
+  //   })
+  // } else if (!req.session.user) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
+  // } else if (client == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Cassandra error'
+  //   })
+  // }
 
   var start = moment();
 
