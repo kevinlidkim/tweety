@@ -1140,6 +1140,8 @@ exports.get_media = function(req, res) {
         status: "Couldn't retrieve file"
       })
     } else {
+      console.log("MEDIA RESULTS");
+      console.log(result.rows[0]);
       var data = result.rows[0].content;
       var mimetype = result.rows[0].mimetype;
 
