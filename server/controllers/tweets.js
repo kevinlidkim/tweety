@@ -15,6 +15,8 @@ var fileType = require('file-type');
 
 exports.add_item = function(req, res) {
 
+  console.log("logged in user adding tweets is " + req.session.user);
+
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
