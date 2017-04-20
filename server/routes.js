@@ -24,6 +24,7 @@ module.exports = function(app) {
   app.get('/item/:id', tweets.get_item);
   app.delete('/item/:id',tweets.delete_item);
   app.post('/search', tweets.new_search_items);
+  app.post('/item/:id/like', tweets.likes);
 
   app.post('/addmedia', tweets.add_media);
   app.get('/media/:id', tweets.get_media);
