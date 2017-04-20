@@ -1141,7 +1141,9 @@ exports.get_media = function(req, res) {
       })
     } else {
       console.log("MEDIA RESULTS");
-      console.log(result.rows[0]);
+      console.log(result);
+
+
       var data = result.rows[0].content;
       var mimetype = result.rows[0].mimetype;
 
