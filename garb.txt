@@ -41,8 +41,11 @@ db.tweets.createIndex({timestamp: -1});
 db.tweets.createIndex({content: "text"});
 db.tweets.createIndex({username: 1});
 db.tweets.createIndex({interest: 1});
+db.tweets.createIndex({parent: 1});
 db.follows.createIndex({follower: 1});
 db.follows.createIndex({following: 1});
+db.likes.createIndex({tweet: 1});
+db.likes.createIndex({user: 1});
 
 =============================================================
 
