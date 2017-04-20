@@ -870,10 +870,6 @@ exports.delete_item = function(req, res) {
   })
     .then(tweet => {
       if (tweet.lastErrorObject.n > 0) {
-        console.log("==========================================");
-        console.log("DELETING MEDIA");
-        console.log(tweet);
-        console.log("==========================================");
         if (tweet.value.media && tweet.value.media.length > 0) {
           var query = 'DELETE FROM media WHERE file_id = ?';
           client.execute(query, [tweet.value.media[0]], function(err, result) {
@@ -1137,31 +1133,38 @@ exports.get_media = function(req, res) {
     if (err) {
       console.log(err);
       return res.status(404).json({
-        status: "Couldn't retrieve file"
+        status: 'error'
+        error: "Couldn't retrieve file"
       })
     } else {
-      console.log("MEDIA RESULTS");
-      console.log(result);
+      if (result.rows.length > 0) {
+        var data = result.rows[0].content;
+        var mimetype = result.rows[0].mimetype;
+
+        // console.log('RETRIEVING FILE ' + file_id);
+        // console.log('================');
+        // console.log('');
+        // console.log(data);
+        // console.log('');
+
+        res.set('Content-Type', mimetype);
+        res.header('Content-Type', mimetype);
+
+        res.writeHead(200, {
+          'Content-Type': mimetype,
+          'Content-disposition': 'attachment;filename=' + file_id,
+          'Content-Length': data.length
+        });
+        res.end(new Buffer(data, 'binary'));
+      } else {
+        return res.status(404).json({
+          status: 'error',
+          error: "Media file does not exist"
+        })
+      }
 
 
-      var data = result.rows[0].content;
-      var mimetype = result.rows[0].mimetype;
-
-      // console.log('RETRIEVING FILE ' + file_id);
-      // console.log('================');
-      // console.log('');
-      // console.log(data);
-      // console.log('');
-
-      res.set('Content-Type', mimetype);
-      res.header('Content-Type', mimetype);
-
-      res.writeHead(200, {
-        'Content-Type': mimetype,
-        'Content-disposition': 'attachment;filename=' + file_id,
-        'Content-Length': data.length
-      });
-      res.end(new Buffer(data, 'binary'));
+      
     }
   })
 
