@@ -1150,27 +1150,27 @@ exports.add_media = function(req, res) {
 }
 
 exports.get_media = function(req, res) {
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  } else if (client == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Cassandra error'
-    })
-  } else if (!req.params.id) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Invalid media id'
-    })
-  }
+  // if (db.get() == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Database error'
+  //   })
+  // } else if (!req.session.user) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
+  // } else if (client == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Cassandra error'
+  //   })
+  // } else if (!req.params.id) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Invalid media id'
+  //   })
+  // }
 
   var file_id = req.params.id;
   var query = 'SELECT content, mimetype FROM media WHERE file_id = ?';
