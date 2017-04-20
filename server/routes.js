@@ -20,7 +20,8 @@ module.exports = function(app) {
   app.get('/user/:username/followers', users.get_followers);
   app.get('/user/:username/following', users.get_following);
 
-  app.post('/additem', tweets.add_item);
+  // app.post('/additem', tweets.add_item);
+  app.post('/additem', tweets.add_item_no_retweet);
   app.get('/item/:id', tweets.get_item);
   app.delete('/item/:id',tweets.delete_item);
   app.post('/search', tweets.new_search_items);

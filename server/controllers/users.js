@@ -271,41 +271,42 @@ exports.auth = function(req, res) {
 }
 
 exports.logout = function(req, res) {
-  console.log('logging out ' + req.session.user);
-  // if (req.session.user) {
-  //   req.session.destroy();
-  //   return res.status(200).json({
-  //     status: 'OK',
-  //     message: 'Successfully logged out'
-  //   })
-  // } else {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'No logged in user'
-  //   })
-  // }
   if (req.session.user) {
     req.session.destroy();
+    return res.status(200).json({
+      status: 'OK',
+      message: 'Successfully logged out'
+    })
+  } else {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
   }
-  return res.status(200).json({
-    status: 'OK',
-    message: 'Successfully logged out'
-  })
+  
+  // console.log('logging out ' + req.session.user);
+  // if (req.session.user) {
+  //   req.session.destroy();
+  // }
+  // return res.status(200).json({
+  //   status: 'OK',
+  //   message: 'Successfully logged out'
+  // })
 }
 
 exports.get_user = function(req, res) {
 
-  // if (db.get() == null) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'Database error'
-  //   })
-  // } else if (!req.session.user) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'No logged in user'
-  //   })
-  // }
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
 
   var obj = {
     email: "",
@@ -383,17 +384,17 @@ exports.get_user = function(req, res) {
 }
 
 exports.follow = function(req, res) {
-  // if (db.get() == null) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'Database error'
-  //   })
-  // } else if (!req.session.user) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'No logged in user'
-  //   })
-  // }
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
 
   var collection = db.get().collection('users');
   var sec_collection = db.get().collection('follows');
@@ -492,17 +493,17 @@ exports.follow = function(req, res) {
 }
 
 exports.get_followers = function(req, res) {
-  // if (db.get() == null) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'Database error'
-  //   })
-  // } else if (!req.session.user) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'No logged in user'
-  //   })
-  // }
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
 
   var limit = 50;
   if (req.body.limit) {
@@ -537,17 +538,17 @@ exports.get_followers = function(req, res) {
 }
 
 exports.get_following = function(req, res) {
-  // if (db.get() == null) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'Database error'
-  //   })
-  // } else if (!req.session.user) {
-  //   return res.status(500).json({
-  //     status: 'error',
-  //     error: 'No logged in user'
-  //   })
-  // }
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
 
   var limit = 50;
   if (req.body.limit) {
