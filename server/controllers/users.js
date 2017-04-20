@@ -206,12 +206,12 @@ exports.login = function(req, res) {
       error: 'Database error'
     })
   } 
-  else if (req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Another user already logged in current session'
-    })
-  }
+  // else if (req.session.user) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Another user already logged in current session'
+  //   })
+  // }
 
   var collection = db.get().collection('users');
   collection.findOne({
