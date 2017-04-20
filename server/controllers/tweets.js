@@ -206,7 +206,7 @@ exports.new_search_items = function(req, res) {
           if (rank == "interest") {
             collection.aggregate([
               { $match: query },
-              { $sort: { interest: -1 } },
+              { $sort: { timestamp: -1 } },
               { $limit: limit }
             ]).toArray(function(err, docs) {
               if (err) {
@@ -292,7 +292,7 @@ exports.new_search_items = function(req, res) {
     if (rank == "interest") {
       collection.aggregate([
         { $match: query },
-        { $sort: { interest: -1 } },
+        { $sort: { timestamp: -1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
         if (err) {
@@ -371,7 +371,7 @@ exports.new_search_items = function(req, res) {
         if (rank == "interest") {
           collection.aggregate([
             { $match: query },
-            { $sort: { interest: -1 } },
+            { $sort: { timestamp: -1 } },
             { $limit: limit }
           ]).toArray(function(err, docs) {
             if (err) {
@@ -449,7 +449,7 @@ exports.new_search_items = function(req, res) {
     if (rank == "interest") {
       collection.aggregate([
         { $match: query },
-        { $sort: { interest: -1 } },
+        { $sort: { timestamp: -1 } },
         { $limit: limit }
       ]).toArray(function(err, docs) {
         if (err) {
