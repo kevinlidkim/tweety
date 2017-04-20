@@ -9,7 +9,7 @@ var MongoStore = require('connect-mongo')(session);
 var port = process.env.PORT || 80;
 
 var db = require('./db');
-// var mongo_uri = 'mongodb://localhost:27017/tweety';
+var mongo_uri = 'mongodb://localhost:27017/tweety';
 
 // var format = require('util').format;
 // var mongo_uri = format("mongodb://%s,%s,%s,%s/%s?replicaSet=%s&readPreference=%s",
@@ -22,7 +22,7 @@ var db = require('./db');
 //   "secondaryPreferred");
 
 // var mongo_uri = 'mongodb://192.168.1.19:27019/tweety';
-var mongo_uri = 'mongodb://192.168.1.21:27019, 192.168.1.13:27019, 192.168.1.19:27019, 192.168.1.20:27019/tweety?replicaSet=rs0&readPreference=secondaryPreferred'
+// var mongo_uri = 'mongodb://192.168.1.21:27019, 192.168.1.13:27019, 192.168.1.19:27019, 192.168.1.20:27019/tweety?replicaSet=rs0&readPreference=secondaryPreferred'
 
 
 db.connect(mongo_uri, function(err) {
