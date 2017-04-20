@@ -99,22 +99,22 @@ exports.add_item = function(req, res) {
 
 exports.get_item = function(req, res) {
 
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  } else if (req.params.id.length != 24) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Invalid ID: Must be a string 24 hex characters'
-    })
-  }
+  // if (db.get() == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Database error'
+  //   })
+  // } else if (!req.session.user) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
+  // } else if (req.params.id.length != 24) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Invalid ID: Must be a string 24 hex characters'
+  //   })
+  // }
 
   var collection = db.get().collection('tweets');
   collection.findOne({
@@ -144,17 +144,17 @@ exports.get_item = function(req, res) {
 }
 
 exports.new_search_items = function(req, res) {
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  }
+  // if (db.get() == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Database error'
+  //   })
+  // } else if (!req.session.user) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
+  // }
 
   var start = moment();
 
@@ -884,22 +884,22 @@ exports.search_items = function(req, res) {
 
 exports.delete_item = function(req, res) {
 
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  } else if (req.params.id.length != 24) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Invalid ID: Must be a string 24 hex characters'
-    })
-  }
+  // if (db.get() == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Database error'
+  //   })
+  // } else if (!req.session.user) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
+  // } else if (req.params.id.length != 24) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Invalid ID: Must be a string 24 hex characters'
+  //   })
+  // }
 
   var collection = db.get().collection('tweets');
 
@@ -951,22 +951,22 @@ exports.delete_item = function(req, res) {
 }
 
 exports.likes = function(req, res) {
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  } else if (req.params.id.length != 24) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Invalid ID: Must be a string 24 hex characters'
-    })
-  }
+  // if (db.get() == null) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Database error'
+  //   })
+  // } else if (!req.session.user) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
+  // } else if (req.params.id.length != 24) {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'Invalid ID: Must be a string 24 hex characters'
+  //   })
+  // }
 
   var collection = db.get().collection('tweets');
   var sec_collection = db.get().collection('likes');
