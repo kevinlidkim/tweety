@@ -1035,8 +1035,8 @@ exports.likes = function(req, res) {
               // relationship already exists
               if (relationship) {
                 return res.status(500).json({
-                  status: 'error',
-                  error: 'Already liked tweet'
+                  status: 'OK',
+                  message: 'Already liked tweet'
                 })
               } else {
                 sec_collection.insert({

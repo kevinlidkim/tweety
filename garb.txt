@@ -107,8 +107,11 @@ sudo mongos --configdb config1/database-config:27019 --fork --logpath /var/log/m
 sudo mongod --port 27019 --dbpath /db --replSet rs0
 
 db.tweets.ensureIndex( { _id : "hashed" } );
+db.users.ensureIndex( { _id : "hashed" } );
 sh.enableSharding("tweety");
 sh.shardCollection("tweety.tweets", { "_id": "hashed" } );
+sh.shardCollection("tweety.users", { "_id": "hashed" } );
+sh.enableBalancing("tweety.tweets")
 
 =============================================================
 
