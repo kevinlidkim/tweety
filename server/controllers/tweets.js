@@ -279,9 +279,9 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                console.log(diff + "              Present fields: Interest, Username, Following");
-                console.log(query);
-                console.log('===================================================')
+                // console.log(diff + "              Present fields: Interest, Username, Following");
+                // console.log(query);
+                // console.log('===================================================')
                 return res.status(200).json({
                   time_diff: diff,
                   status: 'OK',
@@ -309,9 +309,9 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                console.log(diff + "              Present fields: Time, Username, Following");
-                console.log(query);
-                console.log('===================================================')
+                // console.log(diff + "              Present fields: Time, Username, Following");
+                // console.log(query);
+                // console.log('===================================================')
                 return res.status(200).json({
                   time_diff: diff,
                   status: 'OK',
@@ -365,9 +365,9 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          console.log(diff + "              Present fields: Interest, Username");
-          console.log(query);
-          console.log('===================================================')
+          // console.log(diff + "              Present fields: Interest, Username");
+          // console.log(query);
+          // console.log('===================================================')
           return res.status(200).json({
             time_diff: diff,
             status: 'OK',
@@ -395,9 +395,9 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          console.log(diff + "              Present fields: Time, Username");
-          console.log(query);
-          console.log('===================================================')
+          // console.log(diff + "              Present fields: Time, Username");
+          // console.log(query);
+          // console.log('===================================================')
           return res.status(200).json({
             time_diff: diff,
             status: 'OK',
@@ -444,9 +444,9 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              console.log(diff + "              Present fields: Interest, Following");
-              console.log(query);
-              console.log('===================================================')
+              // console.log(diff + "              Present fields: Interest, Following");
+              // console.log(query);
+              // console.log('===================================================')
               return res.status(200).json({
                 time_diff: diff,
                 status: 'OK',
@@ -474,9 +474,9 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              console.log(diff + "              Present fields: Time, Following");
-              console.log(query);
-              console.log('===================================================')
+              // console.log(diff + "              Present fields: Time, Following");
+              // console.log(query);
+              // console.log('===================================================')
               return res.status(200).json({
                 time_diff: diff,
                 status: 'OK',
@@ -522,9 +522,9 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          console.log(diff + "              Present fields: Interest");
-          console.log(query);
-          console.log('===================================================')
+          // console.log(diff + "              Present fields: Interest");
+          // console.log(query);
+          // console.log('===================================================')
           return res.status(200).json({
             time_diff: diff,
             status: 'OK',
@@ -552,9 +552,9 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          console.log(diff + "              Present fields: Time");
-          console.log(query);
-          console.log('===================================================')
+          // console.log(diff + "              Present fields: Time");
+          // console.log(query);
+          // console.log('===================================================')
           return res.status(200).json({
             time_diff: diff,
             status: 'OK',
