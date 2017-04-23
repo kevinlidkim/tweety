@@ -124,7 +124,7 @@ exports.add_item_no_retweet = function(req, res) {
       id = data.ops[0]._id;
       var end = moment();
       var diff = end.diff(start);
-      console.log(diff + "              Created Tweet");
+      // console.log(diff + "              Created Tweet");
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully created a retweet',
