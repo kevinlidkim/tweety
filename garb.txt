@@ -80,7 +80,7 @@ sudo nano /etc/nginx/sites-available/default
 
 rs.initiate(
   {
-    _id: "config1",
+    _id: "config2",
     configsvr: true,
     members: [
       { _id : 0, host : "database-config:27019" }
@@ -91,27 +91,46 @@ rs.initiate(
 
 config1/database-config:27019
 
-sh.addShard( "database-1:27018")
-sh.addShard( "database-2:27018")
-sh.addShard( "database-3:27018")
+sh.addShard("database-1:27018")
+sh.addShard("database-2:27018")
+sh.addShard("database-3:27018")
+sh.addShard("database-config:27018")
+sh.addShard("tweety-5:27018")
+sh.addShard("tweety-1:27018")
+sh.addShard("tweety-2:27018")
+sh.addShard("tweety-3:27018")
+sh.addShard("tweety-4:27018")
+
+
 
 sh.enableSharding("tweety")
 sh.shardCollection("test_db.test_collection", { "_id": "hashed" } )
 
+sudo mongod --shardsvr --port 27018 --dbpath /data/db/shard --fork --logpath /var/log/mongodb/mongo
 
-sudo mongod --configsvr --replSet config1 --dbpath /data/db --fork --logpath /var/log/mongodb/mongo
+
+sudo mongod --configsvr --replSet config2 --dbpath /data/db --fork --logpath /var/log/mongodb/mongo
 sudo mongod --shardsvr --fork --logpath /var/log/mongodb/mongo
-sudo mongos --configdb config1/database-config:27019 --fork --logpath /var/log/mongodb/mongo
+sudo mongos --configdb config2/database-config:27019 --fork --logpath /var/log/mongodb/mongo
 
 
 sudo mongod --port 27019 --dbpath /db --replSet rs0
 
+
+try hashing username?
+http://stackoverflow.com/questions/11819568/good-shard-keys-in-mongodb
+https://blog.bugsnag.com/mongo-shard-key/
+http://stackoverflow.com/questions/5648466/does-multiple-shard-key-helps-performance-in-mongodb
+
+
 db.tweets.ensureIndex( { _id : "hashed" } );
-db.users.ensureIndex( { _id : "hashed" } );
 sh.enableSharding("tweety");
 sh.shardCollection("tweety.tweets", { "_id": "hashed" } );
+sh.enableBalancing("tweety.tweets");
+
+db.users.ensureIndex( { _id : "hashed" } );
 sh.shardCollection("tweety.users", { "_id": "hashed" } );
-sh.enableBalancing("tweety.tweets")
+
 
 =============================================================
 

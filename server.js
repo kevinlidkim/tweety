@@ -41,7 +41,7 @@ app.use(cookieParser());
 app.use(session({resave: true, 
                  saveUninitialized: true, 
                  secret: 'supersecretfriedchicken', 
-                 cookie: { maxAge: 1000 * 60 * 60 * 2 },
+                 cookie: { maxAge: 1000 * 60 * 60 * 24 },
                  store: new MongoStore({ url: mongo_uri })
                }));
 

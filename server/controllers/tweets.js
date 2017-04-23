@@ -23,11 +23,6 @@ exports.add_item = function(req, res) {
       error: 'Database error'
     })
   } else if (!req.session.user) {
-    console.log('=================================');
-    console.log(' ');
-    console.log("No logged in user?");
-    console.log(' ');
-    console.log('=================================');
     return res.status(500).json({
       status: 'error',
       error: 'No logged in user'
@@ -129,7 +124,7 @@ exports.add_item_no_retweet = function(req, res) {
       id = data.ops[0]._id;
       var end = moment();
       var diff = end.diff(start);
-      // console.log(diff + "              Created Tweet (RT)");
+      console.log(diff + "              Created Tweet");
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully created a retweet',
