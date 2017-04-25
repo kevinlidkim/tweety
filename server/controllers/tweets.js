@@ -969,7 +969,7 @@ exports.new_delete_item = function(req, res) {
               })
             } else {
               collection.remove({
-                _id: ObjectId(req.params.id);
+                _id: ObjectId(req.params.id)
               })
                 .then(remove_success => {
                   var end = moment();
