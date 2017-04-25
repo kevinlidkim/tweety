@@ -981,8 +981,11 @@ exports.new_delete_item = function(req, res) {
                   })
                 })
                 .catch(remove_fail => {
-                  status: 'error',
-                  error: 'Failed to delete tweet after deleting media'
+                  console.log(remove_fail);
+                  return res.status(500).json({
+                    status: 'error',
+                    error: 'Failed to delete tweet after deleting media'
+                  })
                 })
             }
           })
