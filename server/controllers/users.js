@@ -124,8 +124,9 @@ exports.add_user = function(req, res) {
     .then(data => {
       var end = moment();
       var diff = end.diff(start);
-      console.log(diff + "              Adding user");
+      // console.log(diff + "              Adding user");
       return res.status(200).json({
+        time_diff: diff,
         status: 'OK',
         message: 'Successfully created user'
       })
@@ -176,8 +177,9 @@ exports.verify = function(req, res) {
             .then(data => {
               var end = moment();
               var diff = end.diff(start);
-              console.log(diff + "              Verifying user");
+              // console.log(diff + "              Verifying user");
               return res.status(200).json({
+                time_diff: diff,
                 status: 'OK',
                 message: 'Successfully verified user'
               })
@@ -252,8 +254,9 @@ exports.login = function(req, res) {
           // console.log('login success ' + req.session.user);
           var end = moment();
           var diff = end.diff(start);
-          console.log(diff + "              Logging in");
+          // console.log(diff + "              Logging in");
           return res.status(200).json({
+            time_diff: diff,
             status: 'OK',
             message: 'Logged in successfully',
             user: user.username
@@ -362,8 +365,9 @@ exports.get_user = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                console.log(diff + "              Finding user");
+                // console.log(diff + "              Finding user");
                 return res.status(200).json({
+                  time_diff: diff,
                   status: 'OK',
                   message: 'Successfully found user information',
                   user: {
@@ -443,8 +447,9 @@ exports.follow = function(req, res) {
                   .then(follow_success => {
                     var end = moment();
                     var diff = end.diff(start);
-                    console.log(diff + "              Following user");
+                    // console.log(diff + "              Following user");
                     return res.status(200).json({
+                      time_diff: diff,
                       status: 'OK',
                       message: 'Successfully following user'
                     })
@@ -479,8 +484,9 @@ exports.follow = function(req, res) {
                   .then(unfollow_success => {
                     var end = moment();
                     var diff = end.diff(start);
-                    console.log(diff + "              Unfollowing user");
+                    // console.log(diff + "              Unfollowing user");
                     return res.status(200).json({
+                      time_diff: diff,
                       status: 'OK',
                       message: 'Successfully unfollowed user'
                     })

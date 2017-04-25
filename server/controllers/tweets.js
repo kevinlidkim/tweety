@@ -122,8 +122,9 @@ exports.add_item_no_retweet = function(req, res) {
       id = data.ops[0]._id;
       var end = moment();
       var diff = end.diff(start);
-      console.log(diff + "              Created Tweet");
+      // console.log(diff + "              Created Tweet");
       return res.status(200).json({
+        time_diff: diff,
         status: 'OK',
         message: 'Successfully created a retweet',
         id: id
@@ -168,8 +169,9 @@ exports.get_item = function(req, res) {
         data.id = data._id;
         var end = moment();
         var diff = end.diff(start);
-        console.log(diff + "              Retrieved Tweet");
+        // console.log(diff + "              Retrieved Tweet");
         return res.status(200).json({
+          time_diff: diff,
           item: data,
           status: 'OK'
         })
@@ -971,8 +973,9 @@ exports.new_delete_item = function(req, res) {
               .then(remove_success => {
                 var end = moment();
                 var diff = end.diff(start);
-                console.log(diff + "              Deleted tweet + media");
+                // console.log(diff + "              Deleted tweet + media");
                 return res.status(200).json({
+                  time_diff: diff,
                   status: 'OK',
                   message: 'Successfully deleted tweet and associated media file'
                 })
@@ -993,8 +996,9 @@ exports.new_delete_item = function(req, res) {
           .then(remove_success => {
             var end = moment();
             var diff = end.diff(start);
-            console.log(diff + "              Deleted tweet");
+            // console.log(diff + "              Deleted tweet");
             return res.status(200).json({
+              time_diff: diff,
               status: 'OK',
               message: 'Successfully deleted tweet'
             })
@@ -1139,8 +1143,9 @@ exports.likes = function(req, res) {
                       .then(update_success => {
                         var end = moment();
                         var diff = end.diff(start);
-                        console.log(diff + "              Liked tweet");
+                        // console.log(diff + "              Liked tweet");
                         return res.status(200).json({
+                          time_diff: diff,
                           status: 'OK',
                           message: 'Successfully liked tweet'
                         })
@@ -1187,8 +1192,9 @@ exports.likes = function(req, res) {
                       .then(update_success => {
                         var end = moment();
                         var diff = end.diff(start);
-                        console.log(diff + "              Unliked tweet");
+                        // console.log(diff + "              Unliked tweet");
                         return res.status(200).json({
+                          time_diff: diff,
                           status: 'OK',
                           message: 'Successfully unliked tweet'
                         })
@@ -1272,8 +1278,9 @@ exports.add_media = function(req, res) {
         } else {
           var end = moment();
           var diff = end.diff(start);
-          console.log(diff + "              Adding media");
+          // console.log(diff + "              Adding media");
           return res.status(200).json({
+            time_diff: diff,
             status: 'OK',
             message: 'Successfully deposited file',
             id: file_id
@@ -1327,7 +1334,7 @@ exports.get_media = function(req, res) {
 
         var end = moment();
         var diff = end.diff(start);
-        console.log(diff + "              Retrieving media");
+        // console.log(diff + "              Retrieving media");
 
         res.set('Content-Type', mimetype);
         res.header('Content-Type', mimetype);
