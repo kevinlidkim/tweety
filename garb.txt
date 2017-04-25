@@ -122,6 +122,10 @@ http://stackoverflow.com/questions/11819568/good-shard-keys-in-mongodb
 https://blog.bugsnag.com/mongo-shard-key/
 http://stackoverflow.com/questions/5648466/does-multiple-shard-key-helps-performance-in-mongodb
 
+db.tweets.ensureIndex( { username : "hashed" } );
+sh.shardCollection("tweety.tweets", { "username": "hashed"} );
+
+=============================================================
 
 db.tweets.ensureIndex( { _id : "hashed" } );
 sh.enableSharding("tweety");

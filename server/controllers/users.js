@@ -107,6 +107,8 @@ exports.add_user = function(req, res) {
     })
   }
 
+  var start = moment();
+
   var collection = db.get().collection('users');
   var salt = make_salt();
   var hashed_password = encrypt_password(req.body.password, salt);
@@ -120,6 +122,9 @@ exports.add_user = function(req, res) {
     random_key: random_key
   })
     .then(data => {
+      var end = moment();
+      var diff = end.diff(start);
+      console.log(diff + "              Adding user");
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully created user'
@@ -144,6 +149,8 @@ exports.verify = function(req, res) {
     })
   }
 
+  var start = moment();
+
   var collection = db.get().collection('users');
   collection.findOne({
     email: req.body.email
@@ -167,6 +174,9 @@ exports.verify = function(req, res) {
             { $set: { 'verified' : true} }
           )
             .then(data => {
+              var end = moment();
+              var diff = end.diff(start);
+              console.log(diff + "              Verifying user");
               return res.status(200).json({
                 status: 'OK',
                 message: 'Successfully verified user'
@@ -198,8 +208,6 @@ exports.verify = function(req, res) {
 
 exports.login = function(req, res) {
 
-  // console.log('trying to login');
-
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -212,6 +220,8 @@ exports.login = function(req, res) {
   //     error: 'Another user already logged in current session'
   //   })
   // }
+
+  var start = moment();
 
   var collection = db.get().collection('users');
   collection.findOne({
@@ -240,6 +250,9 @@ exports.login = function(req, res) {
         } else {
           req.session.user = user.username;
           // console.log('login success ' + req.session.user);
+          var end = moment();
+          var diff = end.diff(start);
+          console.log(diff + "              Logging in");
           return res.status(200).json({
             status: 'OK',
             message: 'Logged in successfully',
@@ -308,6 +321,8 @@ exports.get_user = function(req, res) {
     })
   }
 
+  var start = moment();
+
   var obj = {
     email: "",
     followers: [],
@@ -345,7 +360,9 @@ exports.get_user = function(req, res) {
                 _.forEach(user_followers, user_follower => {
                   obj.followers.push(user_follower.follower);
                 })
-
+                var end = moment();
+                var diff = end.diff(start);
+                console.log(diff + "              Finding user");
                 return res.status(200).json({
                   status: 'OK',
                   message: 'Successfully found user information',
@@ -424,6 +441,9 @@ exports.follow = function(req, res) {
                   following: req.body.username
                 })
                   .then(follow_success => {
+                    var end = moment();
+                    var diff = end.diff(start);
+                    console.log(diff + "              Following user");
                     return res.status(200).json({
                       status: 'OK',
                       message: 'Successfully following user'
@@ -457,6 +477,9 @@ exports.follow = function(req, res) {
                   following: req.body.username
                 })
                   .then(unfollow_success => {
+                    var end = moment();
+                    var diff = end.diff(start);
+                    console.log(diff + "              Unfollowing user");
                     return res.status(200).json({
                       status: 'OK',
                       message: 'Successfully unfollowed user'

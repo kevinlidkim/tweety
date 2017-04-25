@@ -15,8 +15,6 @@ var fileType = require('file-type');
 
 exports.add_item = function(req, res) {
 
-  console.log("logged in user adding tweets is " + req.session.user);
-
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -124,7 +122,7 @@ exports.add_item_no_retweet = function(req, res) {
       id = data.ops[0]._id;
       var end = moment();
       var diff = end.diff(start);
-      // console.log(diff + "              Created Tweet");
+      console.log(diff + "              Created Tweet");
       return res.status(200).json({
         status: 'OK',
         message: 'Successfully created a retweet',
@@ -159,6 +157,8 @@ exports.get_item = function(req, res) {
     })
   }
 
+  var start = moment();
+
   var collection = db.get().collection('tweets');
   collection.findOne({
     _id: ObjectId(req.params.id)
@@ -166,6 +166,9 @@ exports.get_item = function(req, res) {
     .then(data => {
       if (data) {
         data.id = data._id;
+        var end = moment();
+        var diff = end.diff(start);
+        console.log(diff + "              Retrieved Tweet");
         return res.status(200).json({
           item: data,
           status: 'OK'
@@ -279,9 +282,9 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                // console.log(diff + "              Present fields: Interest, Username, Following");
-                // console.log(query);
-                // console.log('===================================================')
+                console.log(diff + "              Present fields: Interest, Username, Following");
+                console.log(query);
+                console.log('===================================================')
                 return res.status(200).json({
                   time_diff: diff,
                   status: 'OK',
@@ -309,9 +312,9 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                // console.log(diff + "              Present fields: Time, Username, Following");
-                // console.log(query);
-                // console.log('===================================================')
+                console.log(diff + "              Present fields: Time, Username, Following");
+                console.log(query);
+                console.log('===================================================')
                 return res.status(200).json({
                   time_diff: diff,
                   status: 'OK',
@@ -365,9 +368,9 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          // console.log(diff + "              Present fields: Interest, Username");
-          // console.log(query);
-          // console.log('===================================================')
+          console.log(diff + "              Present fields: Interest, Username");
+          console.log(query);
+          console.log('===================================================')
           return res.status(200).json({
             time_diff: diff,
             status: 'OK',
@@ -395,9 +398,9 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          // console.log(diff + "              Present fields: Time, Username");
-          // console.log(query);
-          // console.log('===================================================')
+          console.log(diff + "              Present fields: Time, Username");
+          console.log(query);
+          console.log('===================================================')
           return res.status(200).json({
             time_diff: diff,
             status: 'OK',
@@ -444,9 +447,9 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              // console.log(diff + "              Present fields: Interest, Following");
-              // console.log(query);
-              // console.log('===================================================')
+              console.log(diff + "              Present fields: Interest, Following");
+              console.log(query);
+              console.log('===================================================')
               return res.status(200).json({
                 time_diff: diff,
                 status: 'OK',
@@ -474,9 +477,9 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              // console.log(diff + "              Present fields: Time, Following");
-              // console.log(query);
-              // console.log('===================================================')
+              console.log(diff + "              Present fields: Time, Following");
+              console.log(query);
+              console.log('===================================================')
               return res.status(200).json({
                 time_diff: diff,
                 status: 'OK',
@@ -522,9 +525,9 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          // console.log(diff + "              Present fields: Interest");
-          // console.log(query);
-          // console.log('===================================================')
+          console.log(diff + "              Present fields: Interest");
+          console.log(query);
+          console.log('===================================================')
           return res.status(200).json({
             time_diff: diff,
             status: 'OK',
@@ -552,9 +555,9 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          // console.log(diff + "              Present fields: Time");
-          // console.log(query);
-          // console.log('===================================================')
+          console.log(diff + "              Present fields: Time");
+          console.log(query);
+          console.log('===================================================')
           return res.status(200).json({
             time_diff: diff,
             status: 'OK',
@@ -925,6 +928,98 @@ exports.search_items = function(req, res) {
 
 }
 
+exports.new_delete_item = function(req, res) {
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  } else if (req.params.id.length != 24) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Invalid ID: Must be a string 24 hex characters'
+    })
+  }
+
+  var start = moment();
+
+  var collection = db.get().collection('tweets');
+
+  collection.findOne({
+    _id: ObjectId(req.params.id)
+  })
+    .then(tweet => {
+      if (tweet.lastErrorObject.n > 0) {
+        if (tweet.value.media && tweet.value.media.length > 0) {
+
+          // console.log("Deleting Media with ID " + tweet.value.media[0]);
+
+          var query = 'DELETE FROM media WHERE file_id = ?';
+          client.execute(query, [tweet.value.media[0]], function(err, result) {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                status: 'error',
+                error: 'Unable to delete associated media file'
+              })
+            } else {
+              collection.remove({
+                _id: ObjectId(req.params.id);
+              })
+                .then(remove_success => {
+                  var end = moment();
+                  var diff = end.diff(start);
+                  console.log(diff + "              Deleted tweet + media");
+                  return res.status(200).json({
+                    status: 'OK',
+                    message: 'Successfully deleted tweet and associated media file'
+                  })
+                })
+                .catch(remove_fail => {
+                  status: 'error',
+                  error: 'Failed to delete tweet after deleting media'
+                })
+            }
+          })
+        } else {
+          collection.remove({
+            _id: ObjectId(req.params.id);
+          })
+            .then(remove_success => {
+              var end = moment();
+              var diff = end.diff(start);
+              console.log(diff + "              Deleted tweet");
+              return res.status(200).json({
+                status: 'OK',
+                message: 'Successfully deleted tweet'
+              })
+            })
+            .catch(remove_fail => {
+              status: 'error',
+              error: 'Failed to delete tweet'
+            })
+        }
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          error: "Tweet doesn't exist"
+        })
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      return res.status(500).json({
+        status: 'error',
+        error: 'Unable to find tweet to delete'
+      })
+    })
+}
+
 exports.delete_item = function(req, res) {
 
   if (db.get() == null) {
@@ -1011,6 +1106,8 @@ exports.likes = function(req, res) {
     })
   }
 
+  var start = moment();
+
   var collection = db.get().collection('tweets');
   var sec_collection = db.get().collection('likes');
   collection.findOne({
@@ -1044,6 +1141,9 @@ exports.likes = function(req, res) {
                       { $inc: { likes: 1, interest: 1 }, }
                     )
                       .then(update_success => {
+                        var end = moment();
+                        var diff = end.diff(start);
+                        console.log(diff + "              Liked tweet");
                         return res.status(200).json({
                           status: 'OK',
                           message: 'Successfully liked tweet'
@@ -1089,6 +1189,9 @@ exports.likes = function(req, res) {
                       { $inc: { likes: -1 } }
                     )
                       .then(update_success => {
+                        var end = moment();
+                        var diff = end.diff(start);
+                        console.log(diff + "              Unliked tweet");
                         return res.status(200).json({
                           status: 'OK',
                           message: 'Successfully unliked tweet'
@@ -1161,12 +1264,6 @@ exports.add_media = function(req, res) {
     } else {
       var file_id = shortid.generate();
 
-      // console.log('DEPOSITING FILE ' + file_id);
-      // console.log('================');
-      // console.log('');
-      // console.log(req.file);
-      // console.log('');
-
       var query = 'INSERT INTO media (file_id, content, mimetype) VALUES (?, ?, ?)';
 
       client.execute(query, [file_id, req.file.buffer, req.file.mimetype], function(err, result) {
@@ -1179,7 +1276,7 @@ exports.add_media = function(req, res) {
         } else {
           var end = moment();
           var diff = end.diff(start);
-          // console.log(diff + "              Adding media");
+          console.log(diff + "              Adding media");
           return res.status(200).json({
             status: 'OK',
             message: 'Successfully deposited file',
@@ -1215,6 +1312,8 @@ exports.get_media = function(req, res) {
     })
   }
 
+  var start = moment();
+
   var file_id = req.params.id;
   var query = 'SELECT content, mimetype FROM media WHERE file_id = ?';
 
@@ -1230,11 +1329,9 @@ exports.get_media = function(req, res) {
         var data = result.rows[0].content;
         var mimetype = result.rows[0].mimetype;
 
-        // console.log('RETRIEVING FILE ' + file_id);
-        // console.log('================');
-        // console.log('');
-        // console.log(data);
-        // console.log('');
+        var end = moment();
+        var diff = end.diff(start);
+        console.log(diff + "              Retrieving media");
 
         res.set('Content-Type', mimetype);
         res.header('Content-Type', mimetype);

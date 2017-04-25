@@ -23,7 +23,8 @@ module.exports = function(app) {
   // app.post('/additem', tweets.add_item);
   app.post('/additem', tweets.add_item_no_retweet);
   app.get('/item/:id', tweets.get_item);
-  app.delete('/item/:id',tweets.delete_item);
+  // app.delete('/item/:id',tweets.delete_item);
+  app.delete('/item/:id',tweets.new_delete_item);
   app.post('/search', tweets.new_search_items);
   app.post('/item/:id/like', tweets.likes);
 
