@@ -954,66 +954,57 @@ exports.new_delete_item = function(req, res) {
     _id: ObjectId(req.params.id)
   })
     .then(tweet => {
-      if (tweet.lastErrorObject.n > 0) {
-        if (tweet.value.media && tweet.value.media.length > 0) {
+      if (tweet.value.media && tweet.value.media.length > 0) {
 
-          // console.log("Deleting Media with ID " + tweet.value.media[0]);
-
-          var query = 'DELETE FROM media WHERE file_id = ?';
-          client.execute(query, [tweet.value.media[0]], function(err, result) {
-            if (err) {
-              console.log(err);
-              return res.status(500).json({
-                status: 'error',
-                error: 'Unable to delete associated media file'
-              })
-            } else {
-              collection.remove({
-                _id: ObjectId(req.params.id)
-              })
-                .then(remove_success => {
-                  var end = moment();
-                  var diff = end.diff(start);
-                  console.log(diff + "              Deleted tweet + media");
-                  return res.status(200).json({
-                    status: 'OK',
-                    message: 'Successfully deleted tweet and associated media file'
-                  })
-                })
-                .catch(remove_fail => {
-                  console.log(remove_fail);
-                  return res.status(500).json({
-                    status: 'error',
-                    error: 'Failed to delete tweet after deleting media'
-                  })
-                })
-            }
-          })
-        } else {
-          collection.remove({
-            _id: ObjectId(req.params.id)
-          })
-            .then(remove_success => {
-              var end = moment();
-              var diff = end.diff(start);
-              console.log(diff + "              Deleted tweet");
-              return res.status(200).json({
-                status: 'OK',
-                message: 'Successfully deleted tweet'
-              })
+        var query = 'DELETE FROM media WHERE file_id = ?';
+        client.execute(query, [tweet.value.media[0]], function(err, result) {
+          if (err) {
+            console.log(err);
+            return res.status(500).json({
+              status: 'error',
+              error: 'Unable to delete associated media file'
             })
-            .catch(remove_fail => {
-              return res.status(500).json({
-                status: 'error',
-                error: 'Failed to delete tweet'
-              })
+          } else {
+            collection.remove({
+              _id: ObjectId(req.params.id)
             })
-        }
-      } else {
-        return res.status(500).json({
-          status: 'error',
-          error: "Tweet doesn't exist"
+              .then(remove_success => {
+                var end = moment();
+                var diff = end.diff(start);
+                console.log(diff + "              Deleted tweet + media");
+                return res.status(200).json({
+                  status: 'OK',
+                  message: 'Successfully deleted tweet and associated media file'
+                })
+              })
+              .catch(remove_fail => {
+                console.log(remove_fail);
+                return res.status(500).json({
+                  status: 'error',
+                  error: 'Failed to delete tweet after deleting media'
+                })
+              })
+          }
         })
+      } else {
+        collection.remove({
+          _id: ObjectId(req.params.id)
+        })
+          .then(remove_success => {
+            var end = moment();
+            var diff = end.diff(start);
+            console.log(diff + "              Deleted tweet");
+            return res.status(200).json({
+              status: 'OK',
+              message: 'Successfully deleted tweet'
+            })
+          })
+          .catch(remove_fail => {
+            return res.status(500).json({
+              status: 'error',
+              error: 'Failed to delete tweet'
+            })
+          })
       }
     })
     .catch(err => {
