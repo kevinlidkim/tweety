@@ -122,10 +122,13 @@ http://stackoverflow.com/questions/11819568/good-shard-keys-in-mongodb
 https://blog.bugsnag.com/mongo-shard-key/
 http://stackoverflow.com/questions/5648466/does-multiple-shard-key-helps-performance-in-mongodb
 
+sh.enableSharding("tweety");
 db.tweets.ensureIndex( { username : "hashed" } );
 sh.shardCollection("tweety.tweets", { "username": "hashed"} );
 db.users.ensureIndex( { username : "hashed" } );
 sh.shardCollection("tweety.users", { "username": "hashed" } );
+db.follows.ensureIndex( { follower: "hashed" } );
+sh.shardCollection("tweety.follows", { "follower": "hashed" } );
 
 db.users.createIndex({email: 1});
 db.tweets.createIndex({timestamp: -1});
@@ -134,7 +137,6 @@ db.tweets.createIndex({interest: -1});
 db.tweets.createIndex({retweets: -1});
 db.tweets.createIndex({likes: -1})
 db.tweets.createIndex({parent: 1});
-db.follows.createIndex({follower: 1});
 db.follows.createIndex({following: 1});
 db.likes.createIndex({tweet: 1});
 db.likes.createIndex({user: 1});

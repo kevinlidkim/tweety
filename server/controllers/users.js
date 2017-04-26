@@ -143,6 +143,8 @@ exports.add_user = function(req, res) {
 
 exports.verify = function(req, res) {
 
+  var start = moment();
+
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -150,7 +152,7 @@ exports.verify = function(req, res) {
     })
   }
 
-  var start = moment();
+  // var start = moment();
 
   var collection = db.get().collection('users');
   collection.findOne({
