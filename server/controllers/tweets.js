@@ -284,7 +284,7 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                if (diff > 400) {
+                if (diff > 200) {
                   console.log("Start time " + start);
                   console.log(diff + "              Present fields: Interest, Username, Following");
                   console.log(query);
@@ -317,7 +317,7 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                if (diff > 400) {
+                if (diff > 200) {
                   console.log("Start time " + start);
                   console.log(diff + "              Present fields: Time, Username, Following");
                   console.log(query);
@@ -376,7 +376,7 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          if (diff > 400) {
+          if (diff > 200) {
             console.log("Start time " + start);
             console.log(diff + "              Present fields: Interest, Username");
             console.log(query);
@@ -409,7 +409,7 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          if (diff > 400) {
+          if (diff > 200) {
             console.log("Start time " + start);
             console.log(diff + "              Present fields: Time, Username");
             console.log(query);
@@ -461,7 +461,7 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              if (diff > 400) {
+              if (diff > 200) {
                 console.log("Start time " + start);
                 console.log(diff + "              Present fields: Interest, Following");
                 console.log(query);
@@ -494,7 +494,7 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              if (diff > 400) {
+              if (diff > 200) {
                 console.log("Start time " + start);
                 console.log(diff + "              Present fields: Time, Following");
                 console.log(query);
@@ -545,7 +545,7 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          if (diff > 400) {
+          if (diff > 200) {
             console.log("Start time " + start);
             console.log(diff + "              Present fields: Interest");
             console.log(query);
@@ -578,7 +578,7 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          if (diff > 400) {
+          if (diff > 200) {
             console.log("Start time " + start);
             console.log(diff + "              Present fields: Time");
             console.log(query);

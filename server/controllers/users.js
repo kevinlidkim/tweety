@@ -4,6 +4,7 @@ var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var _ = require('lodash');
 var moment = require('moment');
+var shortid = require('shortid');
 
 var make_salt = function() {
   return crypto.randomBytes(16).toString('base64');
@@ -44,7 +45,7 @@ exports.add_user_email = function(req, res) {
       } else {
         var salt = make_salt();
         var hashed_password = encrypt_password(req.body.password, salt);
-        var random_key = encrypt_password(make_salt(), make_salt());
+        var random_key = shortid.generate();
         collection.insert({
           username: req.body.username,
           email: req.body.email,
