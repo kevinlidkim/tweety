@@ -419,6 +419,10 @@ exports.new_search_items = function(req, res) {
       })
 
     } else if (rank == "time") {
+      
+      console.log("THE QUERY IS ==============");
+      console.log(query);
+
       var mid = moment();
       collection.aggregate([
         { $match: query },

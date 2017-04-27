@@ -185,3 +185,28 @@ CREATE TABLE media (
 );
 
 DROP TABLE media;
+
+=============================================
+
+var before = new Date();
+db.tweets.find({
+  username: "stalegrape",
+  timestamp: { $lte: 1493255846 }
+}).sort({timestamp: -1}).limit(25);
+var after = new Date();
+var time = after - before;
+
+
+var before = new Date();
+db.tweets.aggregate([
+  { $match: 
+    {
+      username: "stalegrape",
+      timestamp: { $lte: 1493255846 }
+    } 
+  },
+  { $sort: { timestamp: -1 } },
+  { $limit: 25 }
+]);
+var after = new Date()
+var time = after - before;
