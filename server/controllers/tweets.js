@@ -72,6 +72,7 @@ exports.add_item = function(req, res) {
             })
           })
           .catch(retweet_fail => {
+            console.log(retweet_fail);
             return res.status(500).json({
               status: 'error',
               error: 'Failed to update retweets'
