@@ -191,7 +191,7 @@ DROP TABLE media;
 var before = new Date();
 db.tweets.find({
   username: "stalegrape",
-  timestamp: { $lte: 1493255846 }
+  timestamp: { $lte: 1493273504 }
 }).sort({timestamp: -1}).limit(25);
 var after = new Date();
 var time = after - before;
@@ -202,11 +202,20 @@ db.tweets.aggregate([
   { $match: 
     {
       username: "stalegrape",
-      timestamp: { $lte: 1493255846 }
+      timestamp: { $lte: 1493273504 }
     } 
   },
   { $sort: { timestamp: -1 } },
   { $limit: 25 }
 ]);
 var after = new Date()
+var time = after - before;
+
+
+var before = new Date();
+db.tweets.find({
+  username: "stalegrape",
+  timestamp: { $lte: 1493273504 }
+}).sort({interest: -1}).limit(25);
+var after = new Date();
 var time = after - before;

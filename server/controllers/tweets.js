@@ -265,7 +265,7 @@ exports.new_search_items = function(req, res) {
         if (relationship) {
           query["username"] = req.body.username;
 
-          var mid = moment();
+           
           // DO AGGREGATION HERE...
           if (rank == "interest") {
             collection.aggregate([
@@ -285,13 +285,6 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                var before_search = mid.diff(start);
-                var after_search = end.diff(mid);
-                var time_diff = {
-                  before: before_search,
-                  after: after_search,
-                  total: diff
-                }
                 if (diff > 400) {
                   console.log("Start time " + start.format());
                   console.log("Before: " + before_search + " After: " + after_search);
@@ -309,7 +302,7 @@ exports.new_search_items = function(req, res) {
             })
 
           } else if (rank == "time") {
-            var mid = moment();
+             
             collection.aggregate([
               { $match: query },
               { $sort: { timestamp: -1 } },
@@ -327,13 +320,6 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                var before_search = mid.diff(start);
-                var after_search = end.diff(mid);
-                var time_diff = {
-                  before: before_search,
-                  after: after_search,
-                  total: diff
-                }
                 if (diff > 400) {
                   console.log("Start time " + start.format());
                   console.log("Before: " + before_search + " After: " + after_search);
@@ -342,7 +328,7 @@ exports.new_search_items = function(req, res) {
                   console.log('===================================================');
                 }
                 return res.status(200).json({
-                  time_diff: time_diff,
+                  time_diff: diff,
                   status: 'OK',
                   message: 'Successfully aggregated for tweets sorted by time (Username + Following)',
                   items: docs
@@ -376,7 +362,7 @@ exports.new_search_items = function(req, res) {
     query["username"] = req.body.username;
 
     // DO AGGREGATION HERE...
-    var mid = moment();
+     
     if (rank == "interest") {
       collection.aggregate([
         { $match: query },
@@ -395,22 +381,14 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          var before_search = mid.diff(start);
-          var after_search = end.diff(mid);
-          var time_diff = {
-            before: before_search,
-            after: after_search,
-            total: diff
-          }
           if (diff > 400) {
             console.log("Start time " + start.format());
-            console.log("Before: " + before_search + " After: " + after_search);
             console.log(diff + "              Present fields: Interest, Username");
             console.log(query);
             console.log('===================================================');
           }
           return res.status(200).json({
-            time_diff: time_diff,
+            time_diff: diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by interest (Username + No Following)',
             items: docs
@@ -419,11 +397,8 @@ exports.new_search_items = function(req, res) {
       })
 
     } else if (rank == "time") {
-      
-      console.log("THE QUERY IS ==============");
-      console.log(query);
 
-      var mid = moment();
+       
       collection.aggregate([
         { $match: query },
         { $sort: { timestamp: -1 } },
@@ -441,22 +416,14 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          var before_search = mid.diff(start);
-          var after_search = end.diff(mid);
-          var time_diff = {
-            before: before_search,
-            after: after_search,
-            total: diff
-          }
           if (diff > 400) {
             console.log("Start time " + start.format());
-            console.log("Before: " + before_search + " After: " + after_search);
             console.log(diff + "              Present fields: Time, Username");
             console.log(query);
             console.log('===================================================');
           }
           return res.status(200).json({
-            time_diff: time_diff,
+            time_diff: diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by time (Username + No Following)',
             items: docs
@@ -481,7 +448,7 @@ exports.new_search_items = function(req, res) {
         })
         query["username"] = { $in: follows };
 
-        var mid = moment();
+         
         // DO AGGREGATION HERE...
         if (rank == "interest") {
           collection.aggregate([
@@ -501,22 +468,14 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              var before_search = mid.diff(start);
-              var after_search = end.diff(mid);
-              var time_diff = {
-                before: before_search,
-                after: after_search,
-                total: diff
-              }
               if (diff > 400) {
                 console.log("Start time " + start.format());
-                console.log("Before: " + before_search + " After: " + after_search);
                 console.log(diff + "              Present fields: Interest, Following");
                 console.log(query);
                 console.log('===================================================');
               }
               return res.status(200).json({
-                time_diff: time_diff,
+                time_diff: diff,
                 status: 'OK',
                 message: 'Successfully aggregated for tweets sorted by interest (No Username + Following)',
                 items: docs
@@ -525,7 +484,7 @@ exports.new_search_items = function(req, res) {
           })
 
         } else if (rank == "time") {
-          var mid = moment();
+           
           collection.aggregate([
             { $match: query },
             { $sort: { timestamp: -1 } },
@@ -543,22 +502,14 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              var before_search = mid.diff(start);
-              var after_search = end.diff(mid);
-              var time_diff = {
-                before: before_search,
-                after: after_search,
-                total: diff
-              }
               if (diff > 400) {
                 console.log("Start time " + start.format());
-                console.log("Before: " + before_search + " After: " + after_search);
                 console.log(diff + "              Present fields: Time, Following");
                 console.log(query);
                 console.log('===================================================');
               }
               return res.status(200).json({
-                time_diff: time_diff,
+                time_diff: diff,
                 status: 'OK',
                 message: 'Successfully aggregated for tweets sorted by time (No Username + Following)',
                 items: docs
@@ -584,7 +535,7 @@ exports.new_search_items = function(req, res) {
   } else {
 
     // DO AGGREGATION HERE...
-    var mid = moment();
+     
     if (rank == "interest") {
       collection.aggregate([
         { $match: query },
@@ -603,22 +554,14 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          var before_search = mid.diff(start);
-          var after_search = end.diff(mid);
-          var time_diff = {
-            before: before_search,
-            after: after_search,
-            total: diff
-          }
           if (diff > 400) {
             console.log("Start time " + start.format());
-            console.log("Before: " + before_search + " After: " + after_search);
             console.log(diff + "              Present fields: Interest");
             console.log(query);
             console.log('===================================================');
           }
           return res.status(200).json({
-            time_diff: time_diff,
+            time_diff: diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by interest (No Username + No Following)',
             items: docs
@@ -627,7 +570,7 @@ exports.new_search_items = function(req, res) {
       })
 
     } else if (rank == "time") {
-      var mid = moment();
+       
       collection.aggregate([
         { $match: query },
         { $sort: { timestamp: -1 } },
@@ -645,22 +588,14 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          var before_search = mid.diff(start);
-          var after_search = end.diff(mid);
-          var time_diff = {
-            before: before_search,
-            after: after_search,
-            total: diff
-          }
           if (diff > 400) {
             console.log("Start time " + start.format());
-            console.log("Before: " + before_search + " After: " + after_search);
             console.log(diff + "              Present fields: Time");
             console.log(query);
             console.log('===================================================');
           }
           return res.status(200).json({
-            time_diff: time_diff,
+            time_diff: diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by time (No Username + No Following)',
             items: docs
