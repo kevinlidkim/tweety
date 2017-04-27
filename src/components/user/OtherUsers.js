@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import * as ProfileActions from '../../actions/ProfileActions';
 import configureStore from '../../store/configureStore';
 import Search from './Search';
-import GetItem from './GetItem';
 
 const store = configureStore();
 

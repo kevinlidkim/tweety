@@ -14,7 +14,9 @@ export default {
       search_user: {},
       search_user_followers: [],
       search_user_following: [],
-      follow_user_response: {}
+      follow_user_response: {},
+      like_item_response: {},
+      media_result: {}
     },
     logged_in: {}
   }

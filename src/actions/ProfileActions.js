@@ -1,9 +1,11 @@
 import * as types from './actionTypes';  
 
-export function makePost(content) {  
+export function makePost(content, parent, media) {  
   return function(dispatch) {
     var payload = {
-      content: content
+      content: content,
+      parent: parent,
+      media: media
     }
     return fetch('/additem', {
       method: 'POST',
@@ -119,7 +121,7 @@ export function getFollowers(query) {
   }
 }
 
-export function getFollowering(query) {  
+export function getFollowing(query) {  
   return function(dispatch) {
     return fetch('/user/' + query + '/following', {
       method: 'GET',
@@ -168,15 +170,15 @@ export function followUser(username, follow) {
   }
 }
 
-export function searchFor(timestamp, limit, query, username, following) {  
+export function searchFor(payload) {  
   return function(dispatch) {
-    var payload = {
-      timestamp: timestamp,
-      limit: limit,
-      q: query,
-      username: username,
-      following:following
-    }
+    // var payload = {
+    //   timestamp: timestamp,
+    //   limit: limit,
+    //   q: query,
+    //   username: username,
+    //   following:following
+    // }
     return fetch('/search', {
       method: 'POST',
       headers: {
@@ -238,6 +240,58 @@ export function deleteItem(query) {
       })
       .catch(err => {
         dispatch(deleteItemFail(err));
+      })
+  }
+}
+
+export function likeItem(query) {
+  var payload = {
+    like: true
+  }
+  return function(dispatch) {
+    return fetch('/item/' + query + '/like', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(likeItemSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(likeItemFail(err));
+      })
+  }
+}
+
+export function unlikeItem(query) {
+  var payload = {
+    like: false
+  }
+  return function(dispatch) {
+    return fetch('/item/' + query + '/like', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(payload)
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(unlikeItemSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(unlikeItemFail(err));
       })
   }
 }
@@ -320,4 +374,20 @@ export function deleteItemSuccess(server_response) {
 
 export function deleteItemFail(server_response) {  
   return ({type: types.DELETE_ITEM_FAIL, server_response})
+}
+
+export function likeItemSuccess(server_response) {  
+  return ({type: types.LIKE_ITEM_SUCCESS, server_response})
+}
+
+export function likeItemFail(server_response) {  
+  return ({type: types.LIKE_ITEM_FAIL, server_response})
+}
+
+export function unlikeItemSuccess(server_response) {  
+  return ({type: types.UNLIKE_ITEM_SUCCESS, server_response})
+}
+
+export function unlikeItemFail(server_response) {  
+  return ({type: types.UNLIKE_ITEM_FAIL, server_response})
 }

@@ -15,7 +15,9 @@ class GetItem extends React.Component {
         id: '',
         username: '',
         content: '',
-        timestamp: ''
+        timestamp: '',
+        parent: '',
+        media: ''
       }
     }
     this.onChange = this.onChange.bind(this);
@@ -43,6 +45,22 @@ class GetItem extends React.Component {
       })
   }
 
+  likeItemEvent(event) {
+    event.preventDefault();
+    store.dispatch(ProfileActions.likeItem(this.state.result.id))
+      .then(data => {
+        // console.log(store.getState());
+      })
+  }
+
+  unlikeItemEvent(event) {
+    event.preventDefault();
+    store.dispatch(ProfileActions.unlikeItem(this.state.result.id))
+      .then(data => {
+        // console.log(store.getState());
+      })
+  }
+
   render() {
 
     var displayResult = null;
@@ -54,7 +72,11 @@ class GetItem extends React.Component {
             <li>Content: {this.state.result.content}</li>
             <li>Timestamp: {this.state.result.timestamp}</li>
             <li>Username: {this.state.result.username}</li>
+            <li>Parent: {this.state.result.parent}</li>
+            <li>Media: {this.state.result.media}</li>
           </ul>
+          // <button type="submit" className="btn btn-default" onClick={this.likeItemEvent.bind(this)}>Like</button>
+          // <button type="submit" className="btn btn-default" onClick={this.unlikeItemEvent.bind(this)}>Unlike</button>
           <button type="submit" className="btn btn-default" onClick={this.deleteItemEvent.bind(this)}>Delete</button>
         </div>
       )

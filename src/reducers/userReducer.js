@@ -133,6 +133,34 @@ export default function userReducer(state = initialState.user, action) {
         }
       })
 
+    case types.LIKE_ITEM_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          like_item_response: action.server_response
+        }
+      })
+
+    case types.LIKE_ITEM_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          like_item_response: action.server_response
+        }
+      })
+
+    case types.UNLIKE_ITEM_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          like_item_response: action.server_response
+        }
+      })
+
+    case types.UNLIKE_ITEM_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          like_item_response: action.server_response
+        }
+      })
+
     default: 
       return state;
   }

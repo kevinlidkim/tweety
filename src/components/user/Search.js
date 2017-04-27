@@ -14,7 +14,10 @@ class Search extends React.Component {
       limit: '',
       q: '',
       username: '',
+      rank: '',
+      parent: '',
       following: true,
+      replies: true,
       results: []
     }
     this.onChange = this.onChange.bind(this);
@@ -26,7 +29,17 @@ class Search extends React.Component {
 
   searchEvent(event) {
     event.preventDefault();
-    store.dispatch(ProfileActions.searchFor(this.state.timestamp, this.state.limit, this.state.q, this.state.username, this.state.following))
+    var obj = {
+      timestamp: this.state.timestamp,
+      limit: this.state.limit,
+      q: this.state.q,
+      username: this.state.username,
+      following: this.state.following,
+      rank: this.state.rank,
+      parent: this.state.parent,
+      replies: this.state.replies
+    }
+    store.dispatch(ProfileActions.searchFor(obj))
       .then(data => {
         // console.log(store.getState());
         this.setState({timestamp: '', limit: '', results: store.getState().rootReducer.user.profile.search_results});
@@ -66,10 +79,26 @@ class Search extends React.Component {
                 value={this.state.username}
                 onChange={e => this.setState({ username:e.target.value })}/>
 
+              <label htmlFor="rank">Rank Filter</label>
+              <input type="text" placeholder="rank" id="rank" className="form-control"
+                value={this.state.rank}
+                onChange={e => this.setState({ rank:e.target.value })}/>
+
+              <label htmlFor="parent">Parent Filter</label>
+              <input type="text" placeholder="parent" id="parent" className="form-control"
+                value={this.state.parent}
+                onChange={e => this.setState({ parent:e.target.value })}/>
+
               <label htmlFor="following">Follow Filter</label>
               <input type="checkbox" name="following" id="following" className="form-control"
                 checked={this.state.following}
                 onChange={e => this.setState({ following: !this.state.following })}/>
+
+              <label htmlFor="replies">Replies Filter</label>
+              <input type="checkbox" name="replies" id="replies" className="form-control"
+                checked={this.state.replies}
+                onChange={e => this.setState({ replies: !this.state.replies })}/>
+
             </div>
             <button type="submit" className="btn btn-default" onClick={this.searchEvent.bind(this)}>Search</button>
           </form>

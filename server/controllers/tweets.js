@@ -4,7 +4,8 @@ var _ = require('lodash');
 var moment = require('moment');
 
 var cassandra = require('cassandra-driver');
-var client = new cassandra.Client({ contactPoints: ['192.168.1.21'], keyspace: 'tweety' });
+var client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'tweety' });
+// var client = new cassandra.Client({ contactPoints: ['192.168.1.21'], keyspace: 'tweety' });
 
 var multer = require('multer');
 var upload = multer().single('content');
