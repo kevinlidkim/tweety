@@ -61,7 +61,7 @@ exports.add_item = function(req, res) {
             var time_diff = {
               diff: diff,
               before: first,
-              after: second
+              after: sec
             }
             console.log(diff + "              Created Tweet (RT)");
             return res.status(200).json({
