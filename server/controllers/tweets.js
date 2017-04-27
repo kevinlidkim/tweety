@@ -265,6 +265,7 @@ exports.new_search_items = function(req, res) {
         if (relationship) {
           query["username"] = req.body.username;
 
+          var mid = moment();
           // DO AGGREGATION HERE...
           if (rank == "interest") {
             collection.aggregate([
@@ -284,8 +285,16 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                if (diff > 200) {
-                  console.log("Start time " + start);
+                var before_search = mid.diff(start);
+                var after_search = end.diff(end);
+                var time_diff = {
+                  before: before_search,
+                  after: after_search,
+                  total: diff
+                }
+                if (diff > 400) {
+                  console.log("Start time " + start.format());
+                  console.log("Before: " + before_search + " After: " + after_search);
                   console.log(diff + "              Present fields: Interest, Username, Following");
                   console.log(query);
                   console.log('===================================================');
@@ -300,6 +309,7 @@ exports.new_search_items = function(req, res) {
             })
 
           } else if (rank == "time") {
+            var mid = moment();
             collection.aggregate([
               { $match: query },
               { $sort: { timestamp: -1 } },
@@ -317,14 +327,22 @@ exports.new_search_items = function(req, res) {
                 })
                 var end = moment();
                 var diff = end.diff(start);
-                if (diff > 200) {
-                  console.log("Start time " + start);
+                var before_search = mid.diff(start);
+                var after_search = end.diff(end);
+                var time_diff = {
+                  before: before_search,
+                  after: after_search,
+                  total: diff
+                }
+                if (diff > 400) {
+                  console.log("Start time " + start.format());
+                  console.log("Before: " + before_search + " After: " + after_search);
                   console.log(diff + "              Present fields: Time, Username, Following");
                   console.log(query);
                   console.log('===================================================');
                 }
                 return res.status(200).json({
-                  time_diff: diff,
+                  time_diff: time_diff,
                   status: 'OK',
                   message: 'Successfully aggregated for tweets sorted by time (Username + Following)',
                   items: docs
@@ -358,6 +376,7 @@ exports.new_search_items = function(req, res) {
     query["username"] = req.body.username;
 
     // DO AGGREGATION HERE...
+    var mid = moment();
     if (rank == "interest") {
       collection.aggregate([
         { $match: query },
@@ -376,14 +395,22 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          if (diff > 200) {
-            console.log("Start time " + start);
+          var before_search = mid.diff(start);
+          var after_search = end.diff(end);
+          var time_diff = {
+            before: before_search,
+            after: after_search,
+            total: diff
+          }
+          if (diff > 400) {
+            console.log("Start time " + start.format());
+            console.log("Before: " + before_search + " After: " + after_search);
             console.log(diff + "              Present fields: Interest, Username");
             console.log(query);
             console.log('===================================================');
           }
           return res.status(200).json({
-            time_diff: diff,
+            time_diff: time_diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by interest (Username + No Following)',
             items: docs
@@ -392,6 +419,7 @@ exports.new_search_items = function(req, res) {
       })
 
     } else if (rank == "time") {
+      var mid = moment();
       collection.aggregate([
         { $match: query },
         { $sort: { timestamp: -1 } },
@@ -409,14 +437,22 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          if (diff > 200) {
-            console.log("Start time " + start);
+          var before_search = mid.diff(start);
+          var after_search = end.diff(end);
+          var time_diff = {
+            before: before_search,
+            after: after_search,
+            total: diff
+          }
+          if (diff > 400) {
+            console.log("Start time " + start.format());
+            console.log("Before: " + before_search + " After: " + after_search);
             console.log(diff + "              Present fields: Time, Username");
             console.log(query);
             console.log('===================================================');
           }
           return res.status(200).json({
-            time_diff: diff,
+            time_diff: time_diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by time (Username + No Following)',
             items: docs
@@ -431,7 +467,6 @@ exports.new_search_items = function(req, res) {
       })
     }
 
-
   } else if (req.body.username == null && following) {
     sec_collection.find({
       follower: req.session.user
@@ -442,6 +477,7 @@ exports.new_search_items = function(req, res) {
         })
         query["username"] = { $in: follows };
 
+        var mid = moment();
         // DO AGGREGATION HERE...
         if (rank == "interest") {
           collection.aggregate([
@@ -461,14 +497,22 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              if (diff > 200) {
-                console.log("Start time " + start);
+              var before_search = mid.diff(start);
+              var after_search = end.diff(end);
+              var time_diff = {
+                before: before_search,
+                after: after_search,
+                total: diff
+              }
+              if (diff > 400) {
+                console.log("Start time " + start.format());
+                console.log("Before: " + before_search + " After: " + after_search);
                 console.log(diff + "              Present fields: Interest, Following");
                 console.log(query);
                 console.log('===================================================');
               }
               return res.status(200).json({
-                time_diff: diff,
+                time_diff: time_diff,
                 status: 'OK',
                 message: 'Successfully aggregated for tweets sorted by interest (No Username + Following)',
                 items: docs
@@ -477,6 +521,7 @@ exports.new_search_items = function(req, res) {
           })
 
         } else if (rank == "time") {
+          var mid = moment();
           collection.aggregate([
             { $match: query },
             { $sort: { timestamp: -1 } },
@@ -494,14 +539,22 @@ exports.new_search_items = function(req, res) {
               })
               var end = moment();
               var diff = end.diff(start);
-              if (diff > 200) {
-                console.log("Start time " + start);
+              var before_search = mid.diff(start);
+              var after_search = end.diff(end);
+              var time_diff = {
+                before: before_search,
+                after: after_search,
+                total: diff
+              }
+              if (diff > 400) {
+                console.log("Start time " + start.format());
+                console.log("Before: " + before_search + " After: " + after_search);
                 console.log(diff + "              Present fields: Time, Following");
                 console.log(query);
                 console.log('===================================================');
               }
               return res.status(200).json({
-                time_diff: diff,
+                time_diff: time_diff,
                 status: 'OK',
                 message: 'Successfully aggregated for tweets sorted by time (No Username + Following)',
                 items: docs
@@ -527,6 +580,7 @@ exports.new_search_items = function(req, res) {
   } else {
 
     // DO AGGREGATION HERE...
+    var mid = moment();
     if (rank == "interest") {
       collection.aggregate([
         { $match: query },
@@ -545,14 +599,22 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          if (diff > 200) {
-            console.log("Start time " + start);
+          var before_search = mid.diff(start);
+          var after_search = end.diff(end);
+          var time_diff = {
+            before: before_search,
+            after: after_search,
+            total: diff
+          }
+          if (diff > 400) {
+            console.log("Start time " + start.format());
+            console.log("Before: " + before_search + " After: " + after_search);
             console.log(diff + "              Present fields: Interest");
             console.log(query);
             console.log('===================================================');
           }
           return res.status(200).json({
-            time_diff: diff,
+            time_diff: time_diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by interest (No Username + No Following)',
             items: docs
@@ -561,6 +623,7 @@ exports.new_search_items = function(req, res) {
       })
 
     } else if (rank == "time") {
+      var mid = moment();
       collection.aggregate([
         { $match: query },
         { $sort: { timestamp: -1 } },
@@ -578,14 +641,22 @@ exports.new_search_items = function(req, res) {
           })
           var end = moment();
           var diff = end.diff(start);
-          if (diff > 200) {
-            console.log("Start time " + start);
+          var before_search = mid.diff(start);
+          var after_search = end.diff(end);
+          var time_diff = {
+            before: before_search,
+            after: after_search,
+            total: diff
+          }
+          if (diff > 400) {
+            console.log("Start time " + start.format());
+            console.log("Before: " + before_search + " After: " + after_search);
             console.log(diff + "              Present fields: Time");
             console.log(query);
             console.log('===================================================');
           }
           return res.status(200).json({
-            time_diff: diff,
+            time_diff: time_diff,
             status: 'OK',
             message: 'Successfully aggregated for tweets sorted by time (No Username + No Following)',
             items: docs
@@ -606,353 +677,353 @@ exports.new_search_items = function(req, res) {
 }
 
 
-exports.search_items = function(req, res) {
+// exports.search_items = function(req, res) {
 
-  var start = moment();
+//   var start = moment();
 
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  }
+//   if (db.get() == null) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Database error'
+//     })
+//   } else if (!req.session.user) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'No logged in user'
+//     })
+//   }
 
-  var collection = db.get().collection('tweets');
-  var sec_collection = db.get().collection('follows');
+//   var collection = db.get().collection('tweets');
+//   var sec_collection = db.get().collection('follows');
 
-  var time = moment().unix();
-  var limit = 25;
-  var following = true;
-  var follows = [];
+//   var time = moment().unix();
+//   var limit = 25;
+//   var following = true;
+//   var follows = [];
 
-  if (req.body.timestamp) {
-    time = parseInt(req.body.timestamp);
-  }
-  if (req.body.limit) {
-    if (req.body.limit > 100) {
-      limit = 100;
-    } else {
-      limit = req.body.limit
-    }
-  }
-  if (req.body.following != undefined) {
-    following = req.body.following;
-  }
+//   if (req.body.timestamp) {
+//     time = parseInt(req.body.timestamp);
+//   }
+//   if (req.body.limit) {
+//     if (req.body.limit > 100) {
+//       limit = 100;
+//     } else {
+//       limit = req.body.limit
+//     }
+//   }
+//   if (req.body.following != undefined) {
+//     following = req.body.following;
+//   }
 
-  if (following) {
-    // following
-    if (req.body.username) {
-      // following + username
-      sec_collection.findOne({
-        follower: req.session.user,
-        following: req.body.username
-      })
-        .then(relationship => {
-          if (req.body.q) {
-            // following + username + query string
-            collection.find({
-                timestamp: { $lte: time },
-                username: req.body.username,
-                $text: { $search: req.body.q }
-              }).sort({timestamp: -1}).limit(limit).toArray()
-                .then(query_success => {
-                  _.forEach(query_success, item => {
-                    item.id = item._id
-                  })
-                  var end = moment();
-                  var diff = end.diff(start);
-                  var time_diff = {
-                    start: start,
-                    end: end,
-                    diff: diff
-                  }
-                  console.log(diff + "              Present fields: username, query, following");
-                  return res.status(200).json({
-                    time_diff: time_diff,
-                    status: 'OK',
-                    message: 'Query success. Present fields: username, query, following',
-                    items: query_success
-                  })
-                })
-                .catch(query_fail => {
-                  console.log(query_fail);
-                  return res.status(500).json({
-                    status: 'error',
-                    error: 'Query failed. Present fields: username, query, following'
-                  })
-                })
-          } else {
-            // following + username + no query string
-            collection.find({
-              timestamp: { $lte: time },
-              username: req.body.username
-            }).sort({timestamp: -1}).limit(limit).toArray()
-              .then(no_query_success => {
-                _.forEach(no_query_success, item => {
-                  item.id = item._id
-                })
-                var end = moment();
-                var diff = end.diff(start);
-                var time_diff = {
-                  start: start,
-                  end: end,
-                  diff: diff
-                }
-                console.log(diff + "              Present fields: username, following");
-                return res.status(200).json({
-                  time_diff: time_diff,
-                  status: 'OK',
-                  message: 'Query success. Present fields: username, following',
-                  items: no_query_success
-                })
-              })
-              .catch(no_query_fail => {
-                console.log(no_query_fail);
-                return res.status(500).json({
-                  status: 'error',
-                  error: 'Query failed. Present fields: username, following'
-                })
-              })
-          }
-        })
-        .catch(relationship_fail => {
-          return res.status(200).json({
-            status: 'OK',
-            message: 'username not being followed',
-            items: []
-          })
-        })
-    } else {
-      // following + no username
-      sec_collection.find({
-        follower: req.session.user
-      }).toArray()
-        .then(follow_success => {
-          _.forEach(follow_success, follow_user => {
-            follows.push(follow_user.following);
-          })
+//   if (following) {
+//     // following
+//     if (req.body.username) {
+//       // following + username
+//       sec_collection.findOne({
+//         follower: req.session.user,
+//         following: req.body.username
+//       })
+//         .then(relationship => {
+//           if (req.body.q) {
+//             // following + username + query string
+//             collection.find({
+//                 timestamp: { $lte: time },
+//                 username: req.body.username,
+//                 $text: { $search: req.body.q }
+//               }).sort({timestamp: -1}).limit(limit).toArray()
+//                 .then(query_success => {
+//                   _.forEach(query_success, item => {
+//                     item.id = item._id
+//                   })
+//                   var end = moment();
+//                   var diff = end.diff(start);
+//                   var time_diff = {
+//                     start: start,
+//                     end: end,
+//                     diff: diff
+//                   }
+//                   console.log(diff + "              Present fields: username, query, following");
+//                   return res.status(200).json({
+//                     time_diff: time_diff,
+//                     status: 'OK',
+//                     message: 'Query success. Present fields: username, query, following',
+//                     items: query_success
+//                   })
+//                 })
+//                 .catch(query_fail => {
+//                   console.log(query_fail);
+//                   return res.status(500).json({
+//                     status: 'error',
+//                     error: 'Query failed. Present fields: username, query, following'
+//                   })
+//                 })
+//           } else {
+//             // following + username + no query string
+//             collection.find({
+//               timestamp: { $lte: time },
+//               username: req.body.username
+//             }).sort({timestamp: -1}).limit(limit).toArray()
+//               .then(no_query_success => {
+//                 _.forEach(no_query_success, item => {
+//                   item.id = item._id
+//                 })
+//                 var end = moment();
+//                 var diff = end.diff(start);
+//                 var time_diff = {
+//                   start: start,
+//                   end: end,
+//                   diff: diff
+//                 }
+//                 console.log(diff + "              Present fields: username, following");
+//                 return res.status(200).json({
+//                   time_diff: time_diff,
+//                   status: 'OK',
+//                   message: 'Query success. Present fields: username, following',
+//                   items: no_query_success
+//                 })
+//               })
+//               .catch(no_query_fail => {
+//                 console.log(no_query_fail);
+//                 return res.status(500).json({
+//                   status: 'error',
+//                   error: 'Query failed. Present fields: username, following'
+//                 })
+//               })
+//           }
+//         })
+//         .catch(relationship_fail => {
+//           return res.status(200).json({
+//             status: 'OK',
+//             message: 'username not being followed',
+//             items: []
+//           })
+//         })
+//     } else {
+//       // following + no username
+//       sec_collection.find({
+//         follower: req.session.user
+//       }).toArray()
+//         .then(follow_success => {
+//           _.forEach(follow_success, follow_user => {
+//             follows.push(follow_user.following);
+//           })
 
-          if (req.body.q) {
-            // following + no username + query string
-            collection.find({
-              timestamp: { $lte: time },
-              username: { $in: follows },
-              $text: { $search: req.body.q }
-            }).sort({timestamp: -1}).limit(limit).toArray()
-              .then(query_success => {
-                _.forEach(query_success, item => {
-                  item.id = item._id
-                })
-                var end = moment();
-                var diff = end.diff(start);
-                var time_diff = {
-                  start: start,
-                  end: end,
-                  diff: diff
-                }
-                console.log(diff + "              Present fields: query, following");
-                return res.status(200).json({
-                  time_diff: time_diff,
-                  status: 'OK',
-                  message: 'Query success. Present fields: query, following',
-                  items: query_success
-                })
-              })
-              .catch(query_fail => {
-                console.log(query_fail);
-                return res.status(500).json({
-                  status: 'error',
-                  error: 'Query failed. Present fields: query, following'
-                })
-              })
-          } else {
-            // following + no username + no query string
-            collection.find({
-              timestamp: { $lte: time },
-              username: { $in: follows }
-            }).sort({timestamp: -1}).limit(limit).toArray()
-              .then(no_query_success => {
-                _.forEach(no_query_success, item => {
-                  item.id = item._id
-                })
-                var end = moment();
-                var diff = end.diff(start);
-                var time_diff = {
-                  start: start,
-                  end: end,
-                  diff: diff
-                }
-                console.log(diff + "              Present fields: following");
-                return res.status(200).json({
-                  time_diff: time_diff,
-                  status: 'OK',
-                  message: 'Query success. Present fields: following',
-                  items: no_query_success
-                })
-              })
-              .catch(no_query_fail => {
-                console.log(no_query_fail);
-                return res.status(500).json({
-                  status: 'error',
-                  error: 'Query failed. Present fields: following'
-                })
-              })
-          }
+//           if (req.body.q) {
+//             // following + no username + query string
+//             collection.find({
+//               timestamp: { $lte: time },
+//               username: { $in: follows },
+//               $text: { $search: req.body.q }
+//             }).sort({timestamp: -1}).limit(limit).toArray()
+//               .then(query_success => {
+//                 _.forEach(query_success, item => {
+//                   item.id = item._id
+//                 })
+//                 var end = moment();
+//                 var diff = end.diff(start);
+//                 var time_diff = {
+//                   start: start,
+//                   end: end,
+//                   diff: diff
+//                 }
+//                 console.log(diff + "              Present fields: query, following");
+//                 return res.status(200).json({
+//                   time_diff: time_diff,
+//                   status: 'OK',
+//                   message: 'Query success. Present fields: query, following',
+//                   items: query_success
+//                 })
+//               })
+//               .catch(query_fail => {
+//                 console.log(query_fail);
+//                 return res.status(500).json({
+//                   status: 'error',
+//                   error: 'Query failed. Present fields: query, following'
+//                 })
+//               })
+//           } else {
+//             // following + no username + no query string
+//             collection.find({
+//               timestamp: { $lte: time },
+//               username: { $in: follows }
+//             }).sort({timestamp: -1}).limit(limit).toArray()
+//               .then(no_query_success => {
+//                 _.forEach(no_query_success, item => {
+//                   item.id = item._id
+//                 })
+//                 var end = moment();
+//                 var diff = end.diff(start);
+//                 var time_diff = {
+//                   start: start,
+//                   end: end,
+//                   diff: diff
+//                 }
+//                 console.log(diff + "              Present fields: following");
+//                 return res.status(200).json({
+//                   time_diff: time_diff,
+//                   status: 'OK',
+//                   message: 'Query success. Present fields: following',
+//                   items: no_query_success
+//                 })
+//               })
+//               .catch(no_query_fail => {
+//                 console.log(no_query_fail);
+//                 return res.status(500).json({
+//                   status: 'error',
+//                   error: 'Query failed. Present fields: following'
+//                 })
+//               })
+//           }
 
-        })
-        .catch(follow_fail => {
-          console.log(follow_fail);
-          return res.status(500).json({
-            status: 'error',
-            error: 'Could not find users that this user is following for tweet search'
-          })
-        })
-    }
-  } else {
-    // not following
-    if (req.body.username) {
-      // not following + username
-      if (req.body.q) {
-        // not following + username + query string
-        collection.find({
-          timestamp: { $lte: time },
-          username: req.body.username,
-          $text: { $search: req.body.q }
-        }).sort({timestamp: -1}).limit(limit).toArray()
-          .then(query_success => {
-            _.forEach(query_success, item => {
-              item.id = item._id
-            })
-            var end = moment();
-            var diff = end.diff(start);
-            var time_diff = {
-              start: start,
-              end: end,
-              diff: diff
-            }
-            console.log(diff + "              Present fields: username, query");
-            return res.status(200).json({
-              time_diff: time_diff,
-              status: 'OK',
-              message: 'Query success. Present fields: username, query',
-              items: query_success
-            })
-          })
-          .catch(query_fail => {
-            console.log(query_fail);
-            return res.status(500).json({
-              status: 'error',
-              error: 'Query failed. Present fields: username, query'
-            })
-          })
-      } else {
-        // not following + username + no query string
-        collection.find({
-          timestamp: { $lte: time },
-          username: req.body.username
-        }).sort({timestamp: -1}).limit(limit).toArray()
-          .then(query_success => {
-            _.forEach(query_success, item => {
-              item.id = item._id
-            })
-            var end = moment();
-            var diff = end.diff(start);
-            var time_diff = {
-              start: start,
-              end: end,
-              diff: diff
-            }
-            console.log(diff + "              Present fields: username");
-            return res.status(200).json({
-              time_diff: time_diff,
-              status: 'OK',
-              message: 'Query success. Present fields: username',
-              items: query_success
-            })
-          })
-          .catch(query_fail => {
-            console.log(query_fail);
-            return res.status(500).json({
-              status: 'error',
-              error: 'Query failed. Present fields: username'
-            })
-          })
-      }
-    } else {
-      // not following + no username
-      if (req.body.q) {
-        // not following + no username + query string
-        collection.find({
-          timestamp: { $lte: time },
-          $text: { $search: req.body.q }
-        }).sort({timestamp: -1}).limit(limit).toArray()
-          .then(query_success => {
-            _.forEach(query_success, item => {
-              item.id = item._id
-            })
-            var end = moment();
-            var diff = end.diff(start);
-            var time_diff = {
-              start: start,
-              end: end,
-              diff: diff
-            }
-            console.log(diff + "              Present fields: query");
-            return res.status(200).json({
-              time_diff: time_diff,
-              status: 'OK',
-              message: 'Query success. Present fields: query',
-              items: query_success
-            })
-          })
-          .catch(query_fail => {
-            console.log(query_fail);
-            return res.status(500).json({
-              status: 'error',
-              error: 'Query failed. Present fields: query'
-            })
-          })
-      } else {
-        // not following + no username + no query string
-        collection.find({
-          timestamp: { $lte: time }
-        }).sort({timestamp: -1}).limit(limit).toArray()
-          .then(query_success => {
-            _.forEach(query_success, item => {
-              item.id = item._id
-            })
-            var end = moment();
-            var diff = end.diff(start);
-            var time_diff = {
-              start: start,
-              end: end,
-              diff: diff
-            }
-            console.log(diff + "              Present fields: N/A");
-            return res.status(200).json({
-              time_diff: time_diff,
-              status: 'OK',
-              message: 'Query success. Present fields: N/A',
-              items: query_success
-            })
-          })
-          .catch(query_fail => {
-            console.log(query_fail);
-            return res.status(500).json({
-              status: 'error',
-              error: 'Query failed. Present fields: N/A'
-            })
-          })
-      }
-    }
-  }
+//         })
+//         .catch(follow_fail => {
+//           console.log(follow_fail);
+//           return res.status(500).json({
+//             status: 'error',
+//             error: 'Could not find users that this user is following for tweet search'
+//           })
+//         })
+//     }
+//   } else {
+//     // not following
+//     if (req.body.username) {
+//       // not following + username
+//       if (req.body.q) {
+//         // not following + username + query string
+//         collection.find({
+//           timestamp: { $lte: time },
+//           username: req.body.username,
+//           $text: { $search: req.body.q }
+//         }).sort({timestamp: -1}).limit(limit).toArray()
+//           .then(query_success => {
+//             _.forEach(query_success, item => {
+//               item.id = item._id
+//             })
+//             var end = moment();
+//             var diff = end.diff(start);
+//             var time_diff = {
+//               start: start,
+//               end: end,
+//               diff: diff
+//             }
+//             console.log(diff + "              Present fields: username, query");
+//             return res.status(200).json({
+//               time_diff: time_diff,
+//               status: 'OK',
+//               message: 'Query success. Present fields: username, query',
+//               items: query_success
+//             })
+//           })
+//           .catch(query_fail => {
+//             console.log(query_fail);
+//             return res.status(500).json({
+//               status: 'error',
+//               error: 'Query failed. Present fields: username, query'
+//             })
+//           })
+//       } else {
+//         // not following + username + no query string
+//         collection.find({
+//           timestamp: { $lte: time },
+//           username: req.body.username
+//         }).sort({timestamp: -1}).limit(limit).toArray()
+//           .then(query_success => {
+//             _.forEach(query_success, item => {
+//               item.id = item._id
+//             })
+//             var end = moment();
+//             var diff = end.diff(start);
+//             var time_diff = {
+//               start: start,
+//               end: end,
+//               diff: diff
+//             }
+//             console.log(diff + "              Present fields: username");
+//             return res.status(200).json({
+//               time_diff: time_diff,
+//               status: 'OK',
+//               message: 'Query success. Present fields: username',
+//               items: query_success
+//             })
+//           })
+//           .catch(query_fail => {
+//             console.log(query_fail);
+//             return res.status(500).json({
+//               status: 'error',
+//               error: 'Query failed. Present fields: username'
+//             })
+//           })
+//       }
+//     } else {
+//       // not following + no username
+//       if (req.body.q) {
+//         // not following + no username + query string
+//         collection.find({
+//           timestamp: { $lte: time },
+//           $text: { $search: req.body.q }
+//         }).sort({timestamp: -1}).limit(limit).toArray()
+//           .then(query_success => {
+//             _.forEach(query_success, item => {
+//               item.id = item._id
+//             })
+//             var end = moment();
+//             var diff = end.diff(start);
+//             var time_diff = {
+//               start: start,
+//               end: end,
+//               diff: diff
+//             }
+//             console.log(diff + "              Present fields: query");
+//             return res.status(200).json({
+//               time_diff: time_diff,
+//               status: 'OK',
+//               message: 'Query success. Present fields: query',
+//               items: query_success
+//             })
+//           })
+//           .catch(query_fail => {
+//             console.log(query_fail);
+//             return res.status(500).json({
+//               status: 'error',
+//               error: 'Query failed. Present fields: query'
+//             })
+//           })
+//       } else {
+//         // not following + no username + no query string
+//         collection.find({
+//           timestamp: { $lte: time }
+//         }).sort({timestamp: -1}).limit(limit).toArray()
+//           .then(query_success => {
+//             _.forEach(query_success, item => {
+//               item.id = item._id
+//             })
+//             var end = moment();
+//             var diff = end.diff(start);
+//             var time_diff = {
+//               start: start,
+//               end: end,
+//               diff: diff
+//             }
+//             console.log(diff + "              Present fields: N/A");
+//             return res.status(200).json({
+//               time_diff: time_diff,
+//               status: 'OK',
+//               message: 'Query success. Present fields: N/A',
+//               items: query_success
+//             })
+//           })
+//           .catch(query_fail => {
+//             console.log(query_fail);
+//             return res.status(500).json({
+//               status: 'error',
+//               error: 'Query failed. Present fields: N/A'
+//             })
+//           })
+//       }
+//     }
+//   }
 
-}
+// }
 
 exports.new_delete_item = function(req, res) {
   if (db.get() == null) {
@@ -1044,73 +1115,73 @@ exports.new_delete_item = function(req, res) {
     })
 }
 
-exports.delete_item = function(req, res) {
+// exports.delete_item = function(req, res) {
 
-  if (db.get() == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Database error'
-    })
-  } else if (!req.session.user) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  } else if (req.params.id.length != 24) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Invalid ID: Must be a string 24 hex characters'
-    })
-  }
+//   if (db.get() == null) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Database error'
+//     })
+//   } else if (!req.session.user) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'No logged in user'
+//     })
+//   } else if (req.params.id.length != 24) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Invalid ID: Must be a string 24 hex characters'
+//     })
+//   }
 
-  var collection = db.get().collection('tweets');
+//   var collection = db.get().collection('tweets');
 
-  collection.findOneAndDelete({
-    _id: ObjectId(req.params.id)
-  })
-    .then(tweet => {
-      if (tweet.lastErrorObject.n > 0) {
-        if (tweet.value.media && tweet.value.media.length > 0) {
+//   collection.findOneAndDelete({
+//     _id: ObjectId(req.params.id)
+//   })
+//     .then(tweet => {
+//       if (tweet.lastErrorObject.n > 0) {
+//         if (tweet.value.media && tweet.value.media.length > 0) {
 
-          // console.log("Deleting Media with ID " + tweet.value.media[0]);
+//           // console.log("Deleting Media with ID " + tweet.value.media[0]);
 
-          var query = 'DELETE FROM media WHERE file_id = ?';
-          client.execute(query, [tweet.value.media[0]], function(err, result) {
-            if (err) {
-              console.log(err);
-              return res.status(500).json({
-                status: 'error',
-                error: 'Unable to delete associated media file'
-              })
-            } else {
-              return res.status(200).json({
-                status: 'OK',
-                message: 'Successfully deleted tweet and associated media file'
-              })
-            }
-          })
-        } else {
-          return res.status(200).json({
-            status: 'OK',
-            message: 'Successfully deleted tweet'
-          })
-        }
-      } else {
-        return res.status(500).json({
-          status: 'error',
-          error: "Tweet doesn't exist"
-        })
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      return res.status(500).json({
-        status: 'error',
-        error: 'Unable to find tweet to delete'
-      })
-    })
+//           var query = 'DELETE FROM media WHERE file_id = ?';
+//           client.execute(query, [tweet.value.media[0]], function(err, result) {
+//             if (err) {
+//               console.log(err);
+//               return res.status(500).json({
+//                 status: 'error',
+//                 error: 'Unable to delete associated media file'
+//               })
+//             } else {
+//               return res.status(200).json({
+//                 status: 'OK',
+//                 message: 'Successfully deleted tweet and associated media file'
+//               })
+//             }
+//           })
+//         } else {
+//           return res.status(200).json({
+//             status: 'OK',
+//             message: 'Successfully deleted tweet'
+//           })
+//         }
+//       } else {
+//         return res.status(500).json({
+//           status: 'error',
+//           error: "Tweet doesn't exist"
+//         })
+//       }
+//     })
+//     .catch(err => {
+//       console.log(err);
+//       return res.status(500).json({
+//         status: 'error',
+//         error: 'Unable to find tweet to delete'
+//       })
+//     })
 
-}
+// }
 
 exports.likes = function(req, res) {
   if (db.get() == null) {
