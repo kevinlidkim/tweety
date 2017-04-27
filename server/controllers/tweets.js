@@ -199,8 +199,9 @@ exports.add_item_no_wait = function(req, res) {
 
       } else {
         var end = moment();
+        var diff = end.diff(start);
         return res.status(200).json({
-          diff: diff,
+          time_diff: diff,
           status: 'OK',
           message: 'Successfully created tweet (not a retweet)',
           id: id
