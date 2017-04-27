@@ -77,12 +77,6 @@ class Profile extends React.Component {
           <br />
           <br />
           <Media />
-          <br />
-          <br />
-          <Search />
-          <br />
-          <br />
-          <GetItem />
         </div>
       </div>
     );

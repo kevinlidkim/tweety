@@ -296,6 +296,25 @@ export function unlikeItem(query) {
   }
 }
 
+export function uploadMedia(file) {  
+  return function(dispatch) {
+    return fetch('/addmedia', {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: file
+    })
+      .then(response => {
+        return response.json()
+          .then(res => {
+            dispatch(uploadMediaSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(uploadMediaFail(res));
+      })
+  }
+}
+
 export function makePostSuccess(server_response) {  
   return ({type: types.MAKE_POST_SUCCESS, server_response})
 }
@@ -390,4 +409,20 @@ export function unlikeItemSuccess(server_response) {
 
 export function unlikeItemFail(server_response) {  
   return ({type: types.UNLIKE_ITEM_FAIL, server_response})
+}
+
+export function uploadMediaSuccess(server_response) {  
+  return ({type: types.UPLOAD_MEDIA_SUCCESS, server_response})
+}
+
+export function uploadMediaFail(server_response) {  
+  return ({type: types.UPLOAD_MEDIA_FAIL, server_response})
+}
+
+export function getMediaSuccess(server_response) {  
+  return ({type: types.GET_MEDIA_SUCCESS, server_response})
+}
+
+export function getMediaFail(server_response) {  
+  return ({type: types.GET_MEDIA_FAIL, server_response})
 }

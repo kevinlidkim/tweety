@@ -28,16 +28,17 @@ class Media extends React.Component {
     store.dispatch(ProfileActions.getMedia(this.state.query))
       .then(data => {
         // console.log(store.getState());
-        this.setState({query: '', get_media_result: store.getState().rootReducer.user.profile.media_result});
+        this.setState({query: '', get_media_result: store.getState().rootReducer.user.profile.get_media_result});
       })
   }
 
   uploadMediaEvent(event) {
     event.preventDefault();
-    store.dispatch(ProfileActions.uploadMedia(this.state.file, this.state.image_preview_url))
+    // console.log(this.state.image_preview_url);
+    store.dispatch(ProfileActions.uploadMedia(this.state.file))
       .then(data => {
         // console.log(store.getState());
-        this.setState({file: '', image_preview_url: ''});
+        this.setState({file: '', image_preview_url: '', query: store.getState().rootReducer.user.profile.upload_media_result.id});
       })
   }
 
@@ -114,7 +115,7 @@ Media.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
-    result: state.rootReducer.user.profile.media_result
+    result: state.rootReducer.user.profile.upload_media_result
   };
 };
 

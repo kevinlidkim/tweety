@@ -161,6 +161,34 @@ export default function userReducer(state = initialState.user, action) {
         }
       })
 
+    case types.UPLOAD_MEDIA_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          upload_media_result: action.server_response
+        }
+      })
+
+    case types.UPLOAD_MEDIA_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          upload_media_result: action.server_response
+        }
+      })
+
+    case types.GET_MEDIA_SUCCESS:
+      return Object.assign({}, state, {
+        profile: {
+          get_media_result: action.server_response
+        }
+      })
+
+    case types.GET_MEDIA_FAIL:
+      return Object.assign({}, state, {
+        profile: {
+          get_media_result: action.server_response
+        }
+      })
+
     default: 
       return state;
   }

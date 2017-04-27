@@ -8,6 +8,7 @@ import SignUp from './components/SignUp';
 
 import Profile from './components/user/Profile';
 import OtherUsers from './components/user/OtherUsers';
+import Search from './components/user/Search';
 
 export default (  
   <Route component={App}>
@@ -19,5 +20,6 @@ export default (
     <Route path="/signup" component={SignUp} />
     <Route path="/profile" component={Profile} />
     <Route path="/user" component={OtherUsers} />
+    <Route path="/search" component={Search} />
   </Route>
 );

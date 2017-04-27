@@ -16,7 +16,8 @@ export default {
       search_user_following: [],
       follow_user_response: {},
       like_item_response: {},
-      media_result: {}
+      upload_media_result: {},
+      get_media_result: {}
     },
     logged_in: {}
   }
