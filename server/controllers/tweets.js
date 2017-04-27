@@ -50,7 +50,7 @@ exports.add_item = function(req, res) {
         var mid = moment();
         collection.update(
           { content: retweet_body.trim() },
-          { $inc: { retweets: 1, interest: 1 } },
+          { $inc: { interest: 1 } },
           { multi: true }
         )
           .then(retweet_success => {
