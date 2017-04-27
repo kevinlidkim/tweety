@@ -63,7 +63,7 @@ exports.add_item = function(req, res) {
               before: first,
               after: sec
             }
-            console.log(diff + "              Created Tweet (RT)");
+            // console.log(diff + "              Created Tweet (RT)");
             return res.status(200).json({
               time_diff: time_diff,
               status: 'OK',
@@ -82,8 +82,9 @@ exports.add_item = function(req, res) {
       } else {
         var end = moment();
         var diff = end.diff(start);
-        console.log(diff + "              Created Tweet (Not RT)");
+        // console.log(diff + "              Created Tweet (Not RT)");
         return res.status(200).json({
+          diff: diff,
           status: 'OK',
           message: 'Successfully created tweet (not a retweet)',
           id: id
@@ -199,7 +200,7 @@ exports.add_item_no_wait = function(req, res) {
       } else {
         var end = moment();
         return res.status(200).json({
-          diff, diff,
+          diff: diff,
           status: 'OK',
           message: 'Successfully created tweet (not a retweet)',
           id: id
