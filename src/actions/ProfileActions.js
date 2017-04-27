@@ -297,11 +297,14 @@ export function unlikeItem(query) {
 }
 
 export function uploadMedia(file) {  
+  var formData = new FormData();
+  formData.append('content', file);
+
   return function(dispatch) {
     return fetch('/addmedia', {
       method: 'POST',
       credentials: 'same-origin',
-      body: file
+      body: formData
     })
       .then(response => {
         return response.json()
