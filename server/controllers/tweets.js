@@ -432,7 +432,7 @@ exports.new_search_items = function(req, res) {
         if (rank == "interest") {
           collection.find(query).sort({interest: -1}).limit(limit).toArray()
             .then(query_success => {
-              _.forEach(query, item => {
+              _.forEach(query_success, item => {
                 item.id = item._id
               })
               var end = moment();
@@ -447,7 +447,7 @@ exports.new_search_items = function(req, res) {
                 time_diff: diff,
                 status: 'OK',
                 message: 'Successfully aggregated for tweets sorted by interest (No Username + Following)',
-                items: query
+                items: query_success
               })
             })
             .catch(query_fail => {
