@@ -286,7 +286,7 @@ exports.new_search_items = function(req, res) {
                 var end = moment();
                 var diff = end.diff(start);
                 var before_search = mid.diff(start);
-                var after_search = end.diff(end);
+                var after_search = end.diff(mid);
                 var time_diff = {
                   before: before_search,
                   after: after_search,
@@ -328,7 +328,7 @@ exports.new_search_items = function(req, res) {
                 var end = moment();
                 var diff = end.diff(start);
                 var before_search = mid.diff(start);
-                var after_search = end.diff(end);
+                var after_search = end.diff(mid);
                 var time_diff = {
                   before: before_search,
                   after: after_search,
@@ -396,7 +396,7 @@ exports.new_search_items = function(req, res) {
           var end = moment();
           var diff = end.diff(start);
           var before_search = mid.diff(start);
-          var after_search = end.diff(end);
+          var after_search = end.diff(mid);
           var time_diff = {
             before: before_search,
             after: after_search,
@@ -438,7 +438,7 @@ exports.new_search_items = function(req, res) {
           var end = moment();
           var diff = end.diff(start);
           var before_search = mid.diff(start);
-          var after_search = end.diff(end);
+          var after_search = end.diff(mid);
           var time_diff = {
             before: before_search,
             after: after_search,
@@ -498,7 +498,7 @@ exports.new_search_items = function(req, res) {
               var end = moment();
               var diff = end.diff(start);
               var before_search = mid.diff(start);
-              var after_search = end.diff(end);
+              var after_search = end.diff(mid);
               var time_diff = {
                 before: before_search,
                 after: after_search,
@@ -540,7 +540,7 @@ exports.new_search_items = function(req, res) {
               var end = moment();
               var diff = end.diff(start);
               var before_search = mid.diff(start);
-              var after_search = end.diff(end);
+              var after_search = end.diff(mid);
               var time_diff = {
                 before: before_search,
                 after: after_search,
@@ -600,7 +600,7 @@ exports.new_search_items = function(req, res) {
           var end = moment();
           var diff = end.diff(start);
           var before_search = mid.diff(start);
-          var after_search = end.diff(end);
+          var after_search = end.diff(mid);
           var time_diff = {
             before: before_search,
             after: after_search,
@@ -642,7 +642,7 @@ exports.new_search_items = function(req, res) {
           var end = moment();
           var diff = end.diff(start);
           var before_search = mid.diff(start);
-          var after_search = end.diff(end);
+          var after_search = end.diff(mid);
           var time_diff = {
             before: before_search,
             after: after_search,
