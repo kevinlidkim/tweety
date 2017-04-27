@@ -47,6 +47,7 @@ exports.add_item = function(req, res) {
       if (req.body.content.charAt(0).toUpperCase() == 'R' && req.body.content.charAt(1).toUpperCase() == 'T') {
         var retweet_body = req.body.content.substring(2, req.body.content.length);
 
+        var mid = moment();
         collection.update(
           { content: retweet_body.trim() },
           { $inc: { retweets: 1, interest: 1 } },
@@ -55,8 +56,16 @@ exports.add_item = function(req, res) {
           .then(retweet_success => {
             var end = moment();
             var diff = end.diff(start);
+            var first = mid.diff(start);
+            var sec = end.diff(mid);
+            var time_diff = {
+              diff: diff,
+              before: first,
+              after: second
+            }
             console.log(diff + "              Created Tweet (RT)");
             return res.status(200).json({
+              time_diff: time_diff,
               status: 'OK',
               message: 'Successfully created a retweet',
               id: id
@@ -601,59 +610,65 @@ exports.new_delete_item = function(req, res) {
     _id: ObjectId(req.params.id)
   })
     .then(tweet => {
-      if (tweet.media && tweet.media.length > 0) {
-
-        var query = 'DELETE FROM media WHERE file_id = ?';
-        client.execute(query, [tweet.media[0]], function(err, result) {
-          if (err) {
-            console.log(err);
-            return res.status(500).json({
-              status: 'error',
-              error: 'Unable to delete associated media file'
-            })
-          } else {
-            collection.remove({
-              _id: ObjectId(req.params.id)
-            })
-              .then(remove_success => {
-                var end = moment();
-                var diff = end.diff(start);
-                // console.log(diff + "              Deleted tweet + media");
-                return res.status(200).json({
-                  time_diff: diff,
-                  status: 'OK',
-                  message: 'Successfully deleted tweet and associated media file'
-                })
+      if (tweet) {
+        if (tweet.media && tweet.media.length > 0) {
+          var query = 'DELETE FROM media WHERE file_id = ?';
+          client.execute(query, [tweet.media[0]], function(err, result) {
+            if (err) {
+              console.log(err);
+              return res.status(500).json({
+                status: 'error',
+                error: 'Unable to delete associated media file'
               })
-              .catch(remove_fail => {
-                console.log(remove_fail);
-                return res.status(500).json({
-                  status: 'error',
-                  error: 'Failed to delete tweet after deleting media'
-                })
+            } else {
+              collection.remove({
+                _id: ObjectId(req.params.id)
               })
-          }
-        })
+                .then(remove_success => {
+                  var end = moment();
+                  var diff = end.diff(start);
+                  // console.log(diff + "              Deleted tweet + media");
+                  return res.status(200).json({
+                    time_diff: diff,
+                    status: 'OK',
+                    message: 'Successfully deleted tweet and associated media file'
+                  })
+                })
+                .catch(remove_fail => {
+                  console.log(remove_fail);
+                  return res.status(500).json({
+                    status: 'error',
+                    error: 'Failed to delete tweet after deleting media'
+                  })
+                })
+            }
+          })
+        } else {
+          collection.remove({
+            _id: ObjectId(req.params.id)
+          })
+            .then(remove_success => {
+              var end = moment();
+              var diff = end.diff(start);
+              // console.log(diff + "              Deleted tweet");
+              return res.status(200).json({
+                time_diff: diff,
+                status: 'OK',
+                message: 'Successfully deleted tweet'
+              })
+            })
+            .catch(remove_fail => {
+              return res.status(500).json({
+                status: 'error',
+                error: 'Failed to delete tweet'
+              })
+            })
+        }
       } else {
-        collection.remove({
-          _id: ObjectId(req.params.id)
+        return res.status(500).json({
+          status: 'error',
+          error: 'Tweet already does not exist'
         })
-          .then(remove_success => {
-            var end = moment();
-            var diff = end.diff(start);
-            // console.log(diff + "              Deleted tweet");
-            return res.status(200).json({
-              time_diff: diff,
-              status: 'OK',
-              message: 'Successfully deleted tweet'
-            })
-          })
-          .catch(remove_fail => {
-            return res.status(500).json({
-              status: 'error',
-              error: 'Failed to delete tweet'
-            })
-          })
       }
     })
     .catch(err => {
