@@ -48,10 +48,14 @@ exports.add_item = function(req, res) {
         var retweet_body = req.body.content.substring(2, req.body.content.length);
 
         var mid = moment();
-        collection.update(
+        // collection.update(
+        //   { content: retweet_body.trim() },
+        //   { $inc: { interest: 1, retweets: 1 } },
+        //   { multi: true }
+        // )
+        collection.updateMany(
           { content: retweet_body.trim() },
-          { $inc: { interest: 1 } },
-          { multi: true }
+          { $inc: { interest: 1} }
         )
           .then(retweet_success => {
             var end = moment();
@@ -78,7 +82,6 @@ exports.add_item = function(req, res) {
               error: 'Failed to update retweets'
             })
           })
-
 
       } else {
         var end = moment();
