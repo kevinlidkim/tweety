@@ -4,8 +4,8 @@ var _ = require('lodash');
 var moment = require('moment');
 
 var cassandra = require('cassandra-driver');
-var client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'tweety' });
-// var client = new cassandra.Client({ contactPoints: ['192.168.1.21'], keyspace: 'tweety' });
+// var client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'tweety' });
+var client = new cassandra.Client({ contactPoints: ['192.168.1.21'], keyspace: 'tweety' });
 
 var multer = require('multer');
 var upload = multer().single('content');
@@ -49,11 +49,6 @@ exports.add_item = function(req, res) {
         var retweet_body = req.body.content.substring(2, req.body.content.length);
 
         var mid = moment();
-        // collection.update(
-        //   { content: retweet_body.trim() },
-        //   { $inc: { interest: 1, retweets: 1 } },
-        //   { multi: true }
-        // )
         collection.updateMany(
           { content: retweet_body.trim() },
           { $inc: { interest: 1} }
@@ -143,6 +138,73 @@ exports.add_item_no_retweet = function(req, res) {
         message: 'Successfully created a retweet',
         id: id
       })
+    })
+    .catch(err => {
+      console.log(err);
+      return res.status(500).json({
+        status: 'error',
+        error: 'Failed to create tweet'
+      })
+    })
+}
+
+exports.add_item_no_wait = function(req, res) {
+
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
+
+  var start = moment();
+  var id = "";
+
+  var collection = db.get().collection('tweets');
+  collection.insert({
+    content: req.body.content,
+    parent: req.body.parent,
+    username: req.session.user,
+    timestamp: moment().unix(),
+    media: req.body.media,
+    likes: 0,
+    retweets: 0,
+    interest: 0
+  })
+    .then(data => {
+      id = data.ops[0]._id;
+      // deal with retweets
+      if (req.body.content.charAt(0).toUpperCase() == 'R' && req.body.content.charAt(1).toUpperCase() == 'T') {
+        var retweet_body = req.body.content.substring(2, req.body.content.length);
+
+        collection.updateMany(
+          { content: retweet_body.trim() },
+          { $inc: { interest: 1} }
+        )
+
+        var end = moment();
+        var diff = end.diff(start);
+        return res.status(200).json({
+          time_diff: diff,
+          status: 'OK',
+          message: 'Successfully created a retweet',
+          id: id
+        })
+
+      } else {
+        var end = moment();
+        return res.status(200).json({
+          diff, diff,
+          status: 'OK',
+          message: 'Successfully created tweet (not a retweet)',
+          id: id
+        })
+      }
     })
     .catch(err => {
       console.log(err);
@@ -685,73 +747,6 @@ exports.new_delete_item = function(req, res) {
     })
 }
 
-// exports.delete_item = function(req, res) {
-
-//   if (db.get() == null) {
-//     return res.status(500).json({
-//       status: 'error',
-//       error: 'Database error'
-//     })
-//   } else if (!req.session.user) {
-//     return res.status(500).json({
-//       status: 'error',
-//       error: 'No logged in user'
-//     })
-//   } else if (req.params.id.length != 24) {
-//     return res.status(500).json({
-//       status: 'error',
-//       error: 'Invalid ID: Must be a string 24 hex characters'
-//     })
-//   }
-
-//   var collection = db.get().collection('tweets');
-
-//   collection.findOneAndDelete({
-//     _id: ObjectId(req.params.id)
-//   })
-//     .then(tweet => {
-//       if (tweet.lastErrorObject.n > 0) {
-//         if (tweet.value.media && tweet.value.media.length > 0) {
-
-//           // console.log("Deleting Media with ID " + tweet.value.media[0]);
-
-//           var query = 'DELETE FROM media WHERE file_id = ?';
-//           client.execute(query, [tweet.value.media[0]], function(err, result) {
-//             if (err) {
-//               console.log(err);
-//               return res.status(500).json({
-//                 status: 'error',
-//                 error: 'Unable to delete associated media file'
-//               })
-//             } else {
-//               return res.status(200).json({
-//                 status: 'OK',
-//                 message: 'Successfully deleted tweet and associated media file'
-//               })
-//             }
-//           })
-//         } else {
-//           return res.status(200).json({
-//             status: 'OK',
-//             message: 'Successfully deleted tweet'
-//           })
-//         }
-//       } else {
-//         return res.status(500).json({
-//           status: 'error',
-//           error: "Tweet doesn't exist"
-//         })
-//       }
-//     })
-//     .catch(err => {
-//       console.log(err);
-//       return res.status(500).json({
-//         status: 'error',
-//         error: 'Unable to find tweet to delete'
-//       })
-//     })
-
-// }
 
 exports.likes = function(req, res) {
   if (db.get() == null) {
