@@ -11,12 +11,12 @@ class Media extends React.Component {
     super(props);
     this.state = {
       query: '',
-      data_uri: {},
-      filename: '',
-      filetype: '',
+      file: '',
+      image_preview_url: '',
       get_media_result: null
     }
     this.onChange = this.onChange.bind(this);
+    this.handleFile = this.handleFile.bind(this);
   }
 
   onChange(state) {
@@ -34,30 +34,27 @@ class Media extends React.Component {
 
   uploadMediaEvent(event) {
     event.preventDefault();
-    store.dispatch(ProfileActions.uploadMedia(this.state.upload_media_buffer))
+    store.dispatch(ProfileActions.uploadMedia(this.state.file, this.state.image_preview_url))
       .then(data => {
         // console.log(store.getState());
-        this.setState({upload_media_buffer: {} });
+        this.setState({file: '', image_preview_url: ''});
       })
   }
 
-  handleFile(e) {
-    var reader = new FileReader();
-    var file = e.target.files[0];
+  handleFile(event) {
+    event.preventDefault();
 
-    reader.onload = (upload) => {
+    var reader = new FileReader();
+    var file = event.target.files[0];
+
+    reader.onloadend = () => {
       this.setState({
-        data_uri: upload.target.result,
-        filename: file.name,
-        filetype: file.type
+        file: file,
+        image_preview_url: reader.result
       });
     };
-
     reader.readAsDataURL(file);
 
-    console.log(file);
-    console.log("above = file, below = reader");
-    console.log(reader);
   }
 
   render() {
@@ -71,9 +68,20 @@ class Media extends React.Component {
       )
     }
 
+    var {image_preview_url} = this.state;
+    let $image_preview = null;
+    if (image_preview_url) {
+      $image_preview = (<img src={image_preview_url} />);
+    } else {
+      $image_preview = (<div>Select a file to preview</div>)
+    }
+
     return (
       <div>
         <div className="form-container">
+
+          <div>{$image_preview}</div>
+
           <form className="form">
             <div className="form-group">
               <label htmlFor="upload_media_buffer">Upload Media</label>

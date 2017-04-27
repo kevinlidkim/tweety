@@ -62,12 +62,12 @@ class Profile extends React.Component {
                   onChange={e => this.setState({ current_post:e.target.value })}/>
 
                 <label htmlFor="post_parent">Parent ID</label>
-                <input type="number" placeholder="Reply to tweet" id="post_parent" className="form-control"
+                <input type="text" placeholder="Reply to tweet" id="post_parent" className="form-control"
                   value={this.state.post_parent}
                   onChange={e => this.setState({ post_parent:e.target.value })}/>
 
                 <label htmlFor="post_media">Media ID</label>
-                <input type="number" placeholder="Attach media to tweet" id="post_media" className="form-control"
+                <input type="text" placeholder="Attach media to tweet" id="post_media" className="form-control"
                   value={this.state.post_media}
                   onChange={e => this.setState({ post_media:e.target.value })}/>
               </div>

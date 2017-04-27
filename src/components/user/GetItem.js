@@ -75,8 +75,8 @@ class GetItem extends React.Component {
             <li>Parent: {this.state.result.parent}</li>
             <li>Media: {this.state.result.media}</li>
           </ul>
-          // <button type="submit" className="btn btn-default" onClick={this.likeItemEvent.bind(this)}>Like</button>
-          // <button type="submit" className="btn btn-default" onClick={this.unlikeItemEvent.bind(this)}>Unlike</button>
+          <button type="submit" className="btn btn-default" onClick={this.likeItemEvent.bind(this)}>Like</button>
+          <button type="submit" className="btn btn-default" onClick={this.unlikeItemEvent.bind(this)}>Unlike</button>
           <button type="submit" className="btn btn-default" onClick={this.deleteItemEvent.bind(this)}>Delete</button>
         </div>
       )
