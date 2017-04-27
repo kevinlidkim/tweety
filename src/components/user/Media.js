@@ -27,19 +27,18 @@ class Media extends React.Component {
     event.preventDefault();
     store.dispatch(ProfileActions.getMedia(this.state.query))
       .then(data => {
-        // console.log(store.getState());
         this.setState({query: '', get_media_result: store.getState().rootReducer.user.profile.get_media_result});
       })
   }
 
   uploadMediaEvent(event) {
     event.preventDefault();
-    // console.log(this.state.image_preview_url);
-    store.dispatch(ProfileActions.uploadMedia(this.state.file))
+    if (this.state.file != '') {
+      store.dispatch(ProfileActions.uploadMedia(this.state.file))
       .then(data => {
-        // console.log(store.getState());
         this.setState({file: '', image_preview_url: '', query: store.getState().rootReducer.user.profile.upload_media_result.id});
       })
+    }
   }
 
   handleFile(event) {
@@ -62,9 +61,11 @@ class Media extends React.Component {
 
     var displayResult = null;
     if (this.state.get_media_result != null) {
+      var urlCreator = window.URL || window.webkitURL;
+      var imageUrl = urlCreator.createObjectURL(this.state.get_media_result);
       displayResult = (
         <div>
-          DISPLAY MEDIA HERE
+          <img src={imageUrl}></img>
         </div>
       )
     }

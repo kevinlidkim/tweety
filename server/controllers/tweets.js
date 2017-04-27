@@ -1017,8 +1017,6 @@ exports.get_media = function(req, res) {
         })
       }
 
-
-      
     }
   })
 

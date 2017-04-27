@@ -313,10 +313,43 @@ export function uploadMedia(file) {
           })
       })
       .catch(err => {
-        dispatch(uploadMediaFail(res));
+        dispatch(uploadMediaFail(err));
       })
   }
 }
+
+export function getMedia(query) {
+  return function(dispatch) {
+    return fetch('/media/' + query, {
+      method: 'GET',
+      credentials: 'same-origin'
+    })
+      .then(response => {
+        return response.blob()
+          .then(res => {
+            dispatch(getMediaSuccess(res));
+          })
+      })
+      .catch(err => {
+        dispatch(getMediaFail(err));
+      })
+  }
+}
+
+// export function getMedia(query) {
+//   return function(dispatch) {
+//     return fetch('/media/' + query, {
+//       method: 'GET',
+//       credentials: 'same-origin'
+//     })
+//       .then(response => {
+//         return dispatch(getMediaSuccess(response));
+//       })
+//       .catch(err => {
+//         dispatch(getMediaFail(err));
+//       })
+//   }
+// }
 
 export function makePostSuccess(server_response) {  
   return ({type: types.MAKE_POST_SUCCESS, server_response})
