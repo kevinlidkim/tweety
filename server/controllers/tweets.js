@@ -3,9 +3,9 @@ var ObjectId = require('mongodb').ObjectId;
 var _ = require('lodash');
 var moment = require('moment');
 
-var cassandra = require('cassandra-driver');
+// var cassandra = require('cassandra-driver');
 // var client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'tweety' });
-var client = new cassandra.Client({ contactPoints: ['192.168.1.38'], keyspace: 'tweety' });
+// var client = new cassandra.Client({ contactPoints: ['192.168.1.38'], keyspace: 'tweety' });
 
 var multer = require('multer');
 var upload = multer().single('content');
@@ -899,7 +899,6 @@ exports.likes = function(req, res) {
 }
 
 exports.add_media = function(req, res) {
-
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -909,11 +908,6 @@ exports.add_media = function(req, res) {
     return res.status(500).json({
       status: 'error',
       error: 'No logged in user'
-    })
-  } else if (client == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Cassandra error'
     })
   }
 
@@ -926,29 +920,32 @@ exports.add_media = function(req, res) {
         status: 'Failed to upload file'
       })
     } else {
-      var file_id = shortid.generate();
 
-      var query = 'INSERT INTO media (file_id, content, mimetype) VALUES (?, ?, ?)';
+      var bufferStream = new stream.PassThrough();
+      var bucket =  new mongodb.GridFSBucket(db.get());
 
-      client.execute(query, [file_id, req.file.buffer, req.file.mimetype], function(err, result) {
-        if (err) {
-          console.log(err);
-          return res.status(404).json({
+      bufferStream.end(req.file.buffer);
+      var buck = bucket.openUploadStream(req.file.originalname, {
+        contentType: req.file.mimetype
+      });
+
+      bufferStream.pipe(buck)
+        .on('error', function(error) {
+          return res.status(500).json({
             status: 'error',
-            error: "Couldn't deposit file"
+            error: 'Failed to deposit file'
           })
-        } else {
+        })
+        .on('finish', function() {
           var end = moment();
           var diff = end.diff(start);
-          // console.log(diff + "              Adding media");
           return res.status(200).json({
             time_diff: diff,
             status: 'OK',
             message: 'Successfully deposited file',
-            id: file_id
+            id: buck.id
           })
-        }
-      })
+        })
     }
   })
 
@@ -965,11 +962,6 @@ exports.get_media = function(req, res) {
       status: 'error',
       error: 'No logged in user'
     })
-  } else if (client == null) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Cassandra error'
-    })
   } else if (!req.params.id) {
     return res.status(500).json({
       status: 'error',
@@ -977,44 +969,178 @@ exports.get_media = function(req, res) {
     })
   }
 
-  var start = moment();
+  var bufferStream = new stream.PassThrough();
+  var bucket = new mongodb.GridFSBucket(db.get());
 
   var file_id = req.params.id;
-  var query = 'SELECT content, mimetype FROM media WHERE file_id = ?';
+  var buck = bucket.openDownloadStream(ObjectId(file_id));
 
-  client.execute(query, [file_id], function(err, result) {
-    if (err) {
-      console.log(err);
-      return res.status(404).json({
+  var buffer = "";
+
+  buck.pipe(bufferStream)
+    .on('error', function(error) {
+      return res.status(500).json({
         status: 'error',
-        error: "Couldn't retrieve file"
+        message: 'Failed to load file'
       })
-    } else {
-      if (result.rows.length > 0) {
-        var data = result.rows[0].content;
-        var mimetype = result.rows[0].mimetype;
-
-        var end = moment();
-        var diff = end.diff(start);
-        // console.log(diff + "              Retrieving media");
-
-        res.set('Content-Type', mimetype);
-        res.header('Content-Type', mimetype);
-
-        res.writeHead(200, {
-          'Content-Type': mimetype,
-          'Content-disposition': 'attachment;filename=' + file_id,
-          'Content-Length': data.length
-        });
-        res.end(new Buffer(data, 'binary'));
+    })
+    .on('data', function(chunk) {
+      
+      if (buffer == "") {
+        buffer = chunk
       } else {
-        return res.status(404).json({
-          status: 'error',
-          error: "Media file does not exist"
-        })
+        buffer = Buffer.concat([buffer, chunk]);
       }
 
-    }
-  })
+    })
+    .on('end', function() {
 
+      var collection = db.get().collection('fs.files');
+
+      collection.findOne({
+        _id: ObjectId(file_id)
+      })
+        .then(function(file_data) {
+          res.set('Content-Type', file_data.contentType);
+          res.header('Content-Type', file_data.contentType);
+
+          res.writeHead(200, {
+            'Content-Type': 'image/jpeg',
+            'Content-disposition': 'attachment;filename=' + file_data.filename,
+            'Content-Length': buffer.length
+          });
+          res.end(new Buffer(buffer, 'binary'));
+        })
+        .catch(function(file_data_err) {
+          console.log(file_data_err);
+          return res.status(500).json({
+            status: 'error',
+            error: 'Failed to find file data'
+          })
+        })
+
+    })
 }
+
+
+
+// exports.add_media = function(req, res) {
+
+//   if (db.get() == null) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Database error'
+//     })
+//   } else if (!req.session.user) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'No logged in user'
+//     })
+//   } else if (client == null) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Cassandra error'
+//     })
+//   }
+
+//   var start = moment();
+
+//   upload(req, res, function(err) {
+//     if (err) {
+//       console.log(err);
+//       return res.status(404).json({
+//         status: 'Failed to upload file'
+//       })
+//     } else {
+//       var file_id = shortid.generate();
+
+//       var query = 'INSERT INTO media (file_id, content, mimetype) VALUES (?, ?, ?)';
+
+//       client.execute(query, [file_id, req.file.buffer, req.file.mimetype], function(err, result) {
+//         if (err) {
+//           console.log(err);
+//           return res.status(404).json({
+//             status: 'error',
+//             error: "Couldn't deposit file"
+//           })
+//         } else {
+//           var end = moment();
+//           var diff = end.diff(start);
+//           // console.log(diff + "              Adding media");
+//           return res.status(200).json({
+//             time_diff: diff,
+//             status: 'OK',
+//             message: 'Successfully deposited file',
+//             id: file_id
+//           })
+//         }
+//       })
+//     }
+//   })
+
+// }
+
+// exports.get_media = function(req, res) {
+//   if (db.get() == null) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Database error'
+//     })
+//   } else if (!req.session.user) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'No logged in user'
+//     })
+//   } else if (client == null) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Cassandra error'
+//     })
+//   } else if (!req.params.id) {
+//     return res.status(500).json({
+//       status: 'error',
+//       error: 'Invalid media id'
+//     })
+//   }
+
+//   var start = moment();
+
+//   var file_id = req.params.id;
+//   var query = 'SELECT content, mimetype FROM media WHERE file_id = ?';
+
+//   client.execute(query, [file_id], function(err, result) {
+//     if (err) {
+//       console.log(err);
+//       return res.status(404).json({
+//         status: 'error',
+//         error: "Couldn't retrieve file"
+//       })
+//     } else {
+//       if (result.rows.length > 0) {
+//         var data = result.rows[0].content;
+//         var mimetype = result.rows[0].mimetype;
+
+//         var end = moment();
+//         var diff = end.diff(start);
+//         // console.log(diff + "              Retrieving media");
+
+//         res.set('Content-Type', mimetype);
+//         res.header('Content-Type', mimetype);
+
+//         res.writeHead(200, {
+//           'Content-Type': mimetype,
+//           'Content-disposition': 'attachment;filename=' + file_id,
+//           'Content-Length': data.length
+//         });
+//         res.end(new Buffer(data, 'binary'));
+//       } else {
+//         return res.status(404).json({
+//           status: 'error',
+//           error: "Media file does not exist"
+//         })
+//       }
+
+//     }
+//   })
+
+// }

@@ -141,6 +141,9 @@ db.follows.createIndex({following: 1});
 db.likes.createIndex({tweet: 1});
 db.likes.createIndex({user: 1});
 
+db.sessions.ensureIndex( { _id : "hashed" } );
+sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
+
 =============================================================
 
 db.tweets.ensureIndex( { _id : "hashed" } );
@@ -176,7 +179,7 @@ db.likes.createIndex({user: 1});
 ==========================================
 
 CREATE KEYSPACE Tweety
-WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 3};
+WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1};
 
 CREATE TABLE media (
   file_id text PRIMARY KEY,
@@ -186,7 +189,69 @@ CREATE TABLE media (
 
 DROP TABLE media;
 
+sudo rm -rf /var/lib/cassandra/data/system/*
+
+sudo du -x / | sort -n | tail -40
+df -h
+
 =============================================
+
+127.0.0.1 localhost
+192.168.1.38 load-balancer
+192.168.1.45 tweety-1
+192.168.1.47 tweety-2
+192.168.1.40 tweety-3
+192.168.1.44 tweety-4
+192.168.1.43 tweety-5
+192.168.1.42 tweety-6
+
+worker_rlimit_nofile 50000;
+
+upstream backend  {
+  server 192.168.1.45 max_fails=1  fail_timeout=2s;
+  server 192.168.1.47 max_fails=1  fail_timeout=2s;
+  server 192.168.1.40 max_fails=1  fail_timeout=2s;
+  server 192.168.1.44 max_fails=1  fail_timeout=2s;
+  server 192.168.1.43 max_fails=1  fail_timeout=2s;
+  server 192.168.1.42 max_fails=1  fail_timeout=2s;
+}
+
+server {
+  listen  80;
+  server_name kevinli4.cse356.compas.cs.stonybrook.edu;
+  location / {
+    proxy_pass  http://backend;
+  }
+}
+
+
+rs.initiate(
+  {
+    _id: "config1",
+    configsvr: true,
+    members: [
+      { _id : 0, host : "load-balancer:27019" }
+    ]
+  }
+)
+
+
+sudo mongod --configsvr --port 27019 --replSet config1 --dbpath /data/db/config --fork --logpath /var/log/mongodb/config
+sudo mongod --shardsvr --port 27018 --dbpath /data/db/shard --fork --logpath /var/log/mongodb/shard
+sudo mongos --configdb config1/load-balancer:27019 --fork --logpath /var/log/mongodb/mongo
+
+sh.addShard("load-balancer:27018")
+sh.addShard("tweety-1:27018")
+sh.addShard("tweety-2:27018")
+sh.addShard("tweety-3:27018")
+sh.addShard("tweety-4:27018")
+sh.addShard("tweety-5:27018")
+sh.addShard("tweety-6:27018")
+
+use admin
+db.runCommand( { removeShard: "shard0000" } )
+
+======================================
 
 var before = new Date();
 db.tweets.find({
