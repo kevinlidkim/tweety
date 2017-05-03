@@ -129,6 +129,10 @@ db.users.ensureIndex( { username : "hashed" } );
 sh.shardCollection("tweety.users", { "username": "hashed" } );
 db.follows.ensureIndex( { follower: "hashed" } );
 sh.shardCollection("tweety.follows", { "follower": "hashed" } );
+db.sessions.ensureIndex( { _id : "hashed" } );
+sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
+db.fs.chunks.createIndex( { files_id : 1 , n : 1 } )
+db.runCommand( { shardCollection : "tweety.fs.chunks" , key : { files_id : 1 , n : 1 } } )
 
 db.users.createIndex({email: 1});
 db.tweets.createIndex({timestamp: -1});
@@ -141,39 +145,11 @@ db.follows.createIndex({following: 1});
 db.likes.createIndex({tweet: 1});
 db.likes.createIndex({user: 1});
 
-db.sessions.ensureIndex( { _id : "hashed" } );
-sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
-
-=============================================================
-
-db.tweets.ensureIndex( { _id : "hashed" } );
-sh.enableSharding("tweety");
-sh.shardCollection("tweety.tweets", { "_id": "hashed" } );
-sh.enableBalancing("tweety.tweets");
-
-db.users.ensureIndex( { _id : "hashed" } );
-sh.shardCollection("tweety.users", { "_id": "hashed" } );
 
 
-=============================================================
 
 db.users.createIndex({email: 1}, {unique: true});
 db.users.createIndex({username: 1}, {unique: true});
-
-db.users.createIndex({email: 1});
-db.users.createIndex({username: 1});
-
-db.tweets.createIndex({timestamp: -1});
-db.tweets.createIndex({content: "text"});
-db.tweets.createIndex({username: 1});
-db.tweets.createIndex({interest: -1});
-db.tweets.createIndex({retweets: -1});
-db.tweets.createIndex({likes: -1})
-db.tweets.createIndex({parent: 1});
-db.follows.createIndex({follower: 1});
-db.follows.createIndex({following: 1});
-db.likes.createIndex({tweet: 1});
-db.likes.createIndex({user: 1});
 
 
 ==========================================

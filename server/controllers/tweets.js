@@ -2,6 +2,7 @@ var db = require('../../db');
 var ObjectId = require('mongodb').ObjectId;
 var _ = require('lodash');
 var moment = require('moment');
+var stream = require('stream');
 
 // var cassandra = require('cassandra-driver');
 // var client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'tweety' });
