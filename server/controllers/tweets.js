@@ -1162,7 +1162,7 @@ exports.add_media = function(req, res) {
         mimetype: req.file.mimetype
       })
         .then(uploaded_file => {
-          id = uploaded_file.ops[0]._id;
+          var id = uploaded_file.ops[0]._id;
           var end = moment();
           var diff = end.diff(start);
           return res.status(200).json({
