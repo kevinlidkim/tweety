@@ -1225,7 +1225,7 @@ exports.get_media = function(req, res) {
 
         console.log(file_data.buffer);
 
-        res.end(new Buffer(file_data.buffer, 'binary'));
+        res.end(file_data.buffer);
 
       } else {
         return res.status(500).json({
