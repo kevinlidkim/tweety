@@ -1155,7 +1155,7 @@ exports.add_media = function(req, res) {
       })
     } else {
 
-      console.log(typeof req.file.buffer);
+      console.log(req.file.buffer);
 
       var collection = db.get().collection('files');
       collection.insert({
@@ -1223,9 +1223,9 @@ exports.get_media = function(req, res) {
           'Content-Length': file_data.buffer.length()
         });
 
-        var buffer = Buffer.concat([file_data.buffer], file_data.buffer.length());
+        console.log(file_data.buffer);
 
-        res.end(new Buffer(buffer, 'binary'));
+        res.end(new Buffer(file_data.buffer, 'binary'));
 
       } else {
         return res.status(500).json({
