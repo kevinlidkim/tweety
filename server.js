@@ -19,16 +19,16 @@ db.connect(mongo_uri, function(err) {
   }
 })
 
-var file_db = require('./file_db');
-var mongo_file_uri = 'mongodb://192.168.1.38:27017/tweety';
+// var file_db = require('./file_db');
+// var mongo_file_uri = 'mongodb://192.168.1.38:27017/tweety';
 
-file_db.connect(mongo_file_uri, function(err) {
-  if (err) {
-    console.log("Error connecting to file mongo");
-  } else {
-    console.log("Connected to file mongo");
-  }
-})
+// file_db.connect(mongo_file_uri, function(err) {
+//   if (err) {
+//     console.log("Error connecting to file mongo");
+//   } else {
+//     console.log("Connected to file mongo");
+//   }
+// })
 
 
 app.use(bodyParser.json()); // parse application/json 
@@ -38,7 +38,7 @@ app.use(cookieParser());
 app.use(session({resave: true, 
                  saveUninitialized: true, 
                  secret: 'supersecretfriedchicken', 
-                 cookie: { maxAge: 1000 * 60 * 60 * 24 * 3},
+                 cookie: { maxAge: 1000 * 60 * 60 * 24},
                  store: new MongoStore({ url: mongo_uri })
                }));
 

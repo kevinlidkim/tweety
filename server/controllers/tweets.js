@@ -1,11 +1,13 @@
 var db = require('../../db');
-var file_db = require('../../file_db');
+// var file_db = require('../../file_db');
 var ObjectId = require('mongodb').ObjectId;
 var _ = require('lodash');
 var moment = require('moment');
 var mongodb = require('mongodb');
 var stream = require('stream');
 
+// var storage = multer.memoryStorage();
+// var upload = multer({ storage: storage }).single('content');
 var multer = require('multer');
 var upload = multer().single('content');
 var fs = require('fs');
@@ -651,7 +653,7 @@ exports.new_search_items = function(req, res) {
 
 }
 
-exports.delete_item = function(req, res) {
+exports.delete_item_gridfs = function(req, res) {
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -750,8 +752,7 @@ exports.delete_item = function(req, res) {
 
 }
 
-
-exports.new_delete_item = function(req, res) {
+exports.delete_item = function(req, res) {
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -770,8 +771,8 @@ exports.new_delete_item = function(req, res) {
   }
 
   var start = moment();
-
   var collection = db.get().collection('tweets');
+  var sec_collection = db.get().collection('files');
 
   collection.findOne({
     _id: ObjectId(req.params.id)
@@ -779,22 +780,17 @@ exports.new_delete_item = function(req, res) {
     .then(tweet => {
       if (tweet) {
         if (tweet.media && tweet.media.length > 0) {
-          var query = 'DELETE FROM media WHERE file_id = ?';
-          client.execute(query, [tweet.media[0]], function(err, result) {
-            if (err) {
-              console.log(err);
-              return res.status(500).json({
-                status: 'error',
-                error: 'Unable to delete associated media file'
-              })
-            } else {
+
+          sec_collection.remove({
+            _id: ObjectId(tweet.media[0])
+          })
+            .then(removed_media => {
               collection.remove({
                 _id: ObjectId(req.params.id)
               })
                 .then(remove_success => {
                   var end = moment();
                   var diff = end.diff(start);
-                  // console.log(diff + "              Deleted tweet + media");
                   return res.status(200).json({
                     time_diff: diff,
                     status: 'OK',
@@ -805,11 +801,18 @@ exports.new_delete_item = function(req, res) {
                   console.log(remove_fail);
                   return res.status(500).json({
                     status: 'error',
-                    error: 'Failed to delete tweet after deleting media'
+                    error: 'Failed to delete tweet but deleted associated media file'
                   })
                 })
-            }
-          })
+            })
+            .catch(removed_media_fail => {
+              console.log(removed_media_fail);
+              return res.status(500).json({
+                status: 'error',
+                error: 'Failed to delete media'
+              })
+            })
+
         } else {
           collection.remove({
             _id: ObjectId(req.params.id)
@@ -817,7 +820,6 @@ exports.new_delete_item = function(req, res) {
             .then(remove_success => {
               var end = moment();
               var diff = end.diff(start);
-              // console.log(diff + "              Deleted tweet");
               return res.status(200).json({
                 time_diff: diff,
                 status: 'OK',
@@ -825,6 +827,7 @@ exports.new_delete_item = function(req, res) {
               })
             })
             .catch(remove_fail => {
+              console.log(remove_fail);
               return res.status(500).json({
                 status: 'error',
                 error: 'Failed to delete tweet'
@@ -845,6 +848,7 @@ exports.new_delete_item = function(req, res) {
         error: 'Unable to find tweet to delete'
       })
     })
+
 }
 
 
@@ -996,7 +1000,7 @@ exports.likes = function(req, res) {
 
 }
 
-exports.add_media = function(req, res) {
+exports.add_media_gridfs = function(req, res) {
   if (file_db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -1051,7 +1055,7 @@ exports.add_media = function(req, res) {
 }
 
 
-exports.get_media = function(req, res) {
+exports.get_media_gridfs = function(req, res) {
   if (file_db.get() == null) {
     return res.status(500).json({
       status: 'error',
@@ -1127,3 +1131,110 @@ exports.get_media = function(req, res) {
     })
 
 }
+
+exports.add_media = function(req, res) {
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  }
+
+  var start = moment();
+
+  upload(req, res, function(err) {
+    if (err) {
+      console.log(err);
+      return res.status(404).json({
+        status: 'Failed to upload file'
+      })
+    } else {
+
+      var collection = db.get().collection('files');
+      collection.insert({
+        buffer: req.file.buffer,
+        name: req.file.originalname,
+        mimetype: req.file.mimetype
+      })
+        .then(uploaded_file => {
+          id = uploaded_file.ops[0]._id;
+          var end = moment();
+          var diff = end.diff(start);
+          return res.status(200).json({
+            time_diff: diff,
+            status: 'OK',
+            message: 'Successfully deposited file',
+            id: id
+          })
+        })
+        .catch(upload_fail => {
+          console.log(upload_fail);
+          return res.status(500).json({
+            status: 'error',
+            error: 'Failed to upload file'
+          })
+        })
+      
+    }
+  })
+
+}
+
+exports.get_media_gridfs = function(req, res) {
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  } else if (req.params.id.length != 24) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Invalid media id'
+    })
+  }
+
+  var file_id = req.params.id;
+
+  var collection = db.get().collection('files');
+  collection.findOne({
+    _id: ObjectId(file_id)
+  })
+    .then(file_data => {
+      if (file_data) {
+
+        res.set('Content-Type', file_data.mimetype);
+        res.header('Content-Type', file_data.mimetype);
+
+        res.writeHead(200, {
+          'Content-Type': 'image/jpeg',
+          'Content-disposition': 'attachment;filename=' + file_data.name,
+          'Content-Length': file_data.buffer.length
+        });
+        res.end(new Buffer(file_data.buffer, 'binary'));
+
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          error: 'File does not exist'
+        })
+      }
+    }).catch(err => {
+      console.log(err);
+      return res.status(500).json({
+        status: 'error',
+        error: 'Failed to find file'
+      })
+    })
+
+}
+
