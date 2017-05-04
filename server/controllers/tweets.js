@@ -1212,8 +1212,8 @@ exports.get_media = function(req, res) {
     .then(file_data => {
       if (file_data) {
 
-        res.set('Content-Type', file_data.mimetype);
-        res.header('Content-Type', file_data.mimetype);
+        res.set('Content-Type', 'image/jpeg');
+        res.header('Content-Type', 'image/jpeg');
 
         res.writeHead(200, {
           'Content-Type': 'image/jpeg',
