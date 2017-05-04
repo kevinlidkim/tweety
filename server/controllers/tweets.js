@@ -1223,7 +1223,7 @@ exports.get_media = function(req, res) {
           'Content-Length': file_data.buffer.length()
         });
 
-        var buffer = Buffer.concat([file_data.buffer]);
+        var buffer = Buffer.concat([file_data.buffer], file_data.buffer.length());
 
         res.end(new Buffer(buffer, 'binary'));
 
