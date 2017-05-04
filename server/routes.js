@@ -21,11 +21,11 @@ module.exports = function(app) {
   app.get('/user/:username/following', users.get_following);
 
   // app.post('/additem', tweets.add_item);
-  // app.post('/additem', tweets.add_item_no_retweet);
-  app.post('/additem', tweets.add_item_no_wait);
+  app.post('/additem', tweets.add_item_no_retweet);
+  // app.post('/additem', tweets.add_item_no_wait);
   app.get('/item/:id', tweets.get_item);
-  // app.delete('/item/:id',tweets.delete_item);
-  app.delete('/item/:id',tweets.new_delete_item);
+  app.delete('/item/:id',tweets.delete_item);
+  // app.delete('/item/:id',tweets.new_delete_item);
   app.post('/search', tweets.new_search_items);
   app.post('/item/:id/like', tweets.likes);
 

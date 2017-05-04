@@ -239,6 +239,9 @@ sh.addShard("tweety-6:27018")
 use admin
 db.runCommand( { removeShard: "shard0000" } )
 
+mongostat --host tweety-1:27018
+mongotop
+
 ======================================
 
 var before = new Date();

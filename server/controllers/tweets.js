@@ -651,6 +651,105 @@ exports.new_search_items = function(req, res) {
 
 }
 
+exports.delete_item = function(req, res) {
+  if (db.get() == null) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Database error'
+    })
+  } else if (!req.session.user) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'No logged in user'
+    })
+  } else if (req.params.id.length != 24) {
+    return res.status(500).json({
+      status: 'error',
+      error: 'Invalid ID: Must be a string 24 hex characters'
+    })
+  }
+
+  var start = moment();
+  var collection = db.get().collection('tweets');
+
+  collection.findOne({
+    _id: ObjectId(req.params.id)
+  })
+    .then(tweet => {
+      if (tweet) {
+        if (tweet.media && tweet.media.length > 0) {
+          
+          var bufferStream = new stream.PassThrough();
+          var bucket = new mongodb.GridFSBucket(file_db.get());
+          bucket.delete(ObjectId(tweet.media), error => {
+            if (error) {
+              console.log(error);
+              return res.status(500).json({
+                status: 'error',
+                error: 'Failed to delete media'
+              })
+            } else {
+              collection.remove({
+                _id: ObjectId(req.params.id)
+              })
+                .then(remove_success => {
+                  var end = moment();
+                  var diff = end.diff(start);
+                  return res.status(200).json({
+                    time_diff: diff,
+                    status: 'OK',
+                    message: 'Successfully deleted tweet and associated media file'
+                  })
+                })
+                .catch(remove_fail => {
+                  console.log(remove_fail);
+                  return res.status(500).json({
+                    status: 'error',
+                    error: 'Failed to delete tweet but deleted associated media file'
+                  })
+                })
+            }
+          })
+
+        } else {
+          collection.remove({
+            _id: ObjectId(req.params.id)
+          })
+            .then(remove_success => {
+              var end = moment();
+              var diff = end.diff(start);
+              // console.log(diff + "              Deleted tweet");
+              return res.status(200).json({
+                time_diff: diff,
+                status: 'OK',
+                message: 'Successfully deleted tweet'
+              })
+            })
+            .catch(remove_fail => {
+              console.log(remove_fail);
+              return res.status(500).json({
+                status: 'error',
+                error: 'Failed to delete tweet'
+              })
+            })
+        }
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          error: 'Tweet already does not exist'
+        })
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      return res.status(500).json({
+        status: 'error',
+        error: 'Unable to find tweet to delete'
+      })
+    })
+
+}
+
 
 exports.new_delete_item = function(req, res) {
   if (db.get() == null) {
