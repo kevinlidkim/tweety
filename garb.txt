@@ -133,8 +133,11 @@ db.likes.ensureIndex( { tweet: "hashed" } );
 sh.shardCollection("tweety.likes", { "tweet": "hashed" } );
 db.sessions.ensureIndex( { _id : "hashed" } );
 sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
-db.fs.chunks.createIndex( { files_id : 1 , n : 1 } )
-db.runCommand( { shardCollection : "tweety.fs.chunks" , key : { files_id : 1 , n : 1 } } )
+db.fs.chunks.createIndex( { files_id : 1 } )
+sh.shardCollection("tweety.fs.chunks", { "files_id": 1} );
+db.fs.files.createIndex( { files_id : 1 } )
+sh.shardCollection("tweety.fs.files", { "files_id": 1} );
+
 
 db.users.createIndex({email: 1});
 db.tweets.createIndex({timestamp: -1});
@@ -151,6 +154,16 @@ db.likes.createIndex({user: 1});
 
 db.users.createIndex({email: 1}, {unique: true});
 db.users.createIndex({username: 1}, {unique: true});
+
+
+============================================
+
+db.fs.chunks.createIndex( { files_id : 1 } )
+sh.shardCollection("tweety.fs.chunks", { "files_id": 1} );
+db.fs.files.createIndex( { files_id : 1 } )
+sh.shardCollection("tweety.fs.files", { "files_id": 1} );
+
+db.runCommand( { shardCollection : "tweety.fs.chunks" , key : { files_id : 1 , n : 1 } } )
 
 
 ==========================================
@@ -211,6 +224,8 @@ rs.initiate(
     ]
   }
 )
+
+sudo mongod --port 27017 --dbpath /data/db/file --fork --logpath /var/log/mongodb/file
 
 
 sudo mongod --configsvr --port 27019 --replSet config1 --dbpath /data/db/config --fork --logpath /var/log/mongodb/config

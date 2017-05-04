@@ -1,13 +1,10 @@
 var db = require('../../db');
+var file_db = require('../../file_db');
 var ObjectId = require('mongodb').ObjectId;
 var _ = require('lodash');
 var moment = require('moment');
 var mongodb = require('mongodb');
 var stream = require('stream');
-
-// var cassandra = require('cassandra-driver');
-// var client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'tweety' });
-// var client = new cassandra.Client({ contactPoints: ['192.168.1.38'], keyspace: 'tweety' });
 
 var multer = require('multer');
 var upload = multer().single('content');
@@ -901,7 +898,7 @@ exports.likes = function(req, res) {
 }
 
 exports.add_media = function(req, res) {
-  if (db.get() == null) {
+  if (file_db.get() == null) {
     return res.status(500).json({
       status: 'error',
       error: 'Database error'
@@ -924,7 +921,7 @@ exports.add_media = function(req, res) {
     } else {
 
       var bufferStream = new stream.PassThrough();
-      var bucket =  new mongodb.GridFSBucket(db.get());
+      var bucket =  new mongodb.GridFSBucket(file_db.get());
 
       bufferStream.end(req.file.buffer);
       var buck = bucket.openUploadStream(req.file.originalname, {
@@ -956,7 +953,7 @@ exports.add_media = function(req, res) {
 
 
 exports.get_media = function(req, res) {
-  if (db.get() == null) {
+  if (file_db.get() == null) {
     return res.status(500).json({
       status: 'error',
       error: 'Database error'
@@ -975,7 +972,7 @@ exports.get_media = function(req, res) {
 
   var file_id = req.params.id;
 
-  var collection = db.get().collection('fs.files');
+  var collection = file_db.get().collection('fs.files');
   collection.findOne({
     _id: ObjectId(file_id)
   })
@@ -983,7 +980,7 @@ exports.get_media = function(req, res) {
       if (file_data) {
 
         var bufferStream = new stream.PassThrough();
-        var bucket = new mongodb.GridFSBucket(db.get());
+        var bucket = new mongodb.GridFSBucket(file_db.get());
         var buck = bucket.openDownloadStream(ObjectId(file_id));
 
         var buffer = "";

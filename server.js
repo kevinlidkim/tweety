@@ -19,6 +19,17 @@ db.connect(mongo_uri, function(err) {
   }
 })
 
+var file_db = require('./file_db');
+var mongo_file_uri = 'mongodb://192.168.1.38:27017/tweety';
+
+db.connect(mongo_file_uri, function(err) {
+  if (err) {
+    console.log("Error connecting to file mongo");
+  } else {
+    console.log("Connected to file mongo");
+  }
+})
+
 
 app.use(bodyParser.json()); // parse application/json 
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
