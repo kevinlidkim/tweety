@@ -973,6 +973,8 @@ exports.get_media = function(req, res) {
     })
   }
 
+  var file_id = req.params.id;
+
   var collection = db.get().collection('fs.files');
   collection.findOne({
     _id: ObjectId(file_id)
@@ -982,8 +984,6 @@ exports.get_media = function(req, res) {
 
         var bufferStream = new stream.PassThrough();
         var bucket = new mongodb.GridFSBucket(db.get());
-
-        var file_id = req.params.id;
         var buck = bucket.openDownloadStream(ObjectId(file_id));
 
         var buffer = "";
