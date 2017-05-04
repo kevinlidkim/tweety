@@ -953,6 +953,7 @@ exports.add_media = function(req, res) {
 
 }
 
+
 exports.get_media = function(req, res) {
   if (db.get() == null) {
     return res.status(500).json({
@@ -964,64 +965,68 @@ exports.get_media = function(req, res) {
       status: 'error',
       error: 'No logged in user'
     })
-  } else if (!req.params.id) {
+  } else if (req.params.id.length != 24) {
     return res.status(500).json({
       status: 'error',
       error: 'Invalid media id'
     })
   }
 
-  var bufferStream = new stream.PassThrough();
-  var bucket = new mongodb.GridFSBucket(db.get());
+  var collection = db.get().collection('fs.files');
+  collection.findOne({
+    _id: ObjectId(file_id)
+  })
+    .then(file_data => {
+      if (file_data) {
 
-  var file_id = req.params.id;
-  var buck = bucket.openDownloadStream(ObjectId(file_id));
+        var bufferStream = new stream.PassThrough();
+        var bucket = new mongodb.GridFSBucket(db.get());
 
-  console.log(buck);
+        var file_id = req.params.id;
+        var buck = bucket.openDownloadStream(ObjectId(file_id));
 
-  var buffer = "";
+        var buffer = "";
 
-  buck.pipe(bufferStream)
-    .on('error', function(error) {
+        buck.pipe(bufferStream)
+          .on('error', err => {
+            return res.status(500).json({
+              status: 'error',
+              message: 'Failed to load file'
+            })
+          })
+          .on('data', chunk => {
+            
+            if (buffer == "") {
+              buffer = chunk
+            } else {
+              buffer = Buffer.concat([buffer, chunk]);
+            }
+
+          })
+          .on('end', function() {
+            res.set('Content-Type', file_data.contentType);
+            res.header('Content-Type', file_data.contentType);
+
+            res.writeHead(200, {
+              'Content-Type': 'image/jpeg',
+              'Content-disposition': 'attachment;filename=' + file_data.filename,
+              'Content-Length': buffer.length
+            });
+            res.end(new Buffer(buffer, 'binary'));
+          })
+
+      } else {
+        return res.status(500).json({
+          status: 'error',
+          error: 'File does not exist'
+        })
+      }
+    }).catch(err => {
+      console.log(err);
       return res.status(500).json({
         status: 'error',
-        message: 'Failed to load file'
+        error: 'Failed to find file'
       })
     })
-    .on('data', function(chunk) {
-      
-      if (buffer == "") {
-        buffer = chunk
-      } else {
-        buffer = Buffer.concat([buffer, chunk]);
-      }
 
-    })
-    .on('end', function() {
-
-      var collection = db.get().collection('fs.files');
-
-      collection.findOne({
-        _id: ObjectId(file_id)
-      })
-        .then(function(file_data) {
-          res.set('Content-Type', file_data.contentType);
-          res.header('Content-Type', file_data.contentType);
-
-          res.writeHead(200, {
-            'Content-Type': 'image/jpeg',
-            'Content-disposition': 'attachment;filename=' + file_data.filename,
-            'Content-Length': buffer.length
-          });
-          res.end(new Buffer(buffer, 'binary'));
-        })
-        .catch(function(file_data_err) {
-          console.log(file_data_err);
-          return res.status(500).json({
-            status: 'error',
-            error: 'Failed to find file data'
-          })
-        })
-
-    })
 }
