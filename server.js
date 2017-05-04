@@ -22,7 +22,7 @@ db.connect(mongo_uri, function(err) {
 var file_db = require('./file_db');
 var mongo_file_uri = 'mongodb://192.168.1.38:27017/tweety';
 
-db.connect(mongo_file_uri, function(err) {
+file_db.connect(mongo_file_uri, function(err) {
   if (err) {
     console.log("Error connecting to file mongo");
   } else {

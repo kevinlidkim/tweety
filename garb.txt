@@ -133,10 +133,6 @@ db.likes.ensureIndex( { tweet: "hashed" } );
 sh.shardCollection("tweety.likes", { "tweet": "hashed" } );
 db.sessions.ensureIndex( { _id : "hashed" } );
 sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
-db.fs.chunks.createIndex( { files_id : 1 } )
-sh.shardCollection("tweety.fs.chunks", { "files_id": 1} );
-db.fs.files.createIndex( { files_id : 1 } )
-sh.shardCollection("tweety.fs.files", { "files_id": 1} );
 
 
 db.users.createIndex({email: 1});
