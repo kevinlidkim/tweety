@@ -1214,21 +1214,16 @@ exports.get_media = function(req, res) {
     .then(file_data => {
       if (file_data) {
 
-        res.set('Content-Type', 'image/jpeg');
-        res.header('Content-Type', 'image/jpeg');
-
-        console.log(file_data.name);
-        console.log(file_data.buffer.length());
-        console.log(file_data.mimetype);
-        console.log(typeof file_data.buffer);
-        var buffer = String(file_data.buffer);
-        console.log(typeof buffer);
+        res.set('Content-Type', file_data.mimetype);
+        res.header('Content-Type', file_data.mimetype);
 
         res.writeHead(200, {
           'Content-Type': 'image/jpeg',
           'Content-disposition': 'attachment;filename=' + file_data.name,
           'Content-Length': file_data.buffer.length()
         });
+
+        var buffer = Buffer.concat([file_data.buffer]);
 
         res.end(new Buffer(buffer, 'binary'));
 
