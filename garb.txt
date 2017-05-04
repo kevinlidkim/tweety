@@ -129,6 +129,8 @@ db.users.ensureIndex( { username : "hashed" } );
 sh.shardCollection("tweety.users", { "username": "hashed" } );
 db.follows.ensureIndex( { follower: "hashed" } );
 sh.shardCollection("tweety.follows", { "follower": "hashed" } );
+db.likes.ensureIndex( { tweet: "hashed" } );
+sh.shardCollection("tweety.likes", { "tweet": "hashed" } );
 db.sessions.ensureIndex( { _id : "hashed" } );
 sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
 db.fs.chunks.createIndex( { files_id : 1 , n : 1 } )
@@ -142,7 +144,6 @@ db.tweets.createIndex({retweets: -1});
 db.tweets.createIndex({likes: -1})
 db.tweets.createIndex({parent: 1});
 db.follows.createIndex({following: 1});
-db.likes.createIndex({tweet: 1});
 db.likes.createIndex({user: 1});
 
 
