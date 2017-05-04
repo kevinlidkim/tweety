@@ -1224,7 +1224,8 @@ exports.get_media = function(req, res) {
           'Content-disposition': 'attachment;filename=' + file_data.name,
           'Content-Length': file_data.buffer.length()
         });
-        res.end(new Buffer(file_data.buffer, 'binary'));
+
+        res.end(file_data.buffer, 'binary');
 
       } else {
         return res.status(500).json({
