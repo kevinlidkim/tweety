@@ -1218,6 +1218,7 @@ exports.get_media = function(req, res) {
         console.log(file_data.name);
         console.log(file_data.buffer.length());
         console.log(file_data.mimetype);
+        console.log(typeof file_data.buffer);
 
         res.writeHead(200, {
           'Content-Type': 'image/jpeg',
@@ -1225,7 +1226,7 @@ exports.get_media = function(req, res) {
           'Content-Length': file_data.buffer.length()
         });
 
-        res.end(file_data.buffer, 'binary');
+        res.end(new Buffer(file_data.buffer, 'binary'));
 
       } else {
         return res.status(500).json({
