@@ -681,7 +681,7 @@ exports.delete_item = function(req, res) {
           
           var bufferStream = new stream.PassThrough();
           var bucket = new mongodb.GridFSBucket(file_db.get());
-          bucket.delete(ObjectId(tweet.media), error => {
+          bucket.delete(ObjectId(tweet.media[0]), error => {
             if (error) {
               console.log(error);
               return res.status(500).json({

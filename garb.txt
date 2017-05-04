@@ -122,6 +122,38 @@ http://stackoverflow.com/questions/11819568/good-shard-keys-in-mongodb
 https://blog.bugsnag.com/mongo-shard-key/
 http://stackoverflow.com/questions/5648466/does-multiple-shard-key-helps-performance-in-mongodb
 
+====================================================
+
+TWEET HASH ID
+
+sh.enableSharding("tweety");
+db.tweets.ensureIndex( { _id : "hashed" } );
+sh.shardCollection("tweety.tweets", { "_id": "hashed"} );
+db.users.ensureIndex( { username : "hashed" } );
+sh.shardCollection("tweety.users", { "username": "hashed" } );
+db.follows.ensureIndex( { follower: "hashed" } );
+sh.shardCollection("tweety.follows", { "follower": "hashed" } );
+db.likes.ensureIndex( { tweet: "hashed" } );
+sh.shardCollection("tweety.likes", { "tweet": "hashed" } );
+db.sessions.ensureIndex( { _id : "hashed" } );
+sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
+
+
+db.users.createIndex({email: 1});
+db.tweets.createIndex({username: 1});
+db.tweets.createIndex({timestamp: -1});
+db.tweets.createIndex({content: "text"});
+db.tweets.createIndex({interest: -1});
+db.tweets.createIndex({retweets: -1});
+db.tweets.createIndex({likes: -1})
+db.tweets.createIndex({parent: 1});
+db.follows.createIndex({following: 1});
+db.likes.createIndex({user: 1});
+
+=====================================================
+
+TWEET HASH USERNAME
+
 sh.enableSharding("tweety");
 db.tweets.ensureIndex( { username : "hashed" } );
 sh.shardCollection("tweety.tweets", { "username": "hashed"} );
@@ -175,7 +207,7 @@ CREATE TABLE media (
 
 DROP TABLE media;
 
-sudo rm -rf /var/lib/cassandra/data/system/*
+sudo rm -rf /var/log/nginx/*
 
 sudo du -x / | sort -n | tail -40
 df -h
