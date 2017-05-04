@@ -932,13 +932,14 @@ exports.add_media = function(req, res) {
       });
 
       bufferStream.pipe(buck)
-        .on('error', function(error) {
+        .on('error', err => {
+          console.log(err);
           return res.status(500).json({
             status: 'error',
             error: 'Failed to deposit file'
           })
         })
-        .on('finish', function() {
+        .on('finish', finish => {
           var end = moment();
           var diff = end.diff(start);
           return res.status(200).json({
