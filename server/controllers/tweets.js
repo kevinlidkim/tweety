@@ -1159,7 +1159,7 @@ exports.add_media = function(req, res) {
 
       var collection = db.get().collection('files');
       collection.insert({
-        buffer: req.file.buffer,
+        chunk: req.file.buffer,
         name: req.file.originalname,
         mimetype: req.file.mimetype
       })
@@ -1220,12 +1220,12 @@ exports.get_media = function(req, res) {
         res.writeHead(200, {
           'Content-Type': 'image/jpeg',
           'Content-disposition': 'attachment;filename=' + file_data.name,
-          'Content-Length': file_data.buffer.length()
+          'Content-Length': file_data.chunk.buffer.length
         });
 
-        console.log(file_data.buffer.buffer);
+        console.log(file_data.chunk.buffer);
 
-        res.end(file_data.buffer.buffer);
+        res.end(file_data.chunk.buffer);
 
       } else {
         return res.status(500).json({
