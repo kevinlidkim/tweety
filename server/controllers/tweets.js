@@ -1155,8 +1155,6 @@ exports.add_media = function(req, res) {
       })
     } else {
 
-      console.log(req.file.buffer);
-
       var collection = db.get().collection('files');
       collection.insert({
         chunk: req.file.buffer,
@@ -1222,8 +1220,6 @@ exports.get_media = function(req, res) {
           'Content-disposition': 'attachment;filename=' + file_data.name,
           'Content-Length': file_data.chunk.buffer.length
         });
-
-        console.log(file_data.chunk.buffer);
 
         res.end(file_data.chunk.buffer);
 
