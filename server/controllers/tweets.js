@@ -1155,6 +1155,8 @@ exports.add_media = function(req, res) {
       })
     } else {
 
+      console.log(typeof req.file.buffer);
+
       var collection = db.get().collection('files');
       collection.insert({
         buffer: req.file.buffer,
@@ -1219,6 +1221,8 @@ exports.get_media = function(req, res) {
         console.log(file_data.buffer.length());
         console.log(file_data.mimetype);
         console.log(typeof file_data.buffer);
+        var buffer = String(file_data.buffer);
+        console.log(typeof buffer);
 
         res.writeHead(200, {
           'Content-Type': 'image/jpeg',
@@ -1226,7 +1230,7 @@ exports.get_media = function(req, res) {
           'Content-Length': file_data.buffer.length()
         });
 
-        res.end(new Buffer(JSON.stringify(file_data.buffer), 'binary'));
+        res.end(new Buffer(buffer, 'binary'));
 
       } else {
         return res.status(500).json({
