@@ -1223,9 +1223,9 @@ exports.get_media = function(req, res) {
           'Content-Length': file_data.buffer.length()
         });
 
-        console.log(file_data.buffer);
+        console.log(file_data.buffer.buffer);
 
-        res.end(file_data.buffer);
+        res.end(file_data.buffer.buffer);
 
       } else {
         return res.status(500).json({
