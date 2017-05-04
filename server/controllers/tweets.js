@@ -1216,13 +1216,13 @@ exports.get_media = function(req, res) {
         res.header('Content-Type', 'image/jpeg');
 
         console.log(file_data.name);
-        console.log(file_data.buffer.length);
+        console.log(file_data.buffer.length());
         console.log(file_data.mimetype);
 
         res.writeHead(200, {
           'Content-Type': 'image/jpeg',
           'Content-disposition': 'attachment;filename=' + file_data.name,
-          'Content-Length': file_data.buffer.length
+          'Content-Length': file_data.buffer.length()
         });
         res.end(new Buffer(file_data.buffer, 'binary'));
 
