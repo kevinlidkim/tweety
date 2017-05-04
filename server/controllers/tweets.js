@@ -1185,7 +1185,7 @@ exports.add_media = function(req, res) {
 
 }
 
-exports.get_media_gridfs = function(req, res) {
+exports.get_media = function(req, res) {
   if (db.get() == null) {
     return res.status(500).json({
       status: 'error',
