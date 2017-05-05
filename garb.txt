@@ -123,6 +123,27 @@ https://blog.bugsnag.com/mongo-shard-key/
 http://stackoverflow.com/questions/5648466/does-multiple-shard-key-helps-performance-in-mongodb
 
 ====================================================
+CURRENT = EVERYTHING HERE + content:text index
+
+THIS WORKS
+
+sh.enableSharding("tweety");
+sh.shardCollection("tweety.tweets", { "_id": "hashed"} );
+sh.shardCollection("tweety.users", { "_id": "hashed" } );
+sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
+sh.shardCollection("tweety.files", { "_id": "hashed"} );
+
+sh.shardCollection("tweety.follows", { "follower": "hashed" } );
+sh.shardCollection("tweety.likes", { "tweet": "hashed" } );
+
+db.tweets.createIndex({username: "hashed"});
+db.tweets.createIndex({timestamp: -1});
+
+db.tweets.createIndex({content: "text"});
+db.users.createIndex({username: 1});
+
+
+=================================================
 
 test index
 
@@ -138,12 +159,14 @@ sh.shardCollection("tweety.likes", { "tweet": "hashed" } );
 db.sessions.ensureIndex( { _id : "hashed" } );
 sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
 
-db.users.createIndex({username: 1});
 db.tweets.createIndex({username: "hashed"});
 db.tweets.createIndex({timestamp: -1});
 
+db.files.ensureIndex( { _id : "hashed" } );
+sh.shardCollection("tweety.files", { "_id": "hashed"} );
 
 db.tweets.createIndex({content: "text"});
+db.users.createIndex({username: 1});
 
 =================================================
 
@@ -175,39 +198,6 @@ db.likes.createIndex({user: 1});
 
 =====================================================
 
-TWEET HASH USERNAME
-
-sh.enableSharding("tweety");
-db.tweets.ensureIndex( { username : "hashed" } );
-sh.shardCollection("tweety.tweets", { "username": "hashed"} );
-db.users.ensureIndex( { username : "hashed" } );
-sh.shardCollection("tweety.users", { "username": "hashed" } );
-db.follows.ensureIndex( { follower: "hashed" } );
-sh.shardCollection("tweety.follows", { "follower": "hashed" } );
-db.likes.ensureIndex( { tweet: "hashed" } );
-sh.shardCollection("tweety.likes", { "tweet": "hashed" } );
-db.sessions.ensureIndex( { _id : "hashed" } );
-sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
-
-
-db.users.createIndex({email: 1});
-db.tweets.createIndex({timestamp: -1});
-db.tweets.createIndex({content: "text"});
-db.tweets.createIndex({interest: -1});
-db.tweets.createIndex({retweets: -1});
-db.tweets.createIndex({likes: -1})
-db.tweets.createIndex({parent: 1});
-db.follows.createIndex({following: 1});
-db.likes.createIndex({user: 1});
-
-
-
-
-db.users.createIndex({email: 1}, {unique: true});
-db.users.createIndex({username: 1}, {unique: true});
-
-
-============================================
 
 db.fs.chunks.createIndex( { files_id : 1 } )
 sh.shardCollection("tweety.fs.chunks", { "files_id": 1} );
@@ -325,8 +315,17 @@ var time = after - before;
 
 var before = new Date();
 db.tweets.find({
-  username: "stalegrape",
-  timestamp: { $lte: 1493273504 }
-}).sort({interest: -1}).limit(25);
+  username: "neighborlywine",
+  timestamp: { $lte: 1493966845 }
+}).sort({timestamp: -1}).limit(25);
+var after = new Date();
+var time = after - before;
+
+var before = new Date();
+db.tweets.find({
+  timestamp: { $lte: 1493966845},
+  username: "neighborlywine",
+  content: /a/
+}).sort({timestamp: -1}).limit(25);
 var after = new Date();
 var time = after - before;
