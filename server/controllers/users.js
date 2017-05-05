@@ -290,27 +290,26 @@ exports.auth = function(req, res) {
 }
 
 exports.logout = function(req, res) {
-  if (req.session.user) {
-    req.session.destroy();
-    return res.status(200).json({
-      status: 'OK',
-      message: 'Successfully logged out'
-    })
-  } else {
-    return res.status(500).json({
-      status: 'error',
-      error: 'No logged in user'
-    })
-  }
-  
-  // console.log('logging out ' + req.session.user);
   // if (req.session.user) {
   //   req.session.destroy();
+  //   return res.status(200).json({
+  //     status: 'OK',
+  //     message: 'Successfully logged out'
+  //   })
+  // } else {
+  //   return res.status(500).json({
+  //     status: 'error',
+  //     error: 'No logged in user'
+  //   })
   // }
-  // return res.status(200).json({
-  //   status: 'OK',
-  //   message: 'Successfully logged out'
-  // })
+  
+  if (req.session.user) {
+    req.session.destroy();
+  }
+  return res.status(200).json({
+    status: 'OK',
+    message: 'Successfully logged out'
+  })
 }
 
 exports.get_user = function(req, res) {
