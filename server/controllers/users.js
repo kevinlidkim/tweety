@@ -43,7 +43,7 @@ exports.add_user_email = function(req, res) {
           error: 'Email or username already in use'
         })
       } else {
-        var salt = make_salt();
+        var salt = shortid.generate();
         var hashed_password = encrypt_password(req.body.password, salt);
         var random_key = shortid.generate();
         collection.insert({
@@ -111,9 +111,9 @@ exports.add_user = function(req, res) {
   var start = moment();
 
   var collection = db.get().collection('users');
-  var salt = make_salt();
+  var salt = shortid.generate();
   var hashed_password = encrypt_password(req.body.password, salt);
-  var random_key = encrypt_password(make_salt(), make_salt());
+  var random_key = shortid.generate();
   collection.insert({
     username: req.body.username,
     email: req.body.email,
