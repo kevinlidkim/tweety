@@ -211,11 +211,27 @@ sh.shardCollection("tweety.users", { "_id": "hashed" } );
 sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
 sh.shardCollection("tweety.files", { "_id": "hashed"} );
 
-sh.shardCollection("tweety.follows", { "follower": "hashed" } );
-sh.shardCollection("tweety.likes", { "tweet": "hashed" } );
+sh.shardCollection("tweety.follows", { "_id": "hashed" } );
+sh.shardCollection("tweety.likes", { "_id": "hashed" } );
 
-db.tweets.createIndex({ _id: "hashed", username: "hashed"});
-db.tweets.createIndex({ _id: "hashed", timestamp: -1});
-db.users.createIndex({ _id: "hashed", username: 1});
+db.tweets.createIndex({username: "hashed"});
+db.tweets.createIndex({timestamp: -1});
+db.tweets.createIndex({content: "hashed"});
+db.users.createIndex({username: 1});
 
-db.tweets.createIndex({_id: "hashed", content: "text"});
+=========================================
+
+try this
+
+sh.enableSharding("tweety");
+sh.shardCollection("tweety.tweets", { "timestamp": "hashed"} );
+sh.shardCollection("tweety.users", { "_id": "hashed" } );
+sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
+sh.shardCollection("tweety.files", { "_id": "hashed"} );
+
+sh.shardCollection("tweety.follows", { "_id": "hashed" } );
+sh.shardCollection("tweety.likes", { "_id": "hashed" } );
+
+db.tweets.createIndex({username: 1});
+db.users.createIndex({username: 1});
+

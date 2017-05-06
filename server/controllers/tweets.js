@@ -316,7 +316,8 @@ exports.new_search_items = function(req, res) {
   }
 
   var query = {};
-  query["timestamp"] = { $lte: time };
+  // query["timestamp"] = { $lte: time };
+  query["timestamp"] = time;
   if (req.body.q) {
     // query["$text"] = { $search: req.body.q };
     // query["content"] = { $regex: req.body.q };
