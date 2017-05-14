@@ -136,6 +136,7 @@ CREATE TABLE media (
 DROP TABLE media;
 
 sudo rm -rf /var/log/nginx/*
+sudo rm -rf /var/log/mongodb/*
 
 sudo du -x / | sort -n | tail -40
 df -h
@@ -204,7 +205,8 @@ sh.addShard("tweety-8:27018")
 sh.addShard("tweety-9:27018")
 
 use admin
-db.runCommand( { removeShard: "shard0000" } )
+db.runCommand( { removeShard: "shard0011" } )
+db.runCommand( { movePrimary : "tweety", to : "shard0001" } )
 
 mongostat --host tweety-1:27018
 mongotop

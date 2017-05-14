@@ -785,7 +785,7 @@ exports.delete_item = function(req, res) {
         if (tweet.media && tweet.media.length > 0) {
 
           sec_collection.remove({
-            _id: ObjectId(tweet.media[0])
+            id: tweet.media[0]
           })
             .then(removed_media => {
               collection.remove({
@@ -1149,6 +1149,7 @@ exports.add_media = function(req, res) {
   }
 
   var start = moment();
+  var new_id = shortid.generate();
 
   upload(req, res, function(err) {
     if (err) {
@@ -1160,28 +1161,20 @@ exports.add_media = function(req, res) {
 
       var collection = db.get().collection('files');
       collection.insert({
+        id: new_id,
         chunk: req.file.buffer,
         name: req.file.originalname,
         mimetype: req.file.mimetype
       })
-        .then(uploaded_file => {
-          var id = uploaded_file.ops[0]._id;
-          var end = moment();
-          var diff = end.diff(start);
-          return res.status(200).json({
-            time_diff: diff,
-            status: 'OK',
-            message: 'Successfully deposited file',
-            id: id
-          })
-        })
-        .catch(upload_fail => {
-          console.log(upload_fail);
-          return res.status(500).json({
-            status: 'error',
-            error: 'Failed to upload file'
-          })
-        })
+      var id = uploaded_file.ops[0]._id;
+      var end = moment();
+      var diff = end.diff(start);
+      return res.status(200).json({
+        time_diff: diff,
+        status: 'OK',
+        message: 'Successfully deposited file',
+        id: new_id
+      })
       
     }
   })
@@ -1210,7 +1203,7 @@ exports.get_media = function(req, res) {
 
   var collection = db.get().collection('files');
   collection.findOne({
-    _id: ObjectId(file_id)
+    id: file_id
   })
     .then(file_data => {
       if (file_data) {

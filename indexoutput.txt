@@ -1,223 +1,38 @@
-Indexes for follows:
-[
-        {
-                "v" : 2,
-                "key" : {
-                        "_id" : 1
-                },
-                "name" : "_id_",
-                "ns" : "test.follows"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "follower" : "hashed"
-                },
-                "name" : "follower_hashed",
-                "ns" : "test.follows"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "following" : 1
-                },
-                "name" : "following_1",
-                "ns" : "test.follows"
-        }
-]
-Indexes for likes:
-[
-        {
-                "v" : 2,
-                "key" : {
-                        "_id" : 1
-                },
-                "name" : "_id_",
-                "ns" : "test.likes"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "tweet" : "hashed"
-                },
-                "name" : "tweet_hashed",
-                "ns" : "test.likes"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "user" : 1
-                },
-                "name" : "user_1",
-                "ns" : "test.likes"
-        }
-]
-Indexes for sessions:
-[
-        {
-                "v" : 2,
-                "key" : {
-                        "_id" : 1
-                },
-                "name" : "_id_",
-                "ns" : "test.sessions"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "_id" : "hashed"
-                },
-                "name" : "_id_hashed",
-                "ns" : "test.sessions"
-        }
-]
-Indexes for tweets:
-[
-        {
-                "v" : 2,
-                "key" : {
-                        "_id" : 1
-                },
-                "name" : "_id_",
-                "ns" : "test.tweets"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "_id" : "hashed"
-                },
-                "name" : "_id_hashed",
-                "ns" : "test.tweets"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "username" : 1
-                },
-                "name" : "username_1",
-                "ns" : "test.tweets"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "timestamp" : -1
-                },
-                "name" : "timestamp_-1",
-                "ns" : "test.tweets"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "_fts" : "text",
-                        "_ftsx" : 1
-                },
-                "name" : "content_text",
-                "ns" : "test.tweets",
-                "weights" : {
-                        "content" : 1
-                },
-                "default_language" : "english",
-                "language_override" : "language",
-                "textIndexVersion" : 3
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "interest" : -1
-                },
-                "name" : "interest_-1",
-                "ns" : "test.tweets"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "retweets" : -1
-                },
-                "name" : "retweets_-1",
-                "ns" : "test.tweets"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "likes" : -1
-                },
-                "name" : "likes_-1",
-                "ns" : "test.tweets"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "parent" : 1
-                },
-                "name" : "parent_1",
-                "ns" : "test.tweets"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "username" : "hashed"
-                },
-                "name" : "username_hashed",
-                "ns" : "test.tweets"
-        }
-]
-Indexes for users:
-[
-        {
-                "v" : 2,
-                "key" : {
-                        "_id" : 1
-                },
-                "name" : "_id_",
-                "ns" : "test.users"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "username" : "hashed"
-                },
-                "name" : "username_hashed",
-                "ns" : "test.users"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "email" : 1
-                },
-                "name" : "email_1",
-                "ns" : "test.users"
-        },
-        {
-                "v" : 2,
-                "key" : {
-                        "username" : 1
-                },
-                "name" : "username_1",
-                "ns" : "test.users"
-        }
-]
-
 db.getCollectionNames().forEach(function(collection) {
    indexes = db[collection].getIndexes();
    print("Indexes for " + collection + ":");
    printjson(indexes);
 });
 
+db.collection.find().sort({age:-1}).limit(1) // for MAX
+db.collection.find().sort({age:+1}).limit(1) // for MIN
 
+  shards:
+        {  "_id" : "shard0001",  "host" : "tweety-1:27018",  "state" : 1 }
+        {  "_id" : "shard0002",  "host" : "tweety-2:27018",  "state" : 1 }
+        {  "_id" : "shard0003",  "host" : "tweety-3:27018",  "state" : 1 }
+        {  "_id" : "shard0004",  "host" : "tweety-5:27018",  "state" : 1 }
+        {  "_id" : "shard0005",  "host" : "tweety-6:27018",  "state" : 1 }
+        {  "_id" : "shard0006",  "host" : "tweety-4:27018",  "state" : 1 }
+        {  "_id" : "shard0007",  "host" : "load-balancer:27018",  "state" : 1 }
+        {  "_id" : "shard0008",  "host" : "tweety-7:27018",  "state" : 1 }
+        {  "_id" : "shard0009",  "host" : "tweety-8:27018",  "state" : 1 }
+        {  "_id" : "shard0010",  "host" : "tweety-9:27018",  "state" : 1 }
+
+
+================================================
 
 sh.enableSharding("tweety");
-sh.shardCollection("tweety.tweets", { "_id": "hashed"} );
-sh.shardCollection("tweety.users", { "_id": "hashed" } );
+sh.shardCollection("tweety.tweets", { "timestamp": "hashed"} );
+sh.shardCollection("tweety.users", { "username": "hashed" } );
 sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
 sh.shardCollection("tweety.files", { "_id": "hashed"} );
 
 sh.shardCollection("tweety.follows", { "_id": "hashed" } );
 sh.shardCollection("tweety.likes", { "_id": "hashed" } );
 
-db.tweets.createIndex({username: "hashed"});
-db.tweets.createIndex({timestamp: -1});
-db.tweets.createIndex({content: "hashed"});
-db.users.createIndex({username: 1});
+db.tweets.createIndex({username: 1});
+
 
 =========================================
 
@@ -233,3 +48,18 @@ sh.shardCollection("tweety.follows", { "_id": "hashed" } );
 sh.shardCollection("tweety.likes", { "_id": "hashed" } );
 
 db.tweets.createIndex({username: 1});
+db.tweets.createIndex({timestamp: -1});
+
+==========================================
+
+sh.enableSharding("tweety");
+sh.shardCollection("tweety.tweets", { "_id": "hashed"} );
+sh.shardCollection("tweety.users", { "username": "hashed" } );
+sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
+sh.shardCollection("tweety.files", { "_id": "hashed"} );
+
+sh.shardCollection("tweety.follows", { "_id": "hashed" } );
+sh.shardCollection("tweety.likes", { "_id": "hashed" } );
+
+db.tweets.createIndex({username: 1});
+db.tweets.createIndex({_id: -1});
