@@ -1166,7 +1166,6 @@ exports.add_media = function(req, res) {
         name: req.file.originalname,
         mimetype: req.file.mimetype
       })
-      var id = uploaded_file.ops[0]._id;
       var end = moment();
       var diff = end.diff(start);
       return res.status(200).json({

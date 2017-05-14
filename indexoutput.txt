@@ -26,7 +26,7 @@ sh.enableSharding("tweety");
 sh.shardCollection("tweety.tweets", { "timestamp": "hashed"} );
 sh.shardCollection("tweety.users", { "username": "hashed" } );
 sh.shardCollection("tweety.sessions", { "_id": "hashed" } );
-sh.shardCollection("tweety.files", { "_id": "hashed"} );
+sh.shardCollection("tweety.files", { "id": "hashed"} );
 
 sh.shardCollection("tweety.follows", { "_id": "hashed" } );
 sh.shardCollection("tweety.likes", { "_id": "hashed" } );
