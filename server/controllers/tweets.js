@@ -1191,11 +1191,6 @@ exports.get_media = function(req, res) {
       status: 'error',
       error: 'No logged in user'
     })
-  } else if (req.params.id.length != 24) {
-    return res.status(500).json({
-      status: 'error',
-      error: 'Invalid media id'
-    })
   }
 
   var file_id = req.params.id;
